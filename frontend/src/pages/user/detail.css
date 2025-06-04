@@ -1,0 +1,292 @@
+/* Overall Page Container */
+.detail-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%); /* Soft, calm gradient */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 30px 20px;
+    box-sizing: border-box;
+}
+
+/* Profile Card */
+.profile-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+    padding: 40px;
+    width: 100%;
+    max-width: 500px; /* Optimal width for details */
+    text-align: center;
+    animation: fadeIn 0.8s ease-out; /* Fade-in animation */
+    transition: all 0.3s ease; /* Smooth transitions for card itself */
+}
+
+/* Header */
+.profile-header {
+    font-size: 2.4rem; /* Larger, more impactful title */
+    font-weight: 700;
+    color: #2c3e50; /* Darker, professional color */
+    margin-bottom: 30px;
+    position: relative;
+}
+
+/* Underline effect for header */
+.profile-header::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background-color: #4CAF50; /* Green accent */
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+/* Profile Information Grid */
+.profile-info-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Single column by default */
+    gap: 15px; /* Space between info items */
+    margin-bottom: 30px;
+    text-align: left; /* Align text within grid items */
+}
+
+.profile-info-item {
+    padding: 12px 15px;
+    background-color: #f7f9fc; /* Light background for each item */
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between; /* Pushes label to left, value to right */
+    align-items: center;
+    border: 1px solid #e0e6ed;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #555;
+    margin-right: 15px; /* Space between label and value */
+    flex-shrink: 0; /* Prevent label from shrinking */
+}
+
+.info-value {
+    color: #333;
+    word-break: break-all; /* Break long words if necessary */
+    text-align: right;
+    flex-grow: 1; /* Allow value to take remaining space */
+}
+
+/* Change Password Button */
+.change-password-button {
+    padding: 12px 25px;
+    background-color: #007bff; /* Primary blue */
+    color: white;
+    border: none;
+    border-radius: 25px; /* Pill shape */
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.25);
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    outline: none; /* Remove default outline */
+}
+
+.change-password-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.35);
+}
+
+.change-password-button:active {
+    transform: translateY(0);
+    background-color: #004085;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+}
+
+/* Password Section */
+.password-section {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px dashed #e0e0e0; /* Separator line */
+    animation: slideInUp 0.6s ease-out; /* Slide-in effect */
+    text-align: left; /* Align contents to left */
+}
+
+.password-section-title {
+    font-size: 1.5rem;
+    color: #444;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 15px; /* Space between input fields */
+}
+
+.password-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #fcfcfc;
+}
+
+.password-input::placeholder {
+    color: #aaa;
+}
+
+.password-input:focus {
+    outline: none;
+    border-color: #4CAF50; /* Green accent on focus */
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.password-ok-button {
+    width: 100%; /* Full width button */
+    padding: 14px 20px;
+    background-color: #4CAF50; /* Green for OK/Update */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-top: 10px; /* Space above button */
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.25);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    outline: none;
+}
+
+.password-ok-button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.35);
+}
+
+.password-ok-button:active {
+    transform: translateY(0);
+    background-color: #3d8f43;
+    box-shadow: 0 2px 5px rgba(76, 175, 80, 0.2);
+}
+
+/* Password Change Messages */
+.password-message {
+    font-size: 0.9rem;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.password-message.success {
+    background-color: #e6ffed; /* Light green */
+    color: #28a745; /* Dark green */
+    border: 1px solid #c3e6cb;
+}
+
+.password-message.error {
+    background-color: #ffe6e6; /* Light red */
+    color: #dc3545; /* Dark red */
+    border: 1px solid #f5c6cb;
+}
+
+/* Loading State */
+.detail-loading-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 1.2rem;
+    color: #666;
+    background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #007bff; /* Blue spinner */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error State */
+.detail-error-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 1.2rem;
+    color: #dc3545; /* Red error text */
+    background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+    text-align: center;
+}
+
+.go-back-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #6c757d; /* Gray */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.go-back-button:hover {
+    background-color: #5a6268;
+}
+
+/* General Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .profile-card {
+        padding: 30px 25px;
+        margin: 15px; /* Add margin on smaller screens */
+    }
+    .profile-header {
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+    .profile-info-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .info-label, .info-value {
+        font-size: 0.95rem;
+    }
+    .change-password-button, .password-ok-button {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+    .password-section-title {
+        font-size: 1.3rem;
+    }
+    .password-input {
+        padding: 10px 12px;
+    }
+}

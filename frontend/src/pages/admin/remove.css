@@ -1,0 +1,80 @@
+/* General Form Container */
+.form-container {
+    max-width: 480px; /* Equivalent to max-w-md (approx 480px) */
+    padding: 24px; /* Equivalent to p-6 (approx 24px) */
+    margin: 24px auto; /* mx-auto (auto horizontal margin) and some top/bottom margin */
+    background-color: #ffffff; /* bg-white */
+    border-radius: 8px; /* rounded-lg (approx 8px) */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+}
+
+/* Form Title */
+.form-title {
+    margin-bottom: 24px; /* mb-6 (approx 24px) */
+    font-size: 1.5rem; /* text-2xl (approx 24px) */
+    font-weight: 700; /* font-bold */
+    color: #374151; /* text-gray-800 */
+    text-align: center; /* Often good for titles */
+}
+
+/* Form Group (for label and input) */
+.form-group {
+    margin-bottom: 24px; /* space-y-6 creates margin between elements, so this is similar for div */
+}
+
+/* Form Label */
+.form-label {
+    display: block; /* block */
+    margin-bottom: 8px; /* mb-2 (approx 8px) */
+    font-size: 0.875rem; /* text-sm (approx 14px) */
+    font-weight: 500; /* font-medium */
+    color: #4b5563; /* text-gray-700 */
+}
+
+/* Form Input */
+.form-input {
+    width: 100%; /* w-full */
+    padding: 10px 16px; /* px-4 py-2 (approx 16px horizontal, 10px vertical) */
+    border: 1px solid #d1d5db; /* border border-gray-300 */
+    border-radius: 6px; /* rounded-md (approx 6px) */
+    outline: none; /* focus:outline-none */
+    box-sizing: border-box; /* Ensures padding doesn't add to total width */
+    font-size: 1rem; /* default text size */
+}
+
+.form-input:focus {
+    border-color: transparent; /* focus:border-transparent */
+    box-shadow: 0 0 0 2px #3F51B5, 0 0 0 4px rgba(239, 68, 68, 0.5); /* focus:ring-2 focus:ring-red-500 */
+}
+
+/* Remove User Button */
+.remove-user-button {
+    width: 100%; /* w-full */
+    padding: 10px 16px; /* px-4 py-2 */
+    color: #ffffff; /* text-white */
+    background-color: #3F51B5; /* bg-red-600 */
+    border: none; /* Remove default button border */
+    border-radius: 6px; /* rounded-md */
+    cursor: pointer; /* Indicate it's clickable */
+    font-size: 1rem;
+    font-weight: 600; /* Often buttons look better with some weight */
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* transition-all duration-300 ease-in-out */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+}
+
+.remove-user-button:hover {
+    background-color: #3F51B5; /* hover:bg-red-700 */
+    transform: translateY(-2px); /* hover:-translate-y-0.5 (slight lift) */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04); /* hover:shadow-xl */
+}
+
+.remove-user-button:focus {
+    outline: none; /* focus:outline-none */
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #3F51B5; /* focus:ring-2 focus:ring-red-500 focus:ring-offset-2 (white then red ring) */
+}
+
+.remove-user-button:active {
+    transform: translateY(0); /* active:translate-y-0 (pressed down) */
+    box-shadow: 0 5px 10px -2px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.03); /* active:shadow-md */
+    background-color:#3F51B5; /* A bit darker when active */
+}

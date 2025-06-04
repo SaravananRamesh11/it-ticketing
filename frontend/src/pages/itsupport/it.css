@@ -1,0 +1,337 @@
+/* General Page Container */
+.it-support-page-container {
+    padding: 30px;
+    background: linear-gradient(135deg, #e0f2f7 0%, #cce7f2 100%); /* Light blueish gradient */
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    box-sizing: border-box;
+}
+
+/* Dashboard Title */
+.it-dashboard-title {
+    text-align: center;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #2c3e50;
+    margin-bottom: 40px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+    position: relative;
+}
+
+.it-dashboard-title::after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 5px;
+    background-color: #007bff; /* Accent blue */
+    margin: 15px auto 0;
+    border-radius: 3px;
+}
+
+/* Loading and Error Messages */
+.loading-message, .error-message {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2rem;
+    color: #555;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin: 50px auto;
+    max-width: 600px;
+}
+
+.error-message {
+    color: #dc3545; /* Red for errors */
+    border: 1px solid #dc3545;
+    background-color: #ffe6e6;
+}
+
+/* Ticket List Grid */
+.ticket-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 30px; /* Space between cards */
+    max-width: 1200px; /* Max width for the grid */
+    margin: 0 auto; /* Center the grid */
+}
+
+/* Individual Ticket Card */
+.ticket-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Push button to bottom */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+    min-height: 280px; /* Ensure cards have a minimum height for consistency */
+}
+
+.ticket-card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.ticket-issue {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #444;
+    line-height: 1.3;
+    margin: 0;
+    flex-grow: 1; /* Allow issue to take available space */
+    text-align: left;
+}
+
+.ticket-status {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+    margin-left: 15px; /* Space from issue */
+    flex-shrink: 0; /* Prevent status from shrinking */
+}
+
+/* Status specific colors */
+.status-open {
+    background-color: #ffc107; /* Orange for open */
+    color: #333; /* Darker text for contrast */
+}
+.status-closed {
+    background-color: #28a745; /* Green for closed */
+}
+.status-pending { /* Example for other statuses */
+    background-color: #17a2b8; /* Cyan */
+}
+.status-in-progress { /* Example for other statuses */
+    background-color: #6c757d; /* Gray */
+}
+
+
+.ticket-info {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.ticket-info p {
+    margin: 5px 0;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #444;
+    margin-right: 8px;
+}
+
+/* Action Buttons */
+.action-button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    width: 100%; /* Full width */
+    margin-top: auto; /* Push to bottom of card */
+    outline: none;
+}
+
+.close-ticket-btn {
+    background-color: #007bff; /* Blue */
+    color: white;
+}
+
+.close-ticket-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+}
+
+.close-ticket-btn:active {
+    transform: translateY(0);
+    background-color: #004085;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.1);
+}
+
+/* Resolution Section */
+.resolution-section {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.resolution-textarea {
+    width: calc(100% - 20px); /* Account for padding */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    resize: vertical; /* Allow vertical resizing */
+    min-height: 80px;
+    box-sizing: border-box; /* Include padding in width */
+    margin-bottom: 15px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+}
+
+.resolution-textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.resolution-actions {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    width: 100%;
+}
+
+.submit-resolution-btn {
+    background-color: #28a745; /* Green */
+    color: white;
+    flex-grow: 1; /* Take equal space */
+}
+
+.submit-resolution-btn:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
+}
+
+.submit-resolution-btn:active {
+    transform: translateY(0);
+    background-color: #1e7e34;
+    box-shadow: 0 2px 5px rgba(40, 167, 69, 0.1);
+}
+
+.cancel-resolution-btn {
+    background-color: #dc3545; /* Red */
+    color: white;
+    flex-grow: 1;
+}
+
+.cancel-resolution-btn:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
+}
+
+.cancel-resolution-btn:active {
+    transform: translateY(0);
+    background-color: #bd2130;
+    box-shadow: 0 2px 5px rgba(220, 53, 69, 0.1);
+}
+
+
+/* No Tickets Message */
+.no-tickets-message {
+    text-align: center;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 50px auto;
+    font-size: 1.3rem;
+    color: #555;
+    border: 2px dashed #a8dadc; /* Light blue dashed border */
+}
+
+.no-tickets-message p:first-child {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #007bff; /* Primary blue for main message */
+    margin-bottom: 10px;
+}
+.no-tickets-message p:last-child {
+    font-size: 1rem;
+    color: #777;
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .it-dashboard-title {
+        font-size: 2.2rem;
+        margin-bottom: 30px;
+    }
+    .ticket-list-grid {
+        grid-template-columns: 1fr; /* Single column layout on small screens */
+        padding: 0 15px;
+    }
+    .ticket-card {
+        padding: 20px;
+        min-height: auto; /* Auto height on small screens */
+    }
+    .ticket-issue {
+        font-size: 1.2rem;
+    }
+    .ticket-status {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+    }
+    .action-button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+    .resolution-actions {
+        flex-direction: column; /* Stack buttons vertically */
+    }
+    .resolution-actions button {
+        width: 100%;
+    }
+    .no-tickets-message {
+        margin: 30px 15px;
+        padding: 25px;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .it-support-page-container {
+        padding: 20px 10px;
+    }
+    .it-dashboard-title {
+        font-size: 1.8rem;
+        margin-bottom: 25px;
+    }
+}
+
+.details-button {
+    position: absolute;
+    top: 30px; /* Increased padding from top */
+    right: 30px; /* Increased padding from right */
+    padding: 12px 25px; /* More generous padding */
+    background-color: #007bff; /* Primary blue */
+    color: white;
+    border: none;
+    border-radius: 25px; /* Pill-shaped button */
+    cursor: pointer;
+    font-weight: 600; /* Slightly bolder text */
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.25); /* Subtle shadow */
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.details-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift */
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.35); /* More prominent shadow */
+}
+
+.details-button:active {
+    transform: translateY(0); /* Press effect */
+    background-color: #004085;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+}

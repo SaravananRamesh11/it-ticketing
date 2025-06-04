@@ -1,0 +1,142 @@
+/* Overall Page Container */
+.login-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full viewport height */
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); /* A nice gradient background */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font */
+    color: #333;
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in element's total width and height */
+}
+
+/* Login Card/Box */
+.login-card {
+    background-color: #ffffff;
+    border-radius: 12px; /* Slightly more rounded corners */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Deeper, softer shadow */
+    padding: 40px;
+    width: 100%;
+    max-width: 400px; /* Max width for the login form */
+    text-align: center;
+    animation: fadeIn 0.8s ease-out; /* Simple fade-in animation */
+}
+
+/* Login Title */
+.login-title {
+    font-size: 2.2rem; /* Larger title */
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Login Subtitle */
+.login-subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* Form Styling */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between form groups */
+}
+
+.form-group {
+    text-align: left; /* Align labels and inputs to the left */
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 600;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Consistent rounded corners */
+    font-size: 1rem;
+    box-sizing: border-box; /* Crucial for consistent width */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input::placeholder {
+    color: #aaa;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #2575fc; /* Highlight border on focus */
+    box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.2); /* Soft blue shadow on focus */
+}
+
+/* Login Button */
+.login-button {
+    width: 100%;
+    padding: 14px 20px;
+    background-color: #2575fc; /* Primary button color */
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    margin-top: 10px; /* Space above button if error message is present */
+    letter-spacing: 0.5px;
+}
+
+.login-button:hover {
+    background-color: #1a5ac9; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.login-button:active {
+    transform: translateY(0); /* "Pressed" effect */
+    background-color: #154799;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Error Message */
+.error-message {
+    color: #d9534f; /* A common red for error messages */
+    font-size: 0.9rem;
+    margin-top: -10px; /* Pull it slightly closer to the input if needed */
+    margin-bottom: 10px; /* Space before button */
+    text-align: center;
+    animation: slideInDown 0.4s ease-out; /* Simple slide-in animation for errors */
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive adjustments (optional but good practice) */
+@media (max-width: 480px) {
+    .login-card {
+        margin: 15px;
+        padding: 30px 20px;
+    }
+    .login-title {
+        font-size: 1.8rem;
+    }
+    .login-button {
+        font-size: 1rem;
+        padding: 12px 15px;
+    }
+}
