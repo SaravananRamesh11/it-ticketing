@@ -3,6 +3,7 @@ import EmployeeRegistrationForm from './addusers';
 import SupportMemberPieChart from './pie';
 import  RemoveUserForm  from './remove';
 import Detail from "./details"
+import ClosedTickets from "./ClosedTickets"
 import { 
   Box, 
   Drawer, 
@@ -19,6 +20,7 @@ import {
   Paper,
   Grid
 } from '@mui/material';
+
 import {
   Menu as MenuIcon,
   PersonAdd as PersonAddIcon,
@@ -26,8 +28,11 @@ import {
   PieChart as PieChartIcon,
   Assignment as AssignmentIcon,
   Delete as DeleteIcon,
-  Details as BadgeIcon
+  Details as BadgeIcon,
+  Visibility as VisibilityIcon,
+  InsertDriveFile as FileIcon
 } from '@mui/icons-material';
+
 import { styled } from '@mui/material/styles';
 
 const drawerWidth = 240;
@@ -63,7 +68,7 @@ const AdminPage = () => {
     { id: 'createUser', text: 'Create User', icon: <PersonAddIcon /> },
     { id: 'deleteEmployee', text: 'Delete Employee', icon: <PersonRemoveIcon /> },
     { id: 'pieChart', text: 'IT Support Statistics', icon: <PieChartIcon /> },
-    { id: 'deleteClosedTickets', text: 'Delete Closed Tickets', icon: <DeleteIcon /> },
+    { id: 'closedTickets', text: 'Closed Tickets', icon: <FileIcon /> },
     // { id: 'AdminDetails', text: 'User Details', icon: <PersonIcon /> }
     { id: 'UserDetails', text: 'User Details', icon: <BadgeIcon /> }
   ];
@@ -81,15 +86,14 @@ const AdminPage = () => {
         return (
           <Paper elevation={3} sx={{ p: 3 }}>
             <Typography variant="h5" gutterBottom>Delete Employee</Typography>
-            <RemoveUserForm/>
-            
+            <RemoveUserForm/>            
           </Paper>
         );
       case 'pieChart':
         return (
           <Paper elevation={3} sx={{ p: 3 }}>
             <Typography variant="h5" gutterBottom>Ticket Statistics</Typography>
-              < SupportMemberPieChart  />
+            < SupportMemberPieChart  />
           </Paper>
         );
       case 'UserDetails':
@@ -99,11 +103,11 @@ const AdminPage = () => {
             <Detail/>
           </Paper>
         );
-      case 'deleteClosedTickets':
+      case 'closedTickets':
         return (
           <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h5" gutterBottom>Delete Closed Tickets</Typography>
-            {/* Add closed tickets management interface here */}
+            <Typography variant="h5" gutterBottom>Closed Tickets</Typography>
+            <ClosedTickets/>
           </Paper>
         );
       default:

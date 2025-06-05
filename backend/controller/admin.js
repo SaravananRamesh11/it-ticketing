@@ -4,6 +4,7 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const saltRounds = 10; // Number of salt rounds for bcrypt
 const Ticket=require("../models/Ticket")
+const { getClosedTicketsFile } = require('../utils/s3Downloader');
 
 // Add new employee endpoint with password hashing
 const register_user = async (req, res) => {
@@ -112,10 +113,27 @@ const removeemployee = async (req, res) => {
   }
 };
 
+const downloadCsvFromS3 = async (req, res) => {
+  try {
+    const { month, year } = req.query;
+
+    if (!month || !year) {
+      return res.status(400).json({ error: 'Month and year are required' });
+    }
+
+    // const fileKey = `IT-TICKETING/tickets-${month.toLowerCase()}-${year}.csv`;
+    // const fileStream = await getS3FileStream(fileKey);
+    const fileStream = await getClosedTicketsFile(month, year);
+
+    res.setHeader('Content-Disposition', `attachment; filename=tickets-${month}-${year}.csv`);
+    res.setHeader('Content-Type', 'text/csv');
+
+    fileStream.pipe(res);
+  } catch (error) {
+    console.error('❌ Error:', error);
+    res.status(404).json({ error: 'File not found or failed to download' });
+  }
+};
 
 
-
-
-
-
-module.exports = { register_user,getTicketStats,removeemployee};
+module.exports = { register_user, getTicketStats, removeemployee, downloadCsvFromS3 };
