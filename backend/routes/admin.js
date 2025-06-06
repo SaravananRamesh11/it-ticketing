@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const { register_user, getTicketStats, removeemployee, downloadCsvFromS3 } = require("../controller/admin");
+const { register_user, getTicketStats, removeemployee, downloadCsvFromS3, previewCsvFromS3 } = require("../controller/admin");
 
 router.post('/add_users', register_user);
 router.get('/stats', getTicketStats);
 router.post('/remove', removeemployee);
-
-// ✅ ADD THIS
 router.get('/download-csv', downloadCsvFromS3);
+router.get('/preview-csv', previewCsvFromS3);
 
 module.exports = router;
+
 
 
 // const { register_user, getTicketStats, removeemployee } = require("../controller/admin");

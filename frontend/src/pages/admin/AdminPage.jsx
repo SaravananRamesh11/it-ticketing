@@ -3,7 +3,7 @@ import EmployeeRegistrationForm from './addusers';
 import SupportMemberPieChart from './pie';
 import  RemoveUserForm  from './remove';
 import Detail from "./details"
-import ClosedTickets from "./ClosedTickets"
+import ClosedTickets from "./ClosedTickets" // Import the new component for closed tickets management
 import { 
   Box, 
   Drawer, 
@@ -107,7 +107,8 @@ const AdminPage = () => {
         return (
           <Paper elevation={3} sx={{ p: 3 }}>
             <Typography variant="h5" gutterBottom>Closed Tickets</Typography>
-            <ClosedTickets/>
+            {/* Add closed tickets management interface here */}
+            <ClosedTickets />
           </Paper>
         );
       default:

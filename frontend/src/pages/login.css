@@ -9,6 +9,9 @@
     color: #333;
     padding: 20px;
     box-sizing: border-box; /* Include padding in element's total width and height */
+    outline: 10px solid white; /* You can adjust thickness here */
+    outline-offset: -8px; /* Keep it inside the viewport edge */
+    border-radius: 15px;
 }
 
 /* Login Card/Box */

@@ -19,7 +19,7 @@ const Detail = () => {
         if (!id) {
             // Redirect to login if no ID is found
             alert('User ID not found. Please login again.');
-            window.location.href = '/login'; // Or use navigate from react-router-dom
+            window.location.href = '/'; // Or use navigate from react-router-dom
             return;
         }
         const res = await axios.post(
@@ -58,7 +58,7 @@ const Detail = () => {
       const id = localStorage.getItem('id'); // Ensure ID is still available
       if (!id) {
           alert('User ID not found for password change. Please login again.');
-          window.location.href = '/login';
+          window.location.href = '/';
           return;
       }
       await axios.post('http://localhost:5000/api/general/password', {

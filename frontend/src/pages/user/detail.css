@@ -4,7 +4,7 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%); /* Soft, calm gradient */
+    background: linear-gradient(135deg, #e0f2f7 0%, #cce7f2 100%); /* Soft, calm gradient */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 30px 20px;
     box-sizing: border-box;
@@ -12,7 +12,7 @@
 
 /* Profile Card */
 .profile-card {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.6);
     border-radius: 12px;
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15); /* More prominent shadow */
     padding: 40px;
@@ -289,4 +289,37 @@
     .password-input {
         padding: 10px 12px;
     }
+}
+.go-back-top-button {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  background: #ffffffcc;
+  backdrop-filter: blur(6px);
+  border: 1px solid #dee2e6;
+  padding: 10px 18px;
+  border-radius: 10px;
+  color: #0d6efd;
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.go-back-top-button:hover {
+  background: #e3f2fd;
+  color: #084298;
+  transform: translateY(-2px);
+}
+
+.go-back-top-button svg {
+  transition: transform 0.3s ease;
+}
+
+.go-back-top-button:hover svg {
+  transform: translateX(-4px); /* slide arrow slightly left on hover */
 }

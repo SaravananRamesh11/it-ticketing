@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './ClosedTickets.css'; // ← Import the CSS file
+import './ClosedTickets.css'; // ← Style your table here
 
 function ClosedTickets() {
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [csvData, setCsvData] = useState([]);
 
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -15,6 +16,37 @@ function ClosedTickets() {
 
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
+
+  const handlePreview = async () => {
+    if (!month || !year) {
+      setError('Please select both month and year');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setCsvData([]);
+
+    try {
+      const response = await axios.get('http://localhost:5000/api/admin/preview-csv', {
+        params: { month, year }
+      });
+
+      console.log('📥 Preview data:', response.data);
+
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        setCsvData(response.data);
+      } else {
+        setError('No data found in file.');
+      }
+
+    } catch (err) {
+      console.error('❌ Error fetching preview:', err);
+      setError('File not found or preview failed');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDownload = async () => {
     if (!month || !year) {
@@ -39,6 +71,7 @@ function ClosedTickets() {
       link.click();
       link.remove();
     } catch (err) {
+      console.error('❌ Download error:', err);
       setError('File not found or download failed');
     } finally {
       setLoading(false);
@@ -47,32 +80,274 @@ function ClosedTickets() {
 
   return (
     <div className="closed-tickets-container">
-      <h2>Download Closed Tickets</h2>
+      {/* <h2>Closed Tickets</h2> */}
 
-      <label>Select Month</label>
-      <select value={month} onChange={(e) => setMonth(e.target.value)}>
-        <option value="">-- Select Month --</option>
-        {months.map((m) => (
-          <option key={m} value={m}>{m}</option>
-        ))}
-      </select>
+      <div className="card">
+        <h3>Download or Preview Closed Tickets</h3>
 
-      <label>Select Year</label>
-      <select value={year} onChange={(e) => setYear(e.target.value)}>
-        <option value="">-- Select Year --</option>
-        {years.map((y) => (
-          <option key={y} value={y}>{y}</option>
-        ))}
-      </select>
+        <label>Select Month</label>
+        <select value={month} onChange={(e) => setMonth(e.target.value)}>
+          <option value="">-- Select Month --</option>
+          {months.map((m) => (
+            <option key={m} value={m}>{m}</option>
+          ))}
+        </select>
 
-      <button onClick={handleDownload} disabled={loading}>
-        {loading ? <span className="spinner" /> : null}
-        {loading ? 'Downloading...' : 'Download CSV'}
-      </button>
+        <label>Select Year</label>
+        <select value={year} onChange={(e) => setYear(e.target.value)}>
+          <option value="">-- Select Year --</option>
+          {years.map((y) => (
+            <option key={y} value={y}>{y}</option>
+          ))}
+        </select>
 
-      {error && <p className="error-message">{error}</p>}
+        <div className="button-group">
+          <button onClick={handlePreview} disabled={loading}>
+            {loading ? 'Loading Preview...' : 'Preview CSV'}
+          </button>
+
+          <button onClick={handleDownload} disabled={loading}>
+            {loading ? <span className="spinner" /> : null}
+            {loading ? 'Downloading...' : 'Download CSV'}
+          </button>
+        </div>
+
+        {error && <p className="error-message">{error}</p>}
+      </div>
+
+      {csvData.length > 0 && (
+        <div className="csv-preview">
+          <h3>CSV Preview</h3>
+          <table>
+            <thead>
+              <tr>
+                {Object.keys(csvData[0]).map((key) => (
+                  <th key={key}>{key}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {csvData.map((row, idx) => (
+                <tr key={idx}>
+                  {Object.entries(row).map(([key, val], i) => (
+                    <td key={i}>
+                      {key === 'date' ? new Date(val).toLocaleDateString() : val}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
+
+
+  // return (
+  //   <div className="closed-tickets-container">
+  //     <h2>Download or Preview Closed Tickets</h2>
+
+  //     <label>Select Month</label>
+  //     <select value={month} onChange={(e) => setMonth(e.target.value)}>
+  //       <option value="">-- Select Month --</option>
+  //       {months.map((m) => (
+  //         <option key={m} value={m}>{m}</option>
+  //       ))}
+  //     </select>
+
+  //     <label>Select Year</label>
+  //     <select value={year} onChange={(e) => setYear(e.target.value)}>
+  //       <option value="">-- Select Year --</option>
+  //       {years.map((y) => (
+  //         <option key={y} value={y}>{y}</option>
+  //       ))}
+  //     </select>
+
+  //     <div className="button-group">
+  //       <button onClick={handlePreview} disabled={loading}>
+  //         {loading ? 'Loading Preview...' : 'Preview CSV'}
+  //       </button>
+
+  //       <button onClick={handleDownload} disabled={loading}>
+  //         {loading ? <span className="spinner" /> : null}
+  //         {loading ? 'Downloading...' : 'Download CSV'}
+  //       </button>
+  //     </div>
+
+  //     {error && <p className="error-message">{error}</p>}
+
+  //     {csvData.length > 0 && (
+  //       <div className="csv-preview">
+  //         <h3>CSV Preview</h3>
+  //         <table>
+  //           <thead>
+  //             <tr>
+  //               {Object.keys(csvData[0]).map((key) => (
+  //                 <th key={key}>{key}</th>
+  //               ))}
+  //             </tr>
+  //           </thead>
+  //           <tbody>
+  //             {csvData.map((row, idx) => (
+  //               <tr key={idx}>
+  //                 {Object.entries(row).map(([key, val], i) => (
+  //                   <td key={i}>
+  //                     {key === 'date' ? new Date(val).toLocaleDateString() : val}
+  //                   </td>
+  //                 ))}
+  //               </tr>
+  //             ))}
+  //           </tbody>
+  //         </table>
+  //       </div>
+  //     )}
+  //   </div>
+  // );
 }
 
 export default ClosedTickets;
+
+
+// import React, { useState } from 'react';
+// import axios from 'axios';
+// import Papa from 'papaparse';
+// import './ClosedTickets.css'; // ← You can style preview table here
+
+// function ClosedTickets() {
+//   const [month, setMonth] = useState('');
+//   const [year, setYear] = useState('');
+//   const [error, setError] = useState('');
+//   const [loading, setLoading] = useState(false);
+//   const [csvData, setCsvData] = useState([]);
+
+//   const months = [
+//     'January', 'February', 'March', 'April', 'May', 'June',
+//     'July', 'August', 'September', 'October', 'November', 'December'
+//   ];
+
+//   const currentYear = new Date().getFullYear();
+//   const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
+
+//   const handlePreview = async () => {
+//     if (!month || !year) {
+//       setError('Please select both month and year');
+//       return;
+//     }
+
+//     setLoading(true);
+//     setError('');
+//     setPreviewData([]);
+
+//     try {
+//       const response = await axios.get('http://localhost:5000/api/admin/preview-csv', {
+//         params: { month, year }
+//       });
+
+//       console.log('📥 Preview data:', response.data);
+
+//       if (Array.isArray(response.data) && response.data.length > 0) {
+//         setPreviewData(response.data);
+//       } else {
+//         setError('No data found in file.');
+//       }
+
+//     } catch (err) {
+//       console.error('❌ Error fetching preview:', err);
+//       setError('File not found or preview failed');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+
+//   const handleDownload = async () => {
+//     if (!month || !year) {
+//       setError('Please select both month and year');
+//       return;
+//     }
+
+//     setLoading(true);
+//     setError('');
+
+//     try {
+//       const response = await axios.get('http://localhost:5000/api/admin/download-csv', {
+//         params: { month, year },
+//         responseType: 'blob',
+//       });
+
+//       const url = window.URL.createObjectURL(new Blob([response.data]));
+//       const link = document.createElement('a');
+//       link.href = url;
+//       link.setAttribute('download', `tickets-${month.toLowerCase()}-${year}.csv`);
+//       document.body.appendChild(link);
+//       link.click();
+//       link.remove();
+//     } catch (err) {
+//       setError('File not found or download failed');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className="closed-tickets-container">
+//       <h2>Download or Preview Closed Tickets</h2>
+
+//       <label>Select Month</label>
+//       <select value={month} onChange={(e) => setMonth(e.target.value)}>
+//         <option value="">-- Select Month --</option>
+//         {months.map((m) => (
+//           <option key={m} value={m}>{m}</option>
+//         ))}
+//       </select>
+
+//       <label>Select Year</label>
+//       <select value={year} onChange={(e) => setYear(e.target.value)}>
+//         <option value="">-- Select Year --</option>
+//         {years.map((y) => (
+//           <option key={y} value={y}>{y}</option>
+//         ))}
+//       </select>
+
+//       <div className="button-group">
+//         <button onClick={handlePreview} disabled={loading}>
+//           {loading ? 'Loading Preview...' : 'Preview CSV'}
+//         </button>
+
+//         <button onClick={handleDownload} disabled={loading}>
+//           {loading ? <span className="spinner" /> : null}
+//           {loading ? 'Downloading...' : 'Download CSV'}
+//         </button>
+//       </div>
+
+//       {error && <p className="error-message">{error}</p>}
+
+//       {csvData.length > 0 && (
+//         <div className="csv-preview">
+//           <h3>CSV Preview</h3>
+//           <table>
+//             <thead>
+//               <tr>
+//                 {Object.keys(csvData[0]).map((key) => (
+//                   <th key={key}>{key}</th>
+//                 ))}
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {csvData.map((row, idx) => (
+//                 <tr key={idx}>
+//                   {Object.values(row).map((val, i) => (
+//                     <td key={i}>{val}</td>
+//                   ))}
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default ClosedTickets;

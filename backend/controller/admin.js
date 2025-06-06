@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10; // Number of salt rounds for bcrypt
 const Ticket=require("../models/Ticket")
 const { getClosedTicketsFile } = require('../utils/s3Downloader');
+const csv = require('csv-parser'); 
 
 // Add new employee endpoint with password hashing
 const register_user = async (req, res) => {
@@ -135,5 +136,56 @@ const downloadCsvFromS3 = async (req, res) => {
   }
 };
 
+const streamToString = (stream) =>
+  new Promise((resolve, reject) => {
+    const chunks = [];
+    stream.on('data', (chunk) => chunks.push(chunk));
+    stream.on('error', reject);
+    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
+  });
 
-module.exports = { register_user, getTicketStats, removeemployee, downloadCsvFromS3 };
+// const previewCsvFromS3 = async (req, res) => {
+//   try {
+//     const { month, year } = req.query;
+//     if (!month || !year) return res.status(400).json({ error: 'Month and year required' });
+
+//     const fileStream = await getClosedTicketsFile(month, year);
+//     const fileText = await streamToString(fileStream);
+
+//     res.status(200).json({ content: fileText });
+//   } catch (error) {
+//     console.error('CSV preview error:', error);
+//     res.status(404).json({ error: 'File not found' });
+//   }
+// };
+
+const previewCsvFromS3 = async (req, res) => {
+  try {
+    const { month, year } = req.query;
+    console.log(`🔍 Preview request received for: ${month}, ${year}`);
+
+    const fileStream = await getClosedTicketsFile(month, year);
+    console.log('✅ File stream obtained from S3');
+
+    const results = [];
+    fileStream
+      .pipe(csv())
+      .on('data', (data) => {
+        console.log('📄 Row:', data); // ← Log each row
+        results.push(data);
+      })
+      .on('end', () => {
+        console.log(`✅ Parsed ${results.length} rows`);
+        res.json(results); // Send back the preview
+      })
+      .on('error', (err) => {
+        console.error('❌ CSV parsing error:', err);
+        res.status(500).json({ error: 'Failed to parse CSV file' });
+      });
+  } catch (err) {
+    console.error('❌ Error fetching preview:', err);
+    res.status(404).json({ error: 'File not found or preview failed' });
+  }
+};
+
+module.exports = { register_user, getTicketStats, removeemployee, downloadCsvFromS3, previewCsvFromS3 };

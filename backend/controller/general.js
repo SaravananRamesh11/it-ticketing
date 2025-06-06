@@ -38,8 +38,7 @@ const login = async (req, res) => {
   console.log(eid)
   
   try {
-   
-
+    
     // Find user by employeeId
     const user = await User.findOne({ employeeId:eid });
     if (!user) {

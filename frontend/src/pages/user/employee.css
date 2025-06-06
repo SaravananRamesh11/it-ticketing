@@ -1,244 +1,186 @@
-/* General Page Layout */
-.employee-page-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #f0f2f5 0%, #e0e6ed 100%); /* Light, professional gradient */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding: 30px 20px;
-    box-sizing: border-box;
-    position: relative; /* For positioning the details button */
+/* Import modern font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* === Base Styling === */
+body {
+  font-family: 'Poppins', sans-serif;
+  background:  #ffff; /* Light blueish gradient */
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  color: #333;
 }
 
-/* Employee Details Button */
+/* === Page Container === */
+.employee-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 60px 20px;
+  background: linear-gradient(135deg, #e0f2f7 0%, #cce7f2 100%);
+}
+
+/* === My Details Button === */
 .details-button {
-    position: absolute;
-    top: 30px; /* Increased padding from top */
-    right: 30px; /* Increased padding from right */
-    padding: 12px 25px; /* More generous padding */
-    background-color: #007bff; /* Primary blue */
-    color: white;
-    border: none;
-    border-radius: 25px; /* Pill-shaped button */
-    cursor: pointer;
-    font-weight: 600; /* Slightly bolder text */
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.25); /* Subtle shadow */
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    font-size: 0.95rem;
+  align-self: flex-end;
+  margin-bottom: 30px;
+  padding: 10px 24px;
+  background: #ffffffc2;
+  backdrop-filter: blur(10px);
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #0d6efd;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s ease-in-out;
 }
 
 .details-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-    transform: translateY(-2px); /* Slight lift */
-    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.35); /* More prominent shadow */
+  background-color: #e3f2fd;
+  transform: translateY(-2px);
 }
 
-.details-button:active {
-    transform: translateY(0); /* Press effect */
-    background-color: #004085;
-    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
-}
-
-/* Form Card Container */
+/* === Glass Card Form === */
 .form-card {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Soft, noticeable shadow */
-    padding: 40px;
-    width: 100%;
-    max-width: 550px; /* Slightly wider for better form layout */
-    text-align: center;
-    animation: fadeIn 0.8s ease-out; /* Fade-in effect */
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 50px 40px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+  max-width: 500px;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  margin-top: 60px;
 }
 
-/* Form Title */
+/* === Form Title === */
 .form-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 25px;
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
 }
 
-/* Form Group (for label and input/textarea) */
+/* === Form Group === */
 .form-group {
-    margin-bottom: 20px;
-    text-align: left; /* Align labels and inputs to the left */
+  margin-bottom: 22px;
 }
 
 .form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 0.95rem;
-    color: #555;
-    font-weight: 600;
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #444;
 }
 
-/* Form Inputs (Issue, Date, Time) */
 .form-input {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    box-sizing: border-box; /* Ensures padding doesn't add to total width */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    background-color: #fcfcfc; /* Slightly off-white background for inputs */
-}
-
-.form-input::placeholder {
-    color: #aaa;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: #f8f9fa;
+  box-shadow: inset 2px 2px 6px #dfe3e8, inset -2px -2px 6px #ffffff;
+  transition: all 0.3s ease;
 }
 
 .form-input:focus {
-    outline: none;
-    border-color: #007bff; /* Highlight border on focus */
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Soft blue shadow on focus */
+  outline: none;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
 }
 
-/* Custom styling for date/time inputs appearance */
-input[type="date"].form-input,
-input[type="time"].form-input {
-    appearance: none; /* Remove default browser styling */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    padding-right: 15px; /* Space for potential dropdown arrows */
-}
-
-/* Submit Button */
+/* === Submit Button === */
 .submit-ticket-button {
-    width: 100%;
-    padding: 14px 20px;
-    background-color: #28a745; /* Green for submission */
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    margin-top: 20px; /* More space above the button */
-    letter-spacing: 0.5px;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: white;
+  /* background: linear-gradient(135deg, #42e695, #3bb2b8); */
+    background:  #007bff;  
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 20px rgba(66, 230, 149, 0.25);
 }
 
 .submit-ticket-button:hover {
-    background-color: #218838; /* Darker green on hover */
-    transform: translateY(-2px);
-    box-shadow: 0 8px 15px rgba(40, 167, 69, 0.25);
-}
-
-.submit-ticket-button:active {
-    transform: translateY(0);
-    background-color: #1e7e34;
-    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.15);
+  transform: translateY(-2px);
+  background:  #0056b3;
 }
 
 .submit-ticket-button:disabled {
-    background-color: #94d89e; /* Lighter green when disabled */
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-    opacity: 0.7;
+  background: #bdeed9;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
-/* Error Text */
+/* === Error Text === */
 .error-text {
-    color: #dc3545; /* Bootstrap-like red for errors */
-    font-size: 0.85rem;
-    margin-top: 5px;
-    text-align: left;
-    animation: slideInDown 0.3s ease-out; /* Error message animation */
+  color: #d32f2f;
+  font-size: 0.85rem;
+  margin-top: 6px;
 }
 
-/* Success Message Card */
+/* === Success Message Card === */
 .success-message-card {
-    background-color: #d4edda; /* Light green background */
-    border: 1px solid #c3e6cb;
-    color: #155724; /* Dark green text */
-    padding: 30px;
-    border-radius: 10px;
-    margin-top: 20px;
-    animation: fadeInScale 0.6s ease-out; /* Animation for success message */
+  background: #e6f4ea;
+  border-left: 5px solid #34c759;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(52, 199, 89, 0.1);
+  text-align: center;
 }
 
 .success-message-text {
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #28a745; /* Bold green for main success message */
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 10px;
 }
 
 .success-message-subtext {
-    font-size: 1rem;
-    color: #1e7e34;
-    margin-bottom: 25px;
+  color: #4caf50;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
 }
 
+/* === New Ticket Button === */
 .new-ticket-button {
-    padding: 10px 20px;
-    background-color: #6c757d; /* Gray for "Submit another" */
-    color: white;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    font-size: 0.9rem;
+  padding: 10px 22px;
+  background: #607d8b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .new-ticket-button:hover {
-    background-color: #5a6268;
-    transform: translateY(-1px);
+  background: #546e7a;
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideInDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeInScale {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-/* Responsive Adjustments */
+/* === Responsive Design === */
 @media (max-width: 600px) {
-    .employee-page-container {
-        padding: 20px 10px;
-    }
-    .details-button {
-        position: static; /* Stack button on top for smaller screens */
-        width: calc(100% - 40px); /* Adjust width */
-        margin-bottom: 20px;
-        top: auto;
-        right: auto;
-        border-radius: 8px; /* Less rounded for full width */
-    }
-    .form-card {
-        padding: 25px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-    .form-title {
-        font-size: 1.6rem;
-        margin-bottom: 20px;
-    }
-    .form-input, .submit-ticket-button {
-        padding: 10px 12px;
-        font-size: 0.95rem;
-    }
-    .success-message-card {
-        padding: 20px;
-    }
-    .success-message-text {
-        font-size: 1.1rem;
-    }
-    .success-message-subtext {
-        font-size: 0.9rem;
-    }
+  .form-card {
+    padding: 30px 24px;
+  }
+
+  .form-title {
+    font-size: 1.6rem;
+  }
+
+  .details-button {
+    align-self: center;
+    margin-bottom: 20px;
+    width: 100%;
+    text-align: center;
+  }
 }
