@@ -3,7 +3,7 @@ const checkSupport = (req, res, next) => {
     return res.status(401).json({ message: "Unauthorized: No user data found." });
   }
 
-  if (req.user.role !== "Admin") {
+  if (req.user.role !== "IT Support") {
     return res.status(403).json({ message: "Forbidden: Admins only." });
   }
 

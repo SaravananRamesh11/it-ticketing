@@ -125,6 +125,10 @@ const RemoveUserForm = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/admin/remove', {
         employeeId: data.employeeId,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}` // ⬅️ Attach token to request
+        }
       });
 
       alert(`Success: ${response.data.message}`);

@@ -29,8 +29,11 @@ function ClosedTickets() {
 
     try {
       const response = await axios.get('http://localhost:5000/api/admin/preview-csv', {
-        params: { month, year }
-      });
+  params: { month, year },
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`
+  }
+});
 
       console.log('📥 Preview data:', response.data);
 
@@ -59,9 +62,13 @@ function ClosedTickets() {
 
     try {
       const response = await axios.get('http://localhost:5000/api/admin/download-csv', {
-        params: { month, year },
-        responseType: 'blob',
-      });
+      params: { month, year },
+      responseType: 'blob',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    });
+
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');

@@ -12,7 +12,14 @@ function EmployeeRegistrationForm() {
   const onSubmit = async (data) => {
     try {
       console.log(data);
-      const res = await axios.post('http://localhost:5000/api/admin/add_users', data);
+      const token =localStorage.getItem("token")
+      const res = await axios.post('http://localhost:5000/api/admin/add_users', data, {
+        headers: {
+          Authorization: `Bearer ${token}` // ⬅️ Attach token to request
+        }
+      }
+
+      );
       alert(res.data.message);
     } catch (error) {
       console.log(error);

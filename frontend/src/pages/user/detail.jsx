@@ -31,6 +31,7 @@ const Detail = () => {
           {
             headers: {
               'Content-Type': 'application/json',
+               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
         );
@@ -67,7 +68,13 @@ const Detail = () => {
       await axios.post('http://localhost:5000/api/general/password', {
         id: id, // Use the ID from localStorage
         newPassword,
-      });
+      },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        }
+);
 
       setPasswordChangeMessage('Password updated successfully!');
       setShowPasswordFields(false);
@@ -99,11 +106,7 @@ const Detail = () => {
 
   return (
     <div className="detail-page-container">
-      <button className="go-back-top-button" onClick={() => navigate('/employee')}>
-        {/* <FaArrowLeft style={{ marginRight: '8px' }} /> */}
-          Go Back
-        {/* ← Go Back */}
-      </button>
+     
       <div className="profile-card">
         <h2 className="profile-header">Employee Profile</h2>
         <div className="profile-info-grid">

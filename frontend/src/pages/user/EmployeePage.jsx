@@ -49,7 +49,8 @@ const EmployeePage = () => {
         { id },
         {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           }
         }
       );
@@ -68,7 +69,14 @@ const EmployeePage = () => {
       console.log("Ticket data being sent:", ticketData);
 
       // Submit ticket
-      await axios.post('http://localhost:5000/api/user/ticket', { ticketData });
+      await axios.post('http://localhost:5000/api/user/ticket', { ticketData },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        }
+
+      );
 
       setSubmitted(true);
       reset(); // Clear form fields

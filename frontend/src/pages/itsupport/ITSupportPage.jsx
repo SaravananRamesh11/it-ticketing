@@ -333,7 +333,12 @@ function ITSupportPage() {
             // navigate('/login');
             return;
         }
-        const response = await axios.post('http://localhost:5000/api/it_support/get_open', { id });
+        const response = await axios.post('http://localhost:5000/api/it_support/get_open', { id },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        });
         setTickets(response.data);
       } catch (err) {
         console.error('Error fetching open tickets:', err);
@@ -373,7 +378,12 @@ function ITSupportPage() {
       await axios.post('http://localhost:5000/api/it_support/close_ticket', {
         id: ticketId,
         resolution
-      });
+      },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        });
 
       // Filter out the closed ticket from the state
       setTickets(prev => prev.filter(t => t._id !== ticketId));

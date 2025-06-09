@@ -38,7 +38,14 @@ const TicketStatsPieCharts = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/admin/stats');
+         const token = localStorage.getItem("token");
+         console.log(token)
+        const response = await axios.get('http://localhost:5000/api/admin/stats', {
+        headers: {
+          Authorization: `Bearer ${token}` // ⬅️ Attach token to request
+        }
+      });
+
         setStats(response.data);
       } catch (error) {
         console.error('Error fetching stats:', error);

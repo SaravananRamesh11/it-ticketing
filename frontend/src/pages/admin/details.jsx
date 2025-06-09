@@ -22,15 +22,17 @@ const Detail = () => {
             window.location.href = '/'; // Or use navigate from react-router-dom
             return;
         }
-        const res = await axios.post(
-          'http://localhost:5000/api/general/details',
-          { id },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
+       const res = await axios.post(
+  'http://localhost:5000/api/general/details',
+  { id },
+  {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  }
+);
+
         setEmployee(res.data);
       } catch (error) {
         console.error('Error fetching employee details:', error);
