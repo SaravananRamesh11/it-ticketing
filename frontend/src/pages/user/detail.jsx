@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './detail.css'; // Import the CSS file
 import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa';
+//import { FaArrowLeft } from 'react-icons/fa';
 
 const Detail = () => {
   const [employee, setEmployee] = useState(null);
@@ -100,7 +100,7 @@ const Detail = () => {
   return (
     <div className="detail-page-container">
       <button className="go-back-top-button" onClick={() => navigate('/employee')}>
-        <FaArrowLeft style={{ marginRight: '8px' }} />
+        {/* <FaArrowLeft style={{ marginRight: '8px' }} /> */}
           Go Back
         {/* ← Go Back */}
       </button>

@@ -42,6 +42,7 @@ app.use('/api/general', require('./routes/general'));
 app.use('/api/user',userRoute );
 app.use('/api/admin',require('./routes/admin'))
 app.use('/api/it_support',require('./routes/it_support'))
+app.use('/api/vista',require("./routes/login"))
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

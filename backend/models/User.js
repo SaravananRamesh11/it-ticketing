@@ -19,8 +19,9 @@ const userSchema = new mongoose.Schema({
   employeeId: String,
   email:String,
   role: String,
-  password:String
-  
+  password:String,
+  otp: String,
+  otpExpiry: Date
 });
 
 userSchema.statics.getNameById = async function (_id) {
