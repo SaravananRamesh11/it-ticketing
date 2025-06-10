@@ -50,12 +50,12 @@ const register_user = async (req, res) => {
     // Return response (without password)
     const { password: _, ...employeeData } = savedEmployee.toObject();
     res.status(201).json({
-      message: 'Employee added successfully',
+      message: 'User added successfully',
       employee: employeeData
     });
 
   } catch (error) {
-    console.error('Error adding employee:', error);
+    console.error('Error adding user:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
@@ -90,7 +90,6 @@ const getTicketStats = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch ticket statistics' });
   }
 };
-
 
 // POST or DELETE to /delete-user
 const removeemployee = async (req, res) => {
@@ -142,22 +141,8 @@ const streamToString = (stream) =>
     stream.on('data', (chunk) => chunks.push(chunk));
     stream.on('error', reject);
     stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
-  });
-
-// const previewCsvFromS3 = async (req, res) => {
-//   try {
-//     const { month, year } = req.query;
-//     if (!month || !year) return res.status(400).json({ error: 'Month and year required' });
-
-//     const fileStream = await getClosedTicketsFile(month, year);
-//     const fileText = await streamToString(fileStream);
-
-//     res.status(200).json({ content: fileText });
-//   } catch (error) {
-//     console.error('CSV preview error:', error);
-//     res.status(404).json({ error: 'File not found' });
-//   }
-// };
+  }
+);
 
 const previewCsvFromS3 = async (req, res) => {
   try {
@@ -189,3 +174,19 @@ const previewCsvFromS3 = async (req, res) => {
 };
 
 module.exports = { register_user, getTicketStats, removeemployee, downloadCsvFromS3, previewCsvFromS3 };
+
+
+// const previewCsvFromS3 = async (req, res) => {
+//   try {
+//     const { month, year } = req.query;
+//     if (!month || !year) return res.status(400).json({ error: 'Month and year required' });
+
+//     const fileStream = await getClosedTicketsFile(month, year);
+//     const fileText = await streamToString(fileStream);
+
+//     res.status(200).json({ content: fileText });
+//   } catch (error) {
+//     console.error('CSV preview error:', error);
+//     res.status(404).json({ error: 'File not found' });
+//   }
+// };
