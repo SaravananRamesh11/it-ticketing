@@ -4,10 +4,41 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import './employee.css'; // Import the CSS file
+import './employee.css';
+
+const issueHierarchy = {
+  "Hardware Issues": {
+    "Desktops/Laptops": ["Repair", "Replacement", "Upgrade", "Peripheral Issues"],
+    "Printers/Scanners": ["Setup", "Configuration", "Repair", "Replacement"],
+  },
+  "Software": {
+    "Operating Systems": ["Installation", "Upgrade", "Performance Issues"],
+    "Applications": ["WPS", "Microsoft Office", "Teams", "Upgrade", "Licensing", "Functionality"],
+    "Software Bug Reports": ["Reporting Software Defects"],
+  },
+  "Connectivity (Network Issues)": {
+    "Network Issues": ["Wired/Wireless Access", "VPN", "Network Performance"],
+    "Email Issues": ["Account Setup", "Performance", "Connectivity"],
+    "LAN/Internet": ["LAN Cable Issues", "Internet I/O Port Damage", "Website Issues"],
+  },
+  "Accounts and Access (File Sharing)": {
+    "User Accounts": ["Creation", "Termination", "Password Resets", "Access Rights"],
+    "File/Resource Access": ["Shared Folders", "Permissions", "Network Drives"],
+  },
+  "Other Services": {
+    "Printing Services": ["Print Queues", "Quality", "Access"],
+    "Database Services": ["Access", "Performance Tuning", "Backup/Recovery"],
+    "Web Services": ["Website Accessibility", "Content Updates", "Domain Names"],
+  },
+  "Mail Issues": {
+    "Mail Operations": ["Mail Password Reset", "Mail ID Creation", "Deletion", "Account Configuration"],
+  }
+};
 
 const schema = yup.object().shape({
-  issue: yup.string().required('Issue is required'),
+  mainIssue: yup.string().required('Main issue is required'),
+  subIssue: yup.string().required('Sub issue is required'),
+  innerSubIssue: yup.string().required('Inner sub-issue is required'),
   date: yup.date().required('Date is required').typeError('Invalid date'),
   time: yup
     .string()
@@ -21,29 +52,34 @@ const EmployeePage = () => {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors }
   } = useForm({ resolver: yupResolver(schema) });
 
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const selectedMain = watch('mainIssue');
+  const selectedSub = watch('subIssue');
+
   const onSubmit = async (data) => {
+    console.log(data)
     if (data.date) {
-      // Ensure date is in ISO string format for backend
       data.date = new Date(data.date).toISOString();
     }
+
+    const description = `${data.mainIssue} > ${data.subIssue} > ${data.innerSubIssue}`;
+
     setIsLoading(true);
-    setSubmitted(false); // Reset submitted state on new submission
+    setSubmitted(false);
     try {
-      console.log("Form data before submission:", data);
       const id = localStorage.getItem('id');
       if (!id) {
         alert('User ID not found. Please login again.');
-        navigate('/login'); // Redirect to login
+        navigate('/login');
         return;
       }
 
-      // Get user details
       const userResponse = await axios.post(
         "http://localhost:5000/api/general/details",
         { id },
@@ -56,30 +92,27 @@ const EmployeePage = () => {
       );
 
       const userData = userResponse.data;
-      console.log("User details fetched:", userData);
 
-      // Prepare ticket data with necessary employee details
       const ticketData = {
-        ...data,
+        issue: description,
+        date: data.date,
+        time: data.time,
         employeeName: userData.employeeName,
         email: userData.email,
         employeeId: userData.employeeId,
-        id: userData._id // Use the user ID from the response
+        id: userData._id
       };
-      console.log("Ticket data being sent:", ticketData);
 
-      // Submit ticket
       await axios.post('http://localhost:5000/api/user/ticket', { ticketData },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           }
         }
-
       );
 
       setSubmitted(true);
-      reset(); // Clear form fields
+      reset();
     } catch (error) {
       console.error('Ticket submission failed:', error);
       const message = error.response?.data?.message || 'Failed to submit ticket. Please try again.';
@@ -116,14 +149,47 @@ const EmployeePage = () => {
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="ticket-form">
             <div className="form-group">
-              <label htmlFor="issue" className="form-label">Issue Description</label>
-              <input
-                id="issue"
+              <label htmlFor="mainIssue" className="form-label">Main Issue</label>
+              <select id="mainIssue" className="form-input" {...register('mainIssue')}>
+                <option value="">Select a main issue</option>
+                {Object.keys(issueHierarchy).map((main) => (
+                  <option key={main} value={main}>{main}</option>
+                ))}
+              </select>
+              {errors.mainIssue && <p className="error-text">{errors.mainIssue.message}</p>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="subIssue" className="form-label">Sub Issue</label>
+              <select
+                id="subIssue"
                 className="form-input"
-                placeholder="Briefly describe your issue..."
-                {...register('issue')}
-              />
-              {errors.issue && <p className="error-text">{errors.issue.message}</p>}
+                {...register('subIssue')}
+                disabled={!selectedMain}
+              >
+                <option value="">Select a sub issue</option>
+                {selectedMain && Object.keys(issueHierarchy[selectedMain]).map((sub) => (
+                  <option key={sub} value={sub}>{sub}</option>
+                ))}
+              </select>
+              {errors.subIssue && <p className="error-text">{errors.subIssue.message}</p>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="innerSubIssue" className="form-label">Inner Sub Issue</label>
+              <select
+                id="innerSubIssue"
+                className="form-input"
+                {...register('innerSubIssue')}
+                disabled={!selectedMain || !selectedSub}
+              >
+                <option value="">Select an inner sub issue</option>
+                {selectedMain && selectedSub &&
+                  issueHierarchy[selectedMain][selectedSub].map((inner) => (
+                    <option key={inner} value={inner}>{inner}</option>
+                  ))}
+              </select>
+              {errors.innerSubIssue && <p className="error-text">{errors.innerSubIssue.message}</p>}
             </div>
 
             <div className="form-group">
@@ -154,26 +220,26 @@ const EmployeePage = () => {
 
 export default EmployeePage;
 
+
 // import React, { useState } from 'react';
 // import axios from 'axios';
 // import { useForm } from 'react-hook-form';
 // import { yupResolver } from '@hookform/resolvers/yup';
 // import * as yup from 'yup';
 // import { useNavigate } from 'react-router-dom';
-// // ✅ Yup validation schema
+// import './employee.css'; // Import the CSS file
+
 // const schema = yup.object().shape({
-  
 //   issue: yup.string().required('Issue is required'),
 //   date: yup.date().required('Date is required').typeError('Invalid date'),
 //   time: yup
 //     .string()
 //     .required('Time is required')
-//     .matches(/^([0-1]\d|2[0-3]):([0-5]\d)$/, 'Invalid time'),
- 
+//     .matches(/^([0-1]\d|2[0-3]):([0-5]\d)$/, 'Invalid time (HH:MM format)'),
 // });
 
 // const EmployeePage = () => {
-//   const navigate=useNavigate();
+//   const navigate = useNavigate();
 //   const {
 //     register,
 //     handleSubmit,
@@ -182,73 +248,125 @@ export default EmployeePage;
 //   } = useForm({ resolver: yupResolver(schema) });
 
 //   const [submitted, setSubmitted] = useState(false);
+//   const [isLoading, setIsLoading] = useState(false);
 
 //   const onSubmit = async (data) => {
+//     if (data.date) {
+//       // Ensure date is in ISO string format for backend
+//       data.date = new Date(data.date).toISOString();
+//     }
+//     setIsLoading(true);
+//     setSubmitted(false); // Reset submitted state on new submission
 //     try {
-//       console.log(data)
-//       const id=localStorage.getItem('id');
-//       data.id=id;
-//       console.log(id)
-//       const res1=await axios.post("http://localhost:5000/api/general/details",{
-//       data
-//       }, // Request body
-//       {
-//         headers: {
-//           'Content-Type': 'application/json' // Explicitly set content type
-//         }
-//       })
-//       console.log(res1)
-//       data.name=res1.name
-//       data.email=res1.email
-//       data.employeeId=res1.employeeId
-//       const res = await axios.post('http://localhost:5000/api/user/ticket', data);
-//       setSubmitted(true);
-//       reset();
-//     } 
-//     catch (error) {
-//   console.error('Password update failed:', error);
-//   const message = error.response?.data?.message || 'Failed to update password';
-//   alert(message);
-// }
+//       console.log("Form data before submission:", data);
+//       const id = localStorage.getItem('id');
+//       if (!id) {
+//         alert('User ID not found. Please login again.');
+//         navigate('/login'); // Redirect to login
+//         return;
+//       }
 
+//       // Get user details
+//       const userResponse = await axios.post(
+//         "http://localhost:5000/api/general/details",
+//         { id },
+//         {
+//           headers: {
+//             'Content-Type': 'application/json',
+//             Authorization: `Bearer ${localStorage.getItem("token")}`,
+//           }
+//         }
+//       );
+
+//       const userData = userResponse.data;
+//       console.log("User details fetched:", userData);
+
+//       // Prepare ticket data with necessary employee details
+//       const ticketData = {
+//         ...data,
+//         employeeName: userData.employeeName,
+//         email: userData.email,
+//         employeeId: userData.employeeId,
+//         id: userData._id // Use the user ID from the response
+//       };
+//       console.log("Ticket data being sent:", ticketData);
+
+//       // Submit ticket
+//       await axios.post('http://localhost:5000/api/user/ticket', { ticketData },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${localStorage.getItem("token")}`,
+//           }
+//         }
+
+//       );
+
+//       setSubmitted(true);
+//       reset(); // Clear form fields
+//     } catch (error) {
+//       console.error('Ticket submission failed:', error);
+//       const message = error.response?.data?.message || 'Failed to submit ticket. Please try again.';
+//       alert(message);
+//     } finally {
+//       setIsLoading(false);
+//     }
 //   };
 
-//   function userpage()
-//   {
-//     navigate("/userdetails")
+//   function userpage() {
+//     navigate("/userdetails");
 //   }
 
 //   return (
-//     <div style={styles.container}>
-//       <button style={styles.detailsButton} onClick={userpage} >Employee Details</button>
-//       <div style={styles.formContainer}>
-//         <h2 style={styles.title}>Submit a Ticket</h2>
+//     <div className="employee-page-container">
+//       <button className="details-button" onClick={userpage}>
+//         My Details
+//       </button>
+
+//       <div className="form-card">
+//         <h2 className="form-title">Submit a New Ticket</h2>
 //         {submitted ? (
-//           <p style={styles.success}>
-//             🎉 Ticket submitted successfully! You’ll receive a confirmation email.
-//           </p>
+//           <div className="success-message-card">
+//             <p className="success-message-text">
+//               🎉 Your ticket has been submitted successfully!
+//             </p>
+//             <p className="success-message-subtext">
+//               You will receive a confirmation email shortly.
+//             </p>
+//             <button className="new-ticket-button" onClick={() => setSubmitted(false)}>
+//               Submit another ticket
+//             </button>
+//           </div>
 //         ) : (
-//           <form onSubmit={handleSubmit(onSubmit)} style={styles.form}>
-//             {/* <input style={styles.input} placeholder="Full Name" {...register('employeeName')} />
-//             {errors.employeeName && <p style={styles.error}>{errors.employeeName.message}</p>}
+//           <form onSubmit={handleSubmit(onSubmit)} className="ticket-form">
+//             <div className="form-group">
+//               <label htmlFor="issue" className="form-label">Issue Description</label>
+//               <input
+//                 id="issue"
+//                 className="form-input"
+//                 placeholder="Briefly describe your issue..."
+//                 {...register('issue')}
+//               />
+//               {errors.issue && <p className="error-text">{errors.issue.message}</p>}
+//             </div>
 
-//             <input style={styles.input} placeholder="Employee ID" {...register('employeeId')} />
-//             {errors.employeeId && <p style={styles.error}>{errors.employeeId.message}</p>} */}
+//             <div className="form-group">
+//               <label htmlFor="date" className="form-label">Preferred Date</label>
+//               <input id="date" className="form-input" type="date" {...register('date')} />
+//               {errors.date && <p className="error-text">{errors.date.message}</p>}
+//             </div>
 
-//             <input style={styles.input} placeholder="Issue" {...register('issue')} />
-//             {errors.issue && <p style={styles.error}>{errors.issue.message}</p>}
+//             <div className="form-group">
+//               <label htmlFor="time" className="form-label">Preferred Time</label>
+//               <input id="time" className="form-input" type="time" {...register('time')} />
+//               {errors.time && <p className="error-text">{errors.time.message}</p>}
+//             </div>
 
-//             <input style={styles.input} type="date" {...register('date')} />
-//             {errors.date && <p style={styles.error}>{errors.date.message}</p>}
-
-//             <input style={styles.input} type="time" {...register('time')} />
-//             {errors.time && <p style={styles.error}>{errors.time.message}</p>}
-
-//             {/* <input style={styles.input} placeholder="Email" type="email" {...register('email')} />
-//             {errors.email && <p style={styles.error}>{errors.email.message}</p>} */}
-
-//             <button style={styles.submitButton} type="submit">
-//               Submit Ticket
+//             <button
+//               className="submit-ticket-button"
+//               type="submit"
+//               disabled={isLoading}
+//             >
+//               {isLoading ? 'Submitting...' : 'Submit Ticket'}
 //             </button>
 //           </form>
 //         )}
@@ -256,3 +374,5 @@ export default EmployeePage;
 //     </div>
 //   );
 // };
+
+// export default EmployeePage;
