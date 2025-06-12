@@ -3,7 +3,20 @@ const mongoose = require('mongoose');
 const ticketSchema = new mongoose.Schema({
   employeeName: String,
   employeeId: String,
-  issue: String,
+  issue: {
+    main: {
+      type: String,
+      required: true
+    },
+    sub: {
+      type: String,
+      required: true
+    },
+    inner_sub: {
+      type: String,
+      required: false // Optional field
+    }
+  },
   date: Date,
   time: String,
   email: String,

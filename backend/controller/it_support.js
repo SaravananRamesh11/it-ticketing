@@ -3,20 +3,35 @@ const Ticket = require('../models/Ticket');
 const axios = require('axios');
 
 
+// const getAssignedTicketsBySupport = async (req, res) => {
+//   try {
+//     const { id } = req.body;
+
+//     const name = await User.getNameById(id);
+//     const tickets = await Ticket.find({
+//       itSupport: name,
+//       status: { $in: ['Open', 'InProgress'] } // ✅ Show both
+//     });
+
+//     res.status(200).json(tickets);
+//   } catch (error) {
+//     console.error('Error fetching tickets:', error);
+//     res.status(500).json({ message: 'sathukudi suthu adi' });
+//   }
+// };
+
 const getAssignedTicketsBySupport = async (req, res) => {
   try {
     const { id } = req.body;
-
     const name = await User.getNameById(id);
     const tickets = await Ticket.find({
       itSupport: name,
-      status: { $in: ['Open', 'InProgress'] } // ✅ Show both
+      status: { $in: ['Open', 'InProgress'] }
     });
-
     res.status(200).json(tickets);
   } catch (error) {
     console.error('Error fetching tickets:', error);
-    res.status(500).json({ message: 'sathukudi suthu adi' });
+    res.status(500).json({ message: 'Error fetching tickets' });
   }
 };
 
