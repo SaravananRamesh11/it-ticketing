@@ -1,10 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  Tooltip
+} from 'recharts';
 import axios from 'axios';
-import { Typography, Paper, CircularProgress } from '@mui/material';
+import {
+  Typography,
+  Paper,
+  CircularProgress
+} from '@mui/material';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+// Color palette for different ticket statuses
+const COLORS = ['#FF9800', '#2196F3', '#4CAF50']; // Open, In Progress, Closed
 
+// Pie chart component for a support member
 const SupportMemberPieChart = ({ data }) => {
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -18,10 +31,15 @@ const SupportMemberPieChart = ({ data }) => {
           fill="#8884d8"
           dataKey="value"
           nameKey="name"
-          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+          label={({ name, percent }) =>
+            `${name}: ${(percent * 100).toFixed(0)}%`
+          }
         >
           {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            <Cell
+              key={`cell-${index}`}
+              fill={COLORS[index % COLORS.length]}
+            />
           ))}
         </Pie>
         <Tooltip />
@@ -31,6 +49,7 @@ const SupportMemberPieChart = ({ data }) => {
   );
 };
 
+// Main component to fetch and display stats
 const TicketStatsPieCharts = () => {
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,13 +57,15 @@ const TicketStatsPieCharts = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-         const token = localStorage.getItem("token");
-         console.log(token)
-        const response = await axios.get('http://localhost:5000/api/admin/stats', {
-        headers: {
-          Authorization: `Bearer ${token}` // ⬅️ Attach token to request
-        }
-      });
+        const token = localStorage.getItem('token');
+        const response = await axios.get(
+          'http://localhost:5000/api/admin/stats',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
 
         setStats(response.data);
       } catch (error) {
@@ -53,7 +74,7 @@ const TicketStatsPieCharts = () => {
         setLoading(false);
       }
     };
-    
+
     fetchStats();
   }, []);
 
@@ -68,16 +89,20 @@ const TicketStatsPieCharts = () => {
           <Typography variant="h6" gutterBottom>
             {member.name}'s Ticket Statistics
           </Typography>
-          <SupportMemberPieChart 
+
+          <SupportMemberPieChart
             data={[
-              { name: 'Closed Tickets', value: member.closed },
-              { name: 'Open Tickets', value: member.open }
-            ]} 
+              { name: 'Open', value: member.Open || 0 },
+              { name: 'In Progress', value: member.InProgress || 0 },
+              { name: 'Closed', value: member.Closed || 0 }
+            ]}
           />
-          <Typography variant="body1">
-            Total Tickets: {member.closed + member.open} | 
-            Closed: {member.closed} | 
-            Open: {member.open}
+
+          <Typography variant="body1" sx={{ mt: 2 }}>
+            Total Tickets: <strong>{member.total || 0}</strong> |&nbsp;
+            Open: <strong>{member.Open || 0}</strong> |&nbsp;
+            In Progress: <strong>{member.InProgress || 0}</strong> |&nbsp;
+            Closed: <strong>{member.Closed || 0}</strong>
           </Typography>
         </Paper>
       ))}
