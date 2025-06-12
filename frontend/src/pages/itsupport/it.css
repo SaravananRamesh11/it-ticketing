@@ -335,16 +335,3 @@
     background-color: #004085;
     box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
 }
-
-.in-progress-btn{
-     background-color: #007bff; /* Blue */
-     color: white;
-     margin-bottom: 4px;
-}
-
-.remove-progress-btn{
-     background-color: red; /* Blue */
-     color: white;
-     margin-bottom: 4px;
-
-}

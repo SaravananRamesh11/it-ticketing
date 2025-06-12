@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage.jsx';
 import EmployeePage from './pages/user/EmployeePage.jsx';
 import ITSupportPage from './pages/itsupport/ITSupportPage.jsx';
-// import SuperuserPage from './pages/SuperuserPage.jsx';
 import useAuth from './hooks/login_context_hook.js'; // adjust path if needed
 import Detail from "./pages/user/detail"
 import AdminPage from './pages/admin/AdminPage.jsx';
@@ -12,9 +11,6 @@ import EmployeeRegistrationForm from './pages/admin/addusers.jsx';
 import ForgotPassword from './pages/forgot.jsx';
 import {ProtectedRoute} from "./protected/pro";
 import{} from "./pages/forgot.jsx"
-
-
-
 
 function App() {
   const { dispatch } = useAuth();
