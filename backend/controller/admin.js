@@ -63,33 +63,58 @@ const register_user = async (req, res) => {
 // In your backend controller
 const getTicketStats = async (req, res) => {
   try {
+    // Group tickets by itSupport and status, and count
+    const aggregation = await Ticket.aggregate([
+      {
+        $group: {
+          _id: { itSupport: "$itSupport", status: "$status" },
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
     // Get all IT support members
     const itSupportMembers = await User.find({ role: 'IT Support' }).lean();
-    
-    // Get ticket counts for each support member
-    const stats = await Promise.all(itSupportMembers.map(async (member) => {
-      const closedCount = await Ticket.countDocuments({
-        itSupport: member.employeeName,
-        status: 'Closed'
-      });
-      
-      const totalCount = await Ticket.countDocuments({
-        itSupport: member.employeeName
-      });
-      
-      return {
-        name: member.employeeName,
-        closed: closedCount,
-        open: totalCount - closedCount
+
+    const stats = itSupportMembers.map(member => {
+      const name = member.employeeName;
+
+      // Filter stats for the current IT support member
+      const memberStats = aggregation.filter(
+        item => item._id.itSupport === name
+      );
+
+      // Initialize status counts
+      const statusCounts = {
+        Open: 0,
+        InProgress: 0,
+        Closed: 0,
       };
-    }));
-    
+
+      // Fill in the actual counts
+      memberStats.forEach(stat => {
+        const status = stat._id.status;
+        statusCounts[status] = stat.count;
+      });
+
+      // Compute total
+      const total = Object.values(statusCounts).reduce((sum, val) => sum + val, 0);
+
+      return {
+        name,
+        ...statusCounts,
+        total
+      };
+    });
+
     res.status(200).json(stats);
   } catch (error) {
     console.error('Error fetching ticket stats:', error);
     res.status(500).json({ error: 'Failed to fetch ticket statistics' });
   }
 };
+
+
 
 // POST or DELETE to /delete-user
 const removeemployee = async (req, res) => {
@@ -141,8 +166,9 @@ const streamToString = (stream) =>
     stream.on('data', (chunk) => chunks.push(chunk));
     stream.on('error', reject);
     stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
-  }
-);
+  });
+
+
 
 const previewCsvFromS3 = async (req, res) => {
   try {

@@ -103,19 +103,7 @@
 }
 
 /* Status specific colors */
-.status-open {
-    background-color: #ffc107; /* Orange for open */
-    color: #333; /* Darker text for contrast */
-}
-.status-closed {
-    background-color: #28a745; /* Green for closed */
-}
-.status-pending { /* Example for other statuses */
-    background-color: #17a2b8; /* Cyan */
-}
-.status-in-progress { /* Example for other statuses */
-    background-color: #6c757d; /* Gray */
-}
+
 
 
 .ticket-info {
@@ -154,6 +142,16 @@
     color: white;
 }
 
+.remove-progress-btn{
+    background-color: #007bff; /* Blue */
+    color: white;
+    margin-bottom: 4px;
+}
+.in-progress-btn{
+    background-color: red; /* Blue */
+    color: white;
+    margin-bottom: 4px;
+}
 .close-ticket-btn:hover {
     background-color: #0056b3;
     transform: translateY(-2px);
@@ -335,3 +333,181 @@
     background-color: #004085;
     box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
 }
+
+/* .open {
+    background-color: #ffc107; /* Orange for open
+    color: #333; /* Darker text for contrast 
+} */
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px; /* Creates the curved/rounded button effect */
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.open {
+  background-color: #ffc107; /* Orange for open */
+  color: #333; /* Darker text for contrast */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.in-progress {
+  background-color: #17a2b8; /* Teal for in-progress */
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.closed {
+  background-color: #28a745; /* Green for closed */
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+
+
+
+
+
+
+
+.ticket-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
+}
+
+.ticket-issue-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  padding-right: 16px;
+  word-break: break-word;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-badge.open {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-badge.in-progress {
+  background-color: #fff8e1;
+  color: #ff8f00;
+}
+
+.ticket-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-row {
+  display: flex;
+  align-items: baseline;
+}
+
+.info-label {
+  min-width: 80px;
+  color: #666;
+  margin-right: 8px;
+}
+
+.info-value {
+  flex: 1;
+  word-break: break-word;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Priority Ribbon Styles */
+.ticket-card {
+  position: relative;
+  overflow: hidden; /* Ensures ribbon doesn't overflow */
+}
+
+.priority-ribbon {
+  position: absolute;
+  top: 15px;
+  left: -25px;
+  width: 100px;
+  padding: 3px 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  transform: rotate(-45deg);
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Priority-specific colors */
+.priority-high .priority-ribbon {
+  background-color: #e74c3c; /* Red for high priority */
+}
+
+.priority-medium .priority-ribbon {
+  background-color: #f39c12; /* Orange for medium priority */
+}
+
+.priority-low .priority-ribbon {
+  background-color: #7f8c8d; /* Gray for low priority */
+}
+
+/* Adjust ticket content padding to prevent overlap */
+.ticket-card {
+  padding-left: 35px; /* Make space for the ribbon */
+}
+
+/* For the ticket header specifically to align properly */
+.ticket-header {
+  margin-left: 10px;
+}
+
+
+
+
+
+
+
+
+

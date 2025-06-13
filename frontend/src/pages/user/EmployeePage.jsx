@@ -68,8 +68,6 @@ const EmployeePage = () => {
       data.date = new Date(data.date).toISOString();
     }
 
-    const description = `${data.mainIssue} > ${data.subIssue} > ${data.innerSubIssue}`;
-
     setIsLoading(true);
     setSubmitted(false);
     try {
@@ -94,7 +92,11 @@ const EmployeePage = () => {
       const userData = userResponse.data;
 
       const ticketData = {
-        issue: description,
+        issue: {
+          main: data.mainIssue,
+          sub: data.subIssue,
+          inner_sub: data.innerSubIssue
+        },
         date: data.date,
         time: data.time,
         employeeName: userData.employeeName,

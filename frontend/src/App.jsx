@@ -16,6 +16,7 @@ function App() {
   const { dispatch } = useAuth();
 
   useEffect(() => {
+    
     const handleUnload = () => {
       dispatch({ type: 'LOGOUT' });
     };
