@@ -153,7 +153,7 @@ const EmployeePage = () => {
             <div className="form-group">
               <label htmlFor="mainIssue" className="form-label">Main Issue</label>
               <select id="mainIssue" className="form-input" {...register('mainIssue')}>
-                <option value="">Select a main issue</option>
+                <option value="" disabled hidden selected>Select a main issue</option>
                 {Object.keys(issueHierarchy).map((main) => (
                   <option key={main} value={main}>{main}</option>
                 ))}
@@ -169,7 +169,7 @@ const EmployeePage = () => {
                 {...register('subIssue')}
                 disabled={!selectedMain}
               >
-                <option value="">Select a sub issue</option>
+                <option value="" disabled hidden selected>Select a sub issue</option>
                 {selectedMain && Object.keys(issueHierarchy[selectedMain]).map((sub) => (
                   <option key={sub} value={sub}>{sub}</option>
                 ))}
@@ -185,7 +185,7 @@ const EmployeePage = () => {
                 {...register('innerSubIssue')}
                 disabled={!selectedMain || !selectedSub}
               >
-                <option value="">Select an inner sub issue</option>
+                <option value="" disabled hidden selected>Select an inner sub issue</option>
                 {selectedMain && selectedSub &&
                   issueHierarchy[selectedMain][selectedSub].map((inner) => (
                     <option key={inner} value={inner}>{inner}</option>
@@ -195,13 +195,13 @@ const EmployeePage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="date" className="form-label">Preferred Date</label>
+              <label htmlFor="date" className="form-label">Current Date</label>
               <input id="date" className="form-input" type="date" {...register('date')} />
               {errors.date && <p className="error-text">{errors.date.message}</p>}
             </div>
 
             <div className="form-group">
-              <label htmlFor="time" className="form-label">Preferred Time</label>
+              <label htmlFor="time" className="form-label">Current Time</label>
               <input id="time" className="form-input" type="time" {...register('time')} />
               {errors.time && <p className="error-text">{errors.time.message}</p>}
             </div>

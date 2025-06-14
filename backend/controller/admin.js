@@ -61,59 +61,110 @@ const register_user = async (req, res) => {
 };
 
 // In your backend controller
+
+// const getTicketStats = async (req, res) => {
+//   try {
+//     // Group tickets by itSupport and status, and count
+//     const aggregation = await Ticket.aggregate([
+//       {
+//         $group: {
+//           _id: { itSupport: "$itSupport", status: "$status" },
+//           count: { $sum: 1 }
+//         }
+//       }
+//     ]);
+
+//     // Get all IT support members
+//     const itSupportMembers = await User.find({ role: 'IT Support' }).lean();
+
+//     const stats = itSupportMembers.map(member => {
+//       const name = member.employeeName;
+
+//       // Filter stats for the current IT support member
+//       const memberStats = aggregation.filter(
+//         item => item._id.itSupport === name
+//       );
+
+//       // Initialize status counts
+//       const statusCounts = {
+//         Open: 0,
+//         InProgress: 0,
+//         Closed: 0,
+//       };
+
+//       // Fill in the actual counts
+//       memberStats.forEach(stat => {
+//         const status = stat._id.status;
+//         statusCounts[status] = stat.count;
+//       });
+
+//       // Compute total
+//       const total = Object.values(statusCounts).reduce((sum, val) => sum + val, 0);
+
+//       return {
+//         name,
+//         ...statusCounts,
+//         total
+//       };
+//     });
+
+//     res.status(200).json(stats);
+//   } catch (error) {
+//     console.error('Error fetching ticket stats:', error);
+//     res.status(500).json({ error: 'Failed to fetch ticket statistics' });
+//   }
+// };
+
 const getTicketStats = async (req, res) => {
   try {
-    // Group tickets by itSupport and status, and count
-    const aggregation = await Ticket.aggregate([
-      {
-        $group: {
-          _id: { itSupport: "$itSupport", status: "$status" },
-          count: { $sum: 1 }
-        }
+    const tickets = await Ticket.find({});
+    const statsMap = {};
+
+    // Step 1: Group tickets by IT support member
+    tickets.forEach(ticket => {
+      const member = ticket.itSupport || 'Unassigned';
+
+      if (!statsMap[member]) {
+        statsMap[member] = {
+          name: member,
+          Open: 0,
+          Closed: 0,
+          InProgress: 0,
+          turnAroundTimes: []
+        };
       }
-    ]);
 
-    // Get all IT support members
-    const itSupportMembers = await User.find({ role: 'IT Support' }).lean();
+      statsMap[member][ticket.status]++;
 
-    const stats = itSupportMembers.map(member => {
-      const name = member.employeeName;
+      // Step 2: Calculate TAT only for closed tickets
+      if (ticket.status === 'Closed' && ticket.createdAt && ticket.updatedAt) {
+        const tat = new Date(ticket.updatedAt) - new Date(ticket.createdAt); // milliseconds
+        statsMap[member].turnAroundTimes.push(tat);
+      }
+    });
 
-      // Filter stats for the current IT support member
-      const memberStats = aggregation.filter(
-        item => item._id.itSupport === name
-      );
-
-      // Initialize status counts
-      const statusCounts = {
-        Open: 0,
-        InProgress: 0,
-        Closed: 0,
-      };
-
-      // Fill in the actual counts
-      memberStats.forEach(stat => {
-        const status = stat._id.status;
-        statusCounts[status] = stat.count;
-      });
-
-      // Compute total
-      const total = Object.values(statusCounts).reduce((sum, val) => sum + val, 0);
+    // Step 3: Prepare the final response with TAT
+    const stats = Object.values(statsMap).map(member => {
+      const totalClosed = member.Closed;
+      const avgTAT = member.turnAroundTimes.length
+        ? member.turnAroundTimes.reduce((acc, val) => acc + val, 0) / member.turnAroundTimes.length
+        : 0;
 
       return {
-        name,
-        ...statusCounts,
-        total
+        name: member.name,
+        Open: member.Open,
+        InProgress: member.InProgress,
+        Closed: totalClosed,
+        avgTurnAroundTime: (avgTAT / (1000 * 60 * 60)).toFixed(2) // Convert ms → hours
       };
     });
 
     res.status(200).json(stats);
   } catch (error) {
-    console.error('Error fetching ticket stats:', error);
-    res.status(500).json({ error: 'Failed to fetch ticket statistics' });
+    console.error("❌ Error in getTicketStats:", error);
+    res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
-
 
 
 // POST or DELETE to /delete-user
