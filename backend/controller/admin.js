@@ -6,8 +6,11 @@ const saltRounds = 10; // Number of salt rounds for bcrypt
 const Ticket=require("../models/Ticket")
 const { getClosedTicketsFile } = require('../utils/s3Downloader');
 const csv = require('csv-parser'); 
-
-// Add new employee endpoint with password hashing
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+// Create S3 client
+const s3 = new S3Client({ region: process.env.AWS_REGION });
+// Add new employee endpoint with password hashi
 const register_user = async (req, res) => {
   try {
     const { employeeId, employeeName, password, role, email } = req.body;
@@ -59,62 +62,6 @@ const register_user = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-
-// In your backend controller
-
-// const getTicketStats = async (req, res) => {
-//   try {
-//     // Group tickets by itSupport and status, and count
-//     const aggregation = await Ticket.aggregate([
-//       {
-//         $group: {
-//           _id: { itSupport: "$itSupport", status: "$status" },
-//           count: { $sum: 1 }
-//         }
-//       }
-//     ]);
-
-//     // Get all IT support members
-//     const itSupportMembers = await User.find({ role: 'IT Support' }).lean();
-
-//     const stats = itSupportMembers.map(member => {
-//       const name = member.employeeName;
-
-//       // Filter stats for the current IT support member
-//       const memberStats = aggregation.filter(
-//         item => item._id.itSupport === name
-//       );
-
-//       // Initialize status counts
-//       const statusCounts = {
-//         Open: 0,
-//         InProgress: 0,
-//         Closed: 0,
-//       };
-
-//       // Fill in the actual counts
-//       memberStats.forEach(stat => {
-//         const status = stat._id.status;
-//         statusCounts[status] = stat.count;
-//       });
-
-//       // Compute total
-//       const total = Object.values(statusCounts).reduce((sum, val) => sum + val, 0);
-
-//       return {
-//         name,
-//         ...statusCounts,
-//         total
-//       };
-//     });
-
-//     res.status(200).json(stats);
-//   } catch (error) {
-//     console.error('Error fetching ticket stats:', error);
-//     res.status(500).json({ error: 'Failed to fetch ticket statistics' });
-//   }
-// };
-
 const getTicketStats = async (req, res) => {
   try {
     const tickets = await Ticket.find({});
@@ -218,52 +165,53 @@ const streamToString = (stream) =>
     stream.on('error', reject);
     stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
   });
-
-
-
 const previewCsvFromS3 = async (req, res) => {
   try {
     const { month, year } = req.query;
-    console.log(`🔍 Preview request received for: ${month}, ${year}`);
+    console.log(`🔍 Preview request for: ${month}, ${year}`);
 
     const fileStream = await getClosedTicketsFile(month, year);
-    console.log('✅ File stream obtained from S3');
+    const rawRows = [];
 
-    const results = [];
     fileStream
       .pipe(csv())
       .on('data', (data) => {
-        console.log('📄 Row:', data); // ← Log each row
-        results.push(data);
+        rawRows.push({ ...data }); // just collect data first
       })
-      .on('end', () => {
-        console.log(`✅ Parsed ${results.length} rows`);
-        res.json(results); // Send back the preview
+      .on('end', async () => {
+        const results = [];
+
+        for (const row of rawRows) {
+          if (row.proofImageKey) {
+            try {
+              const command = new GetObjectCommand({
+                Bucket: process.env.BUCKET_NAME,
+                Key: row.proofImageKey
+              });
+
+              row.proofImageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+            } catch (err) {
+              console.warn(`⚠️ Could not sign URL for ${row.proofImageKey}:`, err.message);
+              row.proofImageUrl = null;
+            }
+          }
+
+          results.push(row);
+        }
+
+        console.log(`✅ Parsed and signed ${results.length} rows`);
+        res.json(results);
       })
       .on('error', (err) => {
-        console.error('❌ CSV parsing error:', err);
-        res.status(500).json({ error: 'Failed to parse CSV file' });
+        console.error('❌ CSV parse error:', err);
+        res.status(500).json({ error: 'CSV parsing failed' });
       });
+
   } catch (err) {
-    console.error('❌ Error fetching preview:', err);
-    res.status(404).json({ error: 'File not found or preview failed' });
+    console.error('❌ Error fetching from S3:', err);
+    res.status(404).json({ error: 'CSV file not found or unreadable' });
   }
 };
-
 module.exports = { register_user, getTicketStats, removeemployee, downloadCsvFromS3, previewCsvFromS3 };
 
 
-// const previewCsvFromS3 = async (req, res) => {
-//   try {
-//     const { month, year } = req.query;
-//     if (!month || !year) return res.status(400).json({ error: 'Month and year required' });
-
-//     const fileStream = await getClosedTicketsFile(month, year);
-//     const fileText = await streamToString(fileStream);
-
-//     res.status(200).json({ content: fileText });
-//   } catch (error) {
-//     console.error('CSV preview error:', error);
-//     res.status(404).json({ error: 'File not found' });
-//   }
-// };

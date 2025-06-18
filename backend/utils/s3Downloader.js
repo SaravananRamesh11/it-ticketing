@@ -12,7 +12,7 @@ const s3 = new S3Client({
 
 // Generate signed URL or return file buffer
 const getClosedTicketsFile = async (month, year) => {
-  const fileName = `IT-TICKETING/tickets-${month.toLowerCase()}-${year}.csv`;
+  const fileName = `IT-TICKETING/tickets/tickets-${month.toLowerCase()}-${year}.csv`;
 
   const getCommand = new GetObjectCommand({
     Bucket: process.env.BUCKET_NAME,

@@ -1,24 +1,52 @@
 const User=require("../models/User")
 const Ticket = require('../models/Ticket');
 const axios = require('axios');
+const { PutObjectCommand } = require('@aws-sdk/client-s3');
+const s3 = require('../config/aws'); // s3 is an S3Client instance
+const crypto = require('crypto');
 
 
-// const getAssignedTicketsBySupport = async (req, res) => {
-//   try {
-//     const { id } = req.body;
+const close_ticket = async (req, res) => {
+  try {
+    const { id, resolution } = req.body;
+    const file = req.file;
 
-//     const name = await User.getNameById(id);
-//     const tickets = await Ticket.find({
-//       itSupport: name,
-//       status: { $in: ['Open', 'InProgress'] } // ✅ Show both
-//     });
+    if (!file) {
+      return res.status(400).json({ message: 'Proof image is required' });
+    }
 
-//     res.status(200).json(tickets);
-//   } catch (error) {
-//     console.error('Error fetching tickets:', error);
-//     res.status(500).json({ message: 'sathukudi suthu adi' });
-//   }
-// };
+    // Generate a unique hex name for the file
+    const hexName = crypto.randomBytes(16).toString('hex');
+    const extension = file.originalname.split('.').pop();
+    const s3Key = `IT-TICKETING/proofs/${hexName}.${extension}`;
+
+    // Upload the file to S3
+    const uploadCommand = new PutObjectCommand({
+      Bucket: process.env.BUCKET_NAME,
+      Key: s3Key,
+      Body: file.buffer,
+      ContentType: file.mimetype
+    });
+
+    await s3.send(uploadCommand); // v3 uses .send()
+
+    // Update the ticket in MongoDB
+    const ticket = await Ticket.findById(id);
+    if (!ticket) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+
+    ticket.status = 'Closed';
+    ticket.resolution = resolution;
+    ticket.proofImageKey = s3Key; // Store the S3 object key
+    await ticket.save();
+
+    res.status(200).json({ message: 'Ticket closed and image uploaded.' });
+  } catch (error) {
+    console.error('Error closing ticket:', error);
+    res.status(500).json({ message: 'Error closing the ticket' });
+  }
+};
 
 const getAssignedTicketsBySupport = async (req, res) => {
   try {
@@ -35,23 +63,7 @@ const getAssignedTicketsBySupport = async (req, res) => {
   }
 };
 
-const close_ticket=async(req,res)=>{
-  try {
-    const {id,resolution}=req.body
-    const ticket=await Ticket.findById(id)
-    ticket.status='Closed'
-    ticket.resolution=resolution
-    await ticket.save()
-    res.status(200).json({
-      message: 'Ticket closed successfully'
-    })
-  }
-  catch(error)
-  {
-    res.status(500).json({message:"error closing the ticket"})
-  }
 
-}
 
 const updateTicketStatus = async (req, res) => {
   try {
@@ -77,8 +89,5 @@ const updateTicketStatus = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
-
-
-
 
 module.exports = { getAssignedTicketsBySupport,close_ticket,updateTicketStatus };

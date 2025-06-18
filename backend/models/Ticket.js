@@ -21,17 +21,23 @@ const ticketSchema = new mongoose.Schema({
   time: String,
   email: String,
   itSupport: {
-    type:String,
-    default:null},
+    type: String,
+    default: null
+  },
   resolution: {
-    type:String,
-    default:null},
+    type: String,
+    default: null
+  },
+  proofImageKey: {
+    type: String,
+    default: null // This will store the hex name or S3 object key
+  },
   status: {
     type: String,
-    enum: ['Open', 'Closed','InProgress'],
+    enum: ['Open', 'Closed', 'InProgress'],
     default: 'Open'
   }
-},{
+}, {
   timestamps: true
 });
 
