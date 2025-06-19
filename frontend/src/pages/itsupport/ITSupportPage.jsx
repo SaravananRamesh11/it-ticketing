@@ -80,10 +80,12 @@ function ITSupportPage() {
     return;
   }
 
-  if (!imageFile) {
-    alert('Please upload an image proof.');
-    return;
-  }
+
+
+  // if (!imageFile) {
+  //   alert('Please upload an image proof.');
+  //   return;
+  // }
 
   const formData = new FormData();
   formData.append('id', ticketId);
@@ -111,9 +113,6 @@ function ITSupportPage() {
     alert(err.response?.data?.message || 'Failed to close ticket.');
   }
 };
-
-
-
 
 
  const handleUpdateStatus = async (ticketId, currentStatus) => {

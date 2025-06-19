@@ -135,5 +135,45 @@ const ticket = async (req, res) => {
 };
 
 
+const getUserTickets = async (req, res) => {
+  try {
+    const { userId } = req.body;
 
-module.exports={ticket,password}
+    // // 1. Validate the userId
+    // if (!mongoose.Types.ObjectId.isValid(userId)) {
+    //   return res.status(400).json({ 
+    //     success: false,
+    //     message: 'Invalid user ID format' 
+    //   });
+    // }
+
+    // 2. Find the user to get their employeeId
+    const user = await User.findById(userId).select('employeeId employeeName');
+    if (!user) {
+      return res.status(404).json({ 
+        success: false,
+        message: 'User not found' 
+      });
+    }
+
+    // 3. Find all tickets for this employee
+    const tickets = await Ticket.find({ employeeId: user.employeeId })
+      .sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      employeeName: user.employeeName,
+      tickets: tickets
+    });
+
+  } catch (error) {
+    console.error('Error fetching user tickets:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Server error while fetching tickets',
+      error: error.message 
+    });
+  }
+};
+
+module.exports={ticket,password,getUserTickets }

@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage.jsx';
@@ -10,7 +9,7 @@ import AdminPage from './pages/admin/AdminPage.jsx';
 import EmployeeRegistrationForm from './pages/admin/addusers.jsx';
 import ForgotPassword from './pages/forgot.jsx';
 import {ProtectedRoute} from "./protected/pro";
-import{} from "./pages/forgot.jsx"
+import UserTickets from "./pages/user/ticket.jsx"
 
 function App() {
   const { dispatch } = useAuth();
@@ -42,11 +41,13 @@ function App() {
         <Route path="/admin" element={<ProtectedRoute allowedRoles={["Admin"]}>
               <AdminPage />
             </ProtectedRoute>} />
-        {/* <Route path="/superuser" element={<SuperuserPage />} /> */}
         <Route path="/userdetails" element={< Detail/>} />
         <Route path="/changepassword" element={< ForgotPassword/>} />
         <Route path="/forgot" element={< ForgotPassword/>} />
-        {/* <Route path="/e" element={< EmployeeRegistrationForm/>} /> */}
+        <Route path="/employeeticketinfo" element={<ProtectedRoute allowedRoles={["Employee"]}>
+              <UserTickets />
+            </ProtectedRoute>} />
+       
 
          
       </Routes>

@@ -11,24 +11,24 @@ const close_ticket = async (req, res) => {
     const { id, resolution } = req.body;
     const file = req.file;
 
-    if (!file) {
-      return res.status(400).json({ message: 'Proof image is required' });
-    }
+    // if (!file) {
+    //   return res.status(400).json({ message: 'Proof image is required' });
+    // }
 
     // Generate a unique hex name for the file
-    const hexName = crypto.randomBytes(16).toString('hex');
-    const extension = file.originalname.split('.').pop();
-    const s3Key = `IT-TICKETING/proofs/${hexName}.${extension}`;
+    //const hexName = crypto.randomBytes(16).toString('hex');
+    //const extension = file.originalname.split('.').pop();
+    //const s3Key = `IT-TICKETING/proofs/${hexName}.${extension}`;
 
     // Upload the file to S3
-    const uploadCommand = new PutObjectCommand({
-      Bucket: process.env.BUCKET_NAME,
-      Key: s3Key,
-      Body: file.buffer,
-      ContentType: file.mimetype
-    });
+    // const uploadCommand = new PutObjectCommand({
+    //   Bucket: process.env.BUCKET_NAME,
+    //   Key: s3Key,
+    //   Body: file.buffer,
+    //   ContentType: file.mimetype
+    // });
 
-    await s3.send(uploadCommand); // v3 uses .send()
+    // await s3.send(uploadCommand); // v3 uses .send()
 
     // Update the ticket in MongoDB
     const ticket = await Ticket.findById(id);
@@ -38,7 +38,7 @@ const close_ticket = async (req, res) => {
 
     ticket.status = 'Closed';
     ticket.resolution = resolution;
-    ticket.proofImageKey = s3Key; // Store the S3 object key
+    //ticket.proofImageKey = s3Key; // Store the S3 object key
     await ticket.save();
 
     res.status(200).json({ message: 'Ticket closed and image uploaded.' });
