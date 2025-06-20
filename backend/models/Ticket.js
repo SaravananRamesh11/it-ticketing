@@ -111,4 +111,9 @@ ticketSchema.statics.getTicketById = async function (_id) {
   const ticket = await this.findById(_id).lean();
   return ticket || null;
 };
+
+
+ticketSchema.statics.getInProgressTickets = async function () {
+  return await this.find({ status: 'InProgress' }).lean();
+};
 module.exports = mongoose.model('Ticket', ticketSchema);
