@@ -4,13 +4,15 @@ const axios = require('axios');
 const { PutObjectCommand } = require('@aws-sdk/client-s3');
 const s3 = require('../config/aws'); // s3 is an S3Client instance
 const crypto = require('crypto');
+const sendEmail=require('../services/mailservice')
+require('dotenv').config()
 
 
 const close_ticket = async (req, res) => {
   try {
     const { id, resolution } = req.body;
     const file = req.file;
-    console.log("thayolliiii")
+ 
     // if (!file) {
     //   return res.status(400).json({ message: 'Proof image is required' });
     // }
@@ -92,7 +94,33 @@ const updateTicketStatus = async (req, res) => {
 
 
 const time_exceeded =  (req,res)=>{
-    console.log("hii da")
+    const {ticket}=req.body
+    const text = `
+  URGENT: Ticket Approaching Time Limit
+  ====================================
+  
+  Ticket Details:
+  - ID: ${ticket._id}
+  - Employee: ${ticket.employeeName} (${ticket.employeeId})
+
+  Issue Breakdown:
+  - Category: ${ticket.issue.main}
+  - Subcategory: ${ticket.issue.sub}
+  - Specific Issue: ${ticket.issue.inner_sub}
+  
+  Time Status:
+  - Created: ${new Date(ticket.createdAt).toLocaleString()}
+  
+  
+  Action Required:
+  Please review this ticket immediately and either:
+   Contact the assigned technician
+`;
+
+sendEmail(process.env.HR,"ticket time limit exceeded",text);
+
+
+
 
 }
 module.exports = { getAssignedTicketsBySupport,close_ticket,updateTicketStatus,time_exceeded };

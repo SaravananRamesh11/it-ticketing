@@ -528,6 +528,11 @@ const TicketTimer = ({ ticket }) => {
       if (remaining <= 0) {
         if (!isExpired) {
           console.log(`Time over for ticket ${ticket._id}: ${ticket.issue.main} > ${ticket.issue.sub} > ${ticket.issue.inner_sub}`);
+          axios.post("http://localhost:5000/api/it_support/exceed",{ticket},{
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            }
+          })
           setIsExpired(true);
         }
         setTimeRemaining(0);
