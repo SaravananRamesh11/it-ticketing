@@ -10,7 +10,7 @@ const close_ticket = async (req, res) => {
   try {
     const { id, resolution } = req.body;
     const file = req.file;
-
+    console.log("thayolliiii")
     // if (!file) {
     //   return res.status(400).json({ message: 'Proof image is required' });
     // }
@@ -90,4 +90,9 @@ const updateTicketStatus = async (req, res) => {
   }
 };
 
-module.exports = { getAssignedTicketsBySupport,close_ticket,updateTicketStatus };
+
+const time_exceeded =  (req,res)=>{
+    console.log("hii da")
+
+}
+module.exports = { getAssignedTicketsBySupport,close_ticket,updateTicketStatus,time_exceeded };
