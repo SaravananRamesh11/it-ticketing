@@ -392,6 +392,7 @@ import axios from 'axios';
 import './it.css';
 import { useNavigate } from 'react-router-dom';
 
+
 // Issue hierarchy for time limits
 const issueHierarchy = {
   "Hardware Issues": {
@@ -416,11 +417,11 @@ const issueHierarchy = {
   "Software": {
     "Operating Systems": {
       "Installation": { timeLimit: 120 },
-      "Upgrade": { timeLimit: 180 },
+      "Upgrade": { timeLimit: 100 },
       "Performance Issues": { timeLimit: 90 },
       "Driver Issues": { timeLimit: 60 }
     },
-    "Applications": {
+    "Applications": {//put
       "WPS": { timeLimit: 45 },
       "Microsoft Office": { timeLimit: 60 },
       "Teams": { timeLimit: 45 },
@@ -433,7 +434,7 @@ const issueHierarchy = {
     }
   },
   "Connectivity (Network Issues)": {
-    "Network Issues": {
+    "Network Issues": {//put
       "Wired/Wireless Access": { timeLimit: 120 },
       "VPN": { timeLimit: 2 },
       "Network Performance": { timeLimit: 180 }
@@ -443,7 +444,7 @@ const issueHierarchy = {
       "Performance": { timeLimit: 60 },
       "Connectivity": { timeLimit: 90 }
     },
-    "LAN/Internet": {
+    "LAN/Internet": { //put
       "LAN Cable Issues": { timeLimit: 60 },
       "Internet I/O Port Damage": { timeLimit: 120 },
       "Website Issues": { timeLimit: 90 }
@@ -453,17 +454,17 @@ const issueHierarchy = {
     "User Accounts": {
       "Creation": { timeLimit: 15 },
       "Termination": { timeLimit: 15 },
-      "Password Resets": { timeLimit: 10 },
+      "Password Resets": { timeLimit: 100 },
       "Access Rights": { timeLimit: 30 }
     },
-    "File/Resource Access": {
+    "File/Resource Access": {//put
       "Shared Folders": { timeLimit: 45 },
       "Permissions": { timeLimit: 60 },
       "Network Drives": { timeLimit: 60 }
     }
   },
   "Other Services": {
-    "Printing Services": {
+    "Printing Services": {//put
       "Print Queues": { timeLimit: 30 },
       "Quality": { timeLimit: 60 },
       "Access": { timeLimit: 45 }
@@ -641,63 +642,166 @@ function ITSupportPage() {
     setResolutions(prev => ({ ...prev, [ticketId]: value }));
   };
 
-  const handleCloseTicket = async (ticketId) => {
-    const resolution = resolutions[ticketId];
-    const imageFile = imageFiles[ticketId];
+  // const handleCloseTicket = async (ticketId) => {
+  //   const resolution = resolutions[ticketId];
+  //   const imageFile = imageFiles[ticketId];
 
-    if (!resolution || resolution.trim() === '') {
-      alert('Please enter a resolution.');
-      return;
-    }
+  //   if (!resolution || resolution.trim() === '') {
+  //     alert('Please enter a resolution.');
+  //     return;
+  //   }
 
-    const formData = new FormData();
-    formData.append('id', ticketId);
-    formData.append('resolution', resolution);
-    formData.append('proofImage', imageFile);
+  //   const formData = new FormData();
+  //   formData.append('id', ticketId);
+  //   formData.append('resolution', resolution);
+  //   formData.append('proofImage', imageFile);
 
-    try {
-      await axios.post('http://localhost:5000/api/it_support/close_ticket', formData, {
+  //   try {
+  //     await axios.post('http://localhost:5000/api/it_support/close_ticket', formData, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       }
+  //     });
+
+  //     setTickets(prev => prev.filter(t => t._id !== ticketId));
+  //     setShowInput(prev => ({ ...prev, [ticketId]: false }));
+  //     setResolutions(prev => {
+  //       const newRes = { ...prev };
+  //       delete newRes[ticketId];
+  //       return newRes;
+  //     });
+  //     alert('Ticket closed successfully!');
+  //   } catch (err) {
+  //     console.error('Error closing ticket:', err);
+  //     alert(err.response?.data?.message || 'Failed to close ticket.');
+  //   }
+  // };
+
+  
+const handleCloseTicket = async (ticketId) => {
+  console.log('handleCloseTicket called:', ticketId); // Debug log
+  
+  const resolution = resolutions[ticketId];
+  const imageFile = imageFiles[ticketId];
+
+  if (!resolution || resolution.trim() === '') {
+    alert('Please enter a resolution.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('id', ticketId);
+  formData.append('resolution', resolution);
+  formData.append('proofImage', imageFile);
+
+  try {
+    await axios.post('http://localhost:5000/api/it_support/close_ticket', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      }
+    });
+
+    setTickets(prev => prev.filter(t => t._id !== ticketId));
+    setShowInput(prev => ({ ...prev, [ticketId]: false }));
+    setResolutions(prev => {
+      const newRes = { ...prev };
+      delete newRes[ticketId];
+      return newRes;
+    });
+    alert('Ticket closed successfully!');
+  } catch (err) {
+    console.error('Error closing ticket:', err);
+    alert(err.response?.data?.message || 'Failed to close ticket.');
+  }
+};
+
+  // const handleUpdateStatus = async (ticketId, currentStatus) => {
+  //   try {
+  //     const newStatus = currentStatus === 'Open' ? 'InProgress' : 'Open';
+      
+  //     await axios.put(
+  //       'http://localhost:5000/api/it_support/update_ticket_status', 
+  //       { ticketId, status: newStatus }, 
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         }
+  //       }
+  //     );
+
+  //     setIndicator(prev => !prev);
+  //     alert(`Ticket status updated to ${newStatus}!`);
+  //   } catch (err) {
+  //     console.error('Error updating ticket status:', err);
+  //     alert(err.response?.data?.message || 'Failed to update ticket status.');
+  //   }
+  // };
+
+//   const handleUpdateStatus = async (ticketId, currentStatus,sub_issue) => {
+//   console.log('handleUpdateStatus called:', ticketId, currentStatus); // Debug log
+  
+//   try {
+//     const newStatus = currentStatus === 'Open' ? 'InProgress' : 'Open';
+    
+//     await axios.put(
+//       'http://localhost:5000/api/it_support/update_ticket_status', 
+//       { ticketId, status: newStatus }, 
+//       {
+//         headers: {
+//           Authorization: `Bearer ${localStorage.getItem("token")}`,
+//         }
+//       }
+//     );
+
+//     setIndicator(prev => !prev);
+//     alert(`Ticket status updated to ${newStatus}!`);
+//   } catch (err) {
+//     console.error('Error updating ticket status:', err);
+//     alert(err.response?.data?.message || 'Failed to update ticket status.');
+//   }
+// };
+
+const handleUpdateStatus = async (ticketId, currentStatus, sub_issue) => {
+  console.log('handleUpdateStatus called:', ticketId, currentStatus, sub_issue); // Debug log
+
+  // List of allowed sub_issues for status update
+  const allowedSubIssues = [
+    'Applications',
+    'Network Issues',
+    'LAN/Internet',
+    'File/Resource Access',
+    'Printing Services'
+  ];
+
+  // Check if sub_issue is in allowed list
+  if (!allowedSubIssues.includes(sub_issue)) {
+    alert('Ticket status cannot be changed. Sub-issue not allowed for status update.');
+    return;
+  }
+
+  try {
+    const newStatus = currentStatus === 'Open' ? 'InProgress' : 'Open';
+
+    await axios.put(
+      'http://localhost:5000/api/it_support/update_ticket_status',
+      { ticketId, status: newStatus },
+      {
         headers: {
-          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         }
-      });
+      }
+    );
 
-      setTickets(prev => prev.filter(t => t._id !== ticketId));
-      setShowInput(prev => ({ ...prev, [ticketId]: false }));
-      setResolutions(prev => {
-        const newRes = { ...prev };
-        delete newRes[ticketId];
-        return newRes;
-      });
-      alert('Ticket closed successfully!');
-    } catch (err) {
-      console.error('Error closing ticket:', err);
-      alert(err.response?.data?.message || 'Failed to close ticket.');
-    }
-  };
+    setIndicator(prev => !prev);
+    alert(`Ticket status updated to ${newStatus}!`);
+  } catch (err) {
+    console.error('Error updating ticket status:', err);
+    alert(err.response?.data?.message || 'Failed to update ticket status.');
+  }
+};
 
-  const handleUpdateStatus = async (ticketId, currentStatus) => {
-    try {
-      const newStatus = currentStatus === 'Open' ? 'InProgress' : 'Open';
-      
-      await axios.put(
-        'http://localhost:5000/api/it_support/update_ticket_status', 
-        { ticketId, status: newStatus }, 
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          }
-        }
-      );
-
-      setIndicator(prev => !prev);
-      alert(`Ticket status updated to ${newStatus}!`);
-    } catch (err) {
-      console.error('Error updating ticket status:', err);
-      alert(err.response?.data?.message || 'Failed to update ticket status.');
-    }
-  };
 
   const priorityMap = {
     "Connectivity (Network Issues)": "high",
@@ -795,14 +899,14 @@ function ITSupportPage() {
                       {ticket.status === 'Open' ? (
                         <button
                           className="action-button in-progress-btn"
-                          onClick={() => handleUpdateStatus(ticket._id, ticket.status)}
+                          onClick={() => handleUpdateStatus(ticket._id, ticket.status,ticket.issue.sub)}
                         >
                           Mark In Progress
                         </button>
                       ) : (
                         <button
                           className="action-button remove-progress-btn"
-                          onClick={() => handleUpdateStatus(ticket._id, ticket.status)}
+                          onClick={() => handleUpdateStatus(ticket._id, ticket.status,ticket.issue.sub)}
                         >
                           Remove In Progress
                         </button>

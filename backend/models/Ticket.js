@@ -106,4 +106,9 @@ ticketSchema.statics.setHrWarningTrue = async function (_id) {
   return updated || null;
 };
 
+
+ticketSchema.statics.getTicketById = async function (_id) {
+  const ticket = await this.findById(_id).lean();
+  return ticket || null;
+};
 module.exports = mongoose.model('Ticket', ticketSchema);
