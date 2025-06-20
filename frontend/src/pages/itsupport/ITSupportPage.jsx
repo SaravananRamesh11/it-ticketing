@@ -435,7 +435,7 @@ const issueHierarchy = {
   "Connectivity (Network Issues)": {
     "Network Issues": {
       "Wired/Wireless Access": { timeLimit: 120 },
-      "VPN": { timeLimit: 90 },
+      "VPN": { timeLimit: 2 },
       "Network Performance": { timeLimit: 180 }
     },
     "Email Issues": {
@@ -470,7 +470,7 @@ const issueHierarchy = {
     },
     "Database Services": {
       "Access": { timeLimit: 90 },
-      "Performance Tuning": { timeLimit: 400 },
+      "Performance Tuning": { timeLimit: 200 },
       "Backup/Recovery": { timeLimit: 180 }
     },
     "Web Services": {
@@ -526,7 +526,7 @@ const TicketTimer = ({ ticket }) => {
       const remaining = deadline.getTime() - now.getTime();
 
       if (remaining <= 0) {
-        if (!isExpired) {
+        if (!isExpired &&ticket.hr_warning===false) {
           console.log(`Time over for ticket ${ticket._id}: ${ticket.issue.main} > ${ticket.issue.sub} > ${ticket.issue.inner_sub}`);
           axios.post("http://localhost:5000/api/it_support/exceed",{ticket},{
             headers: {

@@ -8,6 +8,7 @@ const sendEmail=require('../services/mailservice')
 require('dotenv').config()
 
 
+
 const close_ticket = async (req, res) => {
   try {
     const { id, resolution } = req.body;
@@ -93,31 +94,41 @@ const updateTicketStatus = async (req, res) => {
 };
 
 
-const time_exceeded =  (req,res)=>{
+const time_exceeded =  async (req,res)=>{
+  try{
     const {ticket}=req.body
     const text = `
-  URGENT: Ticket Approaching Time Limit
-  ====================================
-  
-  Ticket Details:
-  - ID: ${ticket._id}
-  - Employee: ${ticket.employeeName} (${ticket.employeeId})
+    URGENT: Ticket Approaching Time Limit
+    ====================================
+    
+    Ticket Details:
+    - ID: ${ticket._id}
+    - Employee: ${ticket.employeeName} (${ticket.employeeId})
 
-  Issue Breakdown:
-  - Category: ${ticket.issue.main}
-  - Subcategory: ${ticket.issue.sub}
-  - Specific Issue: ${ticket.issue.inner_sub}
-  
-  Time Status:
-  - Created: ${new Date(ticket.createdAt).toLocaleString()}
-  
-  
-  Action Required:
-  Please review this ticket immediately and either:
-   Contact the assigned technician
-`;
+    Issue Breakdown:
+    - Category: ${ticket.issue.main}
+    - Subcategory: ${ticket.issue.sub}
+    - Specific Issue: ${ticket.issue.inner_sub}
+    
+    Time Status:
+    - Created: ${new Date(ticket.createdAt).toLocaleString()}
+    
+    
+    Action Required:
+    Please review this ticket immediately and either:
+    Contact the assigned technician
+  `;
+  const updatedTicket = await Ticket.setHrWarningTrue(ticket._id);
 
-sendEmail(process.env.HR,"ticket time limit exceeded",text);
+  sendEmail(process.env.HR,"ticket time limit exceeded",text);
+
+  }
+
+  catch(err)
+  {
+    console.log(err)
+  }
+    
 
 
 
