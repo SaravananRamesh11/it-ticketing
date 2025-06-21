@@ -90,6 +90,11 @@ const ticketSchema = new mongoose.Schema({
   hr_warning: {
     type: Boolean,
     default: false
+  },
+  description:{
+    type:String,
+    default:null,
+    required:true
   }
 }, {
   timestamps: true

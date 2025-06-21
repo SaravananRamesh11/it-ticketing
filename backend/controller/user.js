@@ -31,8 +31,8 @@ const password =async (req, res) => {
 
 const ticket = async (req, res) => {
   try {
-    console.log("sarva called ",req.body);
-    const { employeeName, employeeId, issue, date, time, email, id } = req.body.ticketData;
+    
+    const { employeeName, employeeId, issue, date, time, email, id ,description} = req.body.ticketData;
     console.log(`${employeeName} ${employeeId} ${issue} ${date} ${time} ${email} ${id}`);
 
     // 1. Validate the requesting employee
@@ -78,7 +78,8 @@ const ticket = async (req, res) => {
       date: new Date(date),
       time,
       email,
-      itSupport: selectedSupport.employeeName
+      itSupport: selectedSupport.employeeName,
+      description
     });
 
     await newTicket.save();

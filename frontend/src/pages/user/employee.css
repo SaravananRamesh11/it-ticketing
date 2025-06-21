@@ -184,3 +184,30 @@ body {
     text-align: center;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+.form-input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+textarea.form-input {
+  resize: vertical; /* or 'none' if you want to disable resizing */
+  line-height: 1.5;
+  font-family: inherit;
+}
+
