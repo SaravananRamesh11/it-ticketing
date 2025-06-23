@@ -55,6 +55,7 @@
     gap: 30px; /* Space between cards */
     max-width: 1200px; /* Max width for the grid */
     margin: 0 auto; /* Center the grid */
+    align-items: start;
 }
 
 /* Individual Ticket Card */
@@ -367,14 +368,6 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-
-
-
-
-
-
-
-
 .ticket-card {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -442,24 +435,6 @@
   word-break: break-word;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .ticket-card {
   position: relative;
   overflow: hidden; /* Ensures ribbon doesn't overflow */
@@ -503,13 +478,6 @@
   margin-left: 10px;
 }
 
-
-
-
-
-
-
-
 .image-preview {
   max-width: 150px;   /* Limit width */
   max-height: 150px;  /* Limit height */
@@ -517,4 +485,3 @@
   border-radius: 8px; /* Optional: rounded corners */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
 }
-
