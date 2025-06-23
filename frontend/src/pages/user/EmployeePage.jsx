@@ -5,6 +5,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import './employee.css';
+//import UserTickets from './ticket.jsx';
+
 
 const issueHierarchy = {
   "Hardware Issues": {
@@ -128,10 +130,17 @@ const EmployeePage = () => {
     navigate("/userdetails");
   }
 
+  function navigateToTicketInfo() {
+    navigate("/employeeticketinfo");
+  }
+
   return (
     <div className="employee-page-container">
       <button className="details-button" onClick={userpage}>
         My Details
+      </button>
+      <button className="info-button" onClick={navigateToTicketInfo}>
+        Ticket Info
       </button>
 
       <div className="form-card">
