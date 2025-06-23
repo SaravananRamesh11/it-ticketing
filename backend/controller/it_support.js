@@ -6,35 +6,88 @@ const s3 = require('../config/aws'); // s3 is an S3Client instance
 const crypto = require('crypto');
 const sendEmail=require('../services/mailservice')
 require('dotenv').config()
-
-
+const multer = require('multer');
+const upload = multer();
 
 const close_ticket = async (req, res) => {
   try {
-    const { id, resolution } = req.body;
-    const file = req.file;
- 
-    // if (!file) {
-    //   return res.status(400).json({ message: 'Proof image is required' });
-    // }
+    const { id, resolution } = req.body; // Changed from 'remark' to 'resolution' to match schema
+    console.log(resolution)
+    console.log(id)
+    // Validate required fields
+    if ( !resolution) {
+      return res.status(400).json({ 
+        success: false, 
+        message: ' resolution is required' 
+      });
+    }
 
-    // Generate a unique hex name for the file
-    //const hexName = crypto.randomBytes(16).toString('hex');
-    //const extension = file.originalname.split('.').pop();
-    //const s3Key = `IT-TICKETING/proofs/${hexName}.${extension}`;
+    let proofImageKey = null;
 
-    // Upload the file to S3
-    // const uploadCommand = new PutObjectCommand({
-    //   Bucket: process.env.BUCKET_NAME,
-    //   Key: s3Key,
-    //   Body: file.buffer,
-    //   ContentType: file.mimetype
-    // });
+    // Handle image upload if present
+    if (req.file) {
+      try {
+        // Generate secure filename
+        const hexName = crypto.randomBytes(16).toString('hex');
+        const fileExtension = req.file.originalname.split('.').pop();
+        proofImageKey = `IT-TICKETING/proofs/${hexName}.${extension}`;
 
-    // await s3.send(uploadCommand); // v3 uses .send()
+        // Upload to private S3 bucket
+        await s3.upload({
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: proofImageKey,
+          Body: req.file.buffer,
+          ContentType: req.file.mimetype,
+        }).promise();
+      } catch (uploadError) {
+        console.error('Image upload failed, still closing ticket:', uploadError);
+        // Continue without failing the entire operation
+      }
+    }
 
-    // Update the ticket in MongoDB
-    const ticket = await Ticket.findById(id);
+    // Update ticket according to schema
+  //   const updateData = {
+  //     status: 'Closed',
+  //     resolution, // Using 'resolution' instead of 'remark'
+  //     ...(proofImageKey && { proofImageKey }),
+  //     closedAt: new Date(),
+  //     itSupport: req.user.id // Assuming authenticated IT support user
+  //   };
+
+  //   const updatedTicket = await Ticket.findByIdAndUpdate(
+  //     ticketId,
+  //     updateData,
+  //     { new: true } // Return the updated document
+  //   );
+
+  //   if (!updatedTicket) {
+  //     return res.status(404).json({ 
+  //       success: false, 
+  //       message: 'Ticket not found' 
+  //     });
+  //   }
+
+  //   res.status(200).json({ 
+  //     success: true, 
+  //     message: 'Ticket closed successfully',
+  //     data: {
+  //       ticketId: updatedTicket._id,
+  //       status: updatedTicket.status,
+  //       ...(proofImageKey && { hasProofImage: true })
+  //     }
+  //   });
+
+  // } catch (err) {
+  //   console.error('Ticket closing error:', err);
+  //   res.status(500).json({ 
+  //     success: false, 
+  //     message: 'Error closing ticket',
+  //     error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  //   });
+  // }
+
+
+  const ticket = await Ticket.findById(id);
     if (!ticket) {
       return res.status(404).json({ message: 'Ticket not found' });
     }
@@ -50,6 +103,51 @@ const close_ticket = async (req, res) => {
     res.status(500).json({ message: 'Error closing the ticket' });
   }
 };
+
+
+// const close_ticket = async (req, res) => {
+//   try {
+//     const { id, resolution } = req.body;
+//     const file = req.file;
+ 
+//     if (!file) {
+//       return res.status(400).json({ message: 'Proof image is required' });
+//     }
+
+//     //Generate a unique hex name for the file
+//     const hexName = crypto.randomBytes(16).toString('hex');
+//     const extension = file.originalname.split('.').pop();
+//     const s3Key = `IT-TICKETING/proofs/${hexName}.${extension}`;
+
+//     //Upload the file to S3
+//     const uploadCommand = new PutObjectCommand({
+//       Bucket: process.env.BUCKET_NAME,
+//       Key: s3Key,
+//       Body: file.buffer,
+//       ContentType: file.mimetype
+//     });
+
+//     await s3.send(uploadCommand); // v3 uses .send()
+
+//     //Update the ticket in MongoDB
+//     const ticket = await Ticket.findById(id);
+//     if (!ticket) {
+//       return res.status(404).json({ message: 'Ticket not found' });
+//     }
+
+//     ticket.status = 'Closed';
+//     ticket.resolution = resolution;
+//     //ticket.proofImageKey = s3Key; // Store the S3 object key
+//     await ticket.save();
+
+//     res.status(200).json({ message: 'Ticket closed and image uploaded.' });
+//   } catch (error) {
+//     console.error('Error closing ticket:', error);
+//     res.status(500).json({ message: 'Error closing the ticket' });
+//   }
+// };
+
+
 
 const getAssignedTicketsBySupport = async (req, res) => {
   try {

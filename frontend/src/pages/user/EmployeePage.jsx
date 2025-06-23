@@ -104,7 +104,8 @@ const EmployeePage = () => {
         employeeName: userData.employeeName,
         email: userData.email,
         employeeId: userData.employeeId,
-        id: userData._id
+        id: userData._id,
+        description:data.description
       };
 
       await axios.post('http://localhost:5000/api/user/ticket', { ticketData },
@@ -130,6 +131,110 @@ const EmployeePage = () => {
     navigate("/userdetails");
   }
 
+  // return (
+  //   <div className="employee-page-container">
+  //     <button className="details-button" onClick={userpage}>
+  //       My Details
+  //     </button>
+
+  //     <div className="form-card">
+  //       <h2 className="form-title">Submit a New Ticket</h2>
+  //       {submitted ? (
+  //         <div className="success-message-card">
+  //           <p className="success-message-text">
+  //             🎉 Your ticket has been submitted successfully!
+  //           </p>
+  //           <p className="success-message-subtext">
+  //             You will receive a confirmation email shortly.
+  //           </p>
+  //           <button className="new-ticket-button" onClick={() => setSubmitted(false)}>
+  //             Submit another ticket
+  //           </button>
+  //         </div>
+  //       ) : (
+  //         <form onSubmit={handleSubmit(onSubmit)} className="ticket-form">
+  //           <div className="form-group">
+  //             <label htmlFor="mainIssue" className="form-label">Main Issue</label>
+  //             <select id="mainIssue" className="form-input" {...register('mainIssue')}>
+  //               <option value="" disabled hidden selected>Select a main issue</option>
+  //               {Object.keys(issueHierarchy).map((main) => (
+  //                 <option key={main} value={main}>{main}</option>
+  //               ))}
+  //             </select>
+  //             {errors.mainIssue && <p className="error-text">{errors.mainIssue.message}</p>}
+  //           </div>
+
+  //           <div className="form-group">
+  //             <label htmlFor="subIssue" className="form-label">Sub Issue</label>
+  //             <select
+  //               id="subIssue"
+  //               className="form-input"
+  //               {...register('subIssue')}
+  //               disabled={!selectedMain}
+  //             >
+  //               <option value="" disabled hidden selected>Select a sub issue</option>
+  //               {selectedMain && Object.keys(issueHierarchy[selectedMain]).map((sub) => (
+  //                 <option key={sub} value={sub}>{sub}</option>
+  //               ))}
+  //             </select>
+  //             {errors.subIssue && <p className="error-text">{errors.subIssue.message}</p>}
+  //           </div>
+
+  //           <div className="form-group">
+  //             <label htmlFor="innerSubIssue" className="form-label">Inner Sub Issue</label>
+  //             <select
+  //               id="innerSubIssue"
+  //               className="form-input"
+  //               {...register('innerSubIssue')}
+  //               disabled={!selectedMain || !selectedSub}
+  //             >
+  //               <option value="" disabled hidden selected>Select an inner sub issue</option>
+  //               {selectedMain && selectedSub &&
+  //                 issueHierarchy[selectedMain][selectedSub].map((inner) => (
+  //                   <option key={inner} value={inner}>{inner}</option>
+  //                 ))}
+  //             </select>
+  //             {errors.innerSubIssue && <p className="error-text">{errors.innerSubIssue.message}</p>}
+  //           </div>
+
+  //           <div className="form-group">
+  //             <label htmlFor="description" className="form-label">Description</label>
+  //             <textarea
+  //               id="description"
+  //               className="form-input"
+  //               rows="4"
+  //               placeholder="Describe the issue in detail"
+  //               {...register('description')}
+  //             />
+  //             {errors.description && <p className="error-text">{errors.description.message}</p>}
+  //           </div>
+
+
+  //           <div className="form-group">
+  //             <label htmlFor="date" className="form-label">Current Date</label>
+  //             <input id="date" className="form-input" type="date" {...register('date')} />
+  //             {errors.date && <p className="error-text">{errors.date.message}</p>}
+  //           </div>
+
+  //           <div className="form-group">
+  //             <label htmlFor="time" className="form-label">Current Time</label>
+  //             <input id="time" className="form-input" type="time" {...register('time')} />
+  //             {errors.time && <p className="error-text">{errors.time.message}</p>}
+  //           </div>
+
+  //           <button
+  //             className="submit-ticket-button"
+  //             type="submit"
+  //             disabled={isLoading}
+  //           >
+  //             {isLoading ? 'Submitting...' : 'Submit Ticket'}
+  //           </button>
+  //         </form>
+  //       )}
+  //     </div>
+  //   </div>
+  // );
+
   function navigateToTicketInfo() {
     navigate("/employeeticketinfo");
   }
@@ -143,90 +248,110 @@ const EmployeePage = () => {
         Ticket Info
       </button>
 
-      <div className="form-card">
-        <h2 className="form-title">Submit a New Ticket</h2>
-        {submitted ? (
-          <div className="success-message-card">
-            <p className="success-message-text">
-              🎉 Your ticket has been submitted successfully!
-            </p>
-            <p className="success-message-subtext">
-              You will receive a confirmation email shortly.
-            </p>
-            <button className="new-ticket-button" onClick={() => setSubmitted(false)}>
-              Submit another ticket
-            </button>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="ticket-form">
-            <div className="form-group">
-              <label htmlFor="mainIssue" className="form-label">Main Issue</label>
-              <select id="mainIssue" className="form-input" {...register('mainIssue')}>
-                <option value="" disabled hidden selected>Select a main issue</option>
-                {Object.keys(issueHierarchy).map((main) => (
-                  <option key={main} value={main}>{main}</option>
-                ))}
-              </select>
-              {errors.mainIssue && <p className="error-text">{errors.mainIssue.message}</p>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="subIssue" className="form-label">Sub Issue</label>
-              <select
-                id="subIssue"
-                className="form-input"
-                {...register('subIssue')}
-                disabled={!selectedMain}
-              >
-                <option value="" disabled hidden selected>Select a sub issue</option>
-                {selectedMain && Object.keys(issueHierarchy[selectedMain]).map((sub) => (
-                  <option key={sub} value={sub}>{sub}</option>
-                ))}
-              </select>
-              {errors.subIssue && <p className="error-text">{errors.subIssue.message}</p>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="innerSubIssue" className="form-label">Inner Sub Issue</label>
-              <select
-                id="innerSubIssue"
-                className="form-input"
-                {...register('innerSubIssue')}
-                disabled={!selectedMain || !selectedSub}
-              >
-                <option value="" disabled hidden selected>Select an inner sub issue</option>
-                {selectedMain && selectedSub &&
-                  issueHierarchy[selectedMain][selectedSub].map((inner) => (
-                    <option key={inner} value={inner}>{inner}</option>
-                  ))}
-              </select>
-              {errors.innerSubIssue && <p className="error-text">{errors.innerSubIssue.message}</p>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="date" className="form-label">Current Date</label>
-              <input id="date" className="form-input" type="date" {...register('date')} />
-              {errors.date && <p className="error-text">{errors.date.message}</p>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="time" className="form-label">Current Time</label>
-              <input id="time" className="form-input" type="time" {...register('time')} />
-              {errors.time && <p className="error-text">{errors.time.message}</p>}
-            </div>
-
-            <button
-              className="submit-ticket-button"
-              type="submit"
-              disabled={isLoading}
+    <div className="form-card">
+      <h2 className="form-title">Submit a New Ticket</h2>
+      {submitted ? (
+        <div className="success-message-card">
+          <p className="success-message-text">
+            🎉 Your ticket has been submitted successfully!
+          </p>
+          <p className="success-message-subtext">
+            You will receive a confirmation email shortly.
+          </p>
+          <button className="new-ticket-button" onClick={() => setSubmitted(false)}>
+            Submit another ticket
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)} className="ticket-form">
+          <div className="form-group">
+            <label htmlFor="mainIssue" className="form-label">Main Issue</label>
+            <select
+              id="mainIssue"
+              className="form-input"
+              defaultValue=""
+              {...register('mainIssue')}
             >
-              {isLoading ? 'Submitting...' : 'Submit Ticket'}
-            </button>
-          </form>
-        )}
-      </div>
+              <option value="" disabled hidden>Select a main issue</option>
+              {Object.keys(issueHierarchy).map((main) => (
+                <option key={main} value={main}>{main}</option>
+              ))}
+            </select>
+            {errors.mainIssue && <p className="error-text">{errors.mainIssue.message}</p>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="subIssue" className="form-label">Sub Issue</label>
+            <select
+              id="subIssue"
+              className="form-input"
+              defaultValue=""
+              {...register('subIssue')}
+              disabled={!selectedMain}
+            >
+              <option value="" disabled hidden>Select a sub issue</option>
+              {selectedMain && Object.keys(issueHierarchy[selectedMain]).map((sub) => (
+                <option key={sub} value={sub}>{sub}</option>
+              ))}
+            </select>
+            {errors.subIssue && <p className="error-text">{errors.subIssue.message}</p>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="innerSubIssue" className="form-label">Inner Sub Issue</label>
+            <select
+              id="innerSubIssue"
+              className="form-input"
+              defaultValue=""
+              {...register('innerSubIssue')}
+              disabled={!selectedMain || !selectedSub}
+            >
+              <option value="" disabled hidden>Select an inner sub issue</option>
+              {selectedMain && selectedSub &&
+                issueHierarchy[selectedMain][selectedSub].map((inner) => (
+                  <option key={inner} value={inner}>{inner}</option>
+                ))}
+            </select>
+            {errors.innerSubIssue && <p className="error-text">{errors.innerSubIssue.message}</p>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="description" className="form-label">Description</label>
+            <textarea
+              id="description"
+              className="form-input"
+              rows="4"
+              placeholder="Describe the issue in detail"
+              {...register('description')}
+            />
+            {errors.description && <p className="error-text">{errors.description.message}</p>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="date" className="form-label">Current Date</label>
+            <input id="date" className="form-input" type="date" {...register('date')} />
+            {errors.date && <p className="error-text">{errors.date.message}</p>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="time" className="form-label">Current Time</label>
+            <input id="time" className="form-input" type="time" {...register('time')} />
+            {errors.time && <p className="error-text">{errors.time.message}</p>}
+          </div>
+
+          <button
+            className="submit-ticket-button"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Submitting...' : 'Submit Ticket'}
+          </button>
+        </form>
+      )}
     </div>
-  );
+  </div>
+);
+
 };
 
 export default EmployeePage;

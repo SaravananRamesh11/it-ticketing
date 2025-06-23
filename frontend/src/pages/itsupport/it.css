@@ -510,4 +510,11 @@
 
 
 
+.image-preview {
+  max-width: 150px;   /* Limit width */
+  max-height: 150px;  /* Limit height */
+  object-fit: cover;  /* Keeps image nicely cropped if it's larger */
+  border-radius: 8px; /* Optional: rounded corners */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+}
 
