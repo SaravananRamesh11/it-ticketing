@@ -40,10 +40,9 @@ const TicketStatsPieCharts = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/admin/stats', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
+        const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+        const response = await axios.get(`${apiUrl}/api/admin/stats`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
 
         setStats(response.data);

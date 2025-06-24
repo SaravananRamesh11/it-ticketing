@@ -80,8 +80,10 @@ const EmployeePage = () => {
         return;
       }
 
+      // Get user details
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
       const userResponse = await axios.post(
-        "http://localhost:5000/api/general/details",
+        `${apiUrl}/api/general/details`,
         { id },
         {
           headers: {
@@ -92,23 +94,12 @@ const EmployeePage = () => {
       );
 
       const userData = userResponse.data;
-
-      const ticketData = {
-        issue: {
-          main: data.mainIssue,
-          sub: data.subIssue,
-          inner_sub: data.innerSubIssue
-        },
-        date: data.date,
-        time: data.time,
-        employeeName: userData.employeeName,
-        email: userData.email,
-        employeeId: userData.employeeId,
-        id: userData._id,
-        description:data.description
-      };
-
-      await axios.post('http://localhost:5000/api/user/ticket', { ticketData },
+      console.log("User details fetched:", userData);
+      
+      const ticketData = { ...data, ...userData };
+      
+      console.log("Submitting ticket with this data:", ticketData);
+      await axios.post(`${apiUrl}/api/user/ticket`, { ticketData },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

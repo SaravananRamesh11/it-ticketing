@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import OtpTimer from './otptimer.jsx';
@@ -12,10 +10,15 @@ const ForgotPassword = () => {
   const [newPassword, setNewPassword] = useState('');
   const [otpExpired, setOtpExpired] = useState(false);
   const [message, setMessage] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const requestOtp = async () => {
+  const handleRequestOtp = async () => {
+    setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/vista/requestotp', { email });
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const res = await axios.post(`${apiUrl}/api/vista/requestotp`, { email });
+      setOtpSent(true);
       setMessage(res.data.message);
       setStep(2);
     } catch (err) {
@@ -27,7 +30,8 @@ const ForgotPassword = () => {
     if (otpExpired) return setMessage('OTP has expired. Please request a new one.');
 
     try {
-      const res = await axios.post('http://localhost:5000/api/vista/resetpassword', {
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const res = await axios.post(`${apiUrl}/api/vista/resetpassword`, {
         email,
         otp,
         newPassword
@@ -56,7 +60,7 @@ const ForgotPassword = () => {
               required
               className="input-box"
             />
-            <button className="submit-btn" onClick={requestOtp}>Request OTP</button>
+            <button className="submit-btn" onClick={handleRequestOtp}>Request OTP</button>
           </>
         )}
 

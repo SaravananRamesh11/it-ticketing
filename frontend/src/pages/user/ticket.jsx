@@ -5,16 +5,16 @@ import './ticket.css'
 const UserTickets = () => {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchTickets = async () => {
+      setIsLoading(true);
       try {
-        const res = await axios.post('http://localhost:5000/api/user/getusertickets',{
-            userId:localStorage.getItem("id")
-        } ,{
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          }
+        const id = localStorage.getItem('id');
+        const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+        const res = await axios.post(`${apiUrl}/api/user/getusertickets`,{
+          id
         });
         if (res.data.success) {
           setTickets(res.data.tickets);

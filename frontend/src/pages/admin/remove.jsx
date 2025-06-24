@@ -9,7 +9,8 @@ const RemoveUserForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/admin/remove', {
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const response = await axios.post(`${apiUrl}/api/admin/remove`, {
         employeeId: data.employeeId,
       }, {
         headers: {
