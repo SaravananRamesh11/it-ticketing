@@ -34,12 +34,20 @@ const close_ticket = async (req, res) => {
         console.log(`from try block proofImageKey: ${proofImageKey}`)
 
         // Upload to private S3 bucket
-        await s3.upload({
-          Bucket: process.env.AWS_BUCKET_NAME,
-          Key: proofImageKey,
-          Body: req.file.buffer,
-          ContentType: req.file.mimetype,
-        }).promise();
+        // await s3.upload({
+        //   Bucket: process.env.AWS_BUCKET_NAME,
+        //   Key: proofImageKey,
+        //   Body: req.file.buffer,
+        //   ContentType: req.file.mimetype,
+        // }).promise();
+        const uploadCommand = new PutObjectCommand({
+      Bucket: process.env.BUCKET_NAME,
+      Key: proofImageKey,
+      Body: req.file.buffer,
+      ContentType: req.file.mimetype
+    });
+
+    await s3.send(uploadCommand); 
 
       } catch (uploadError) {
         console.error('Image upload failed, still closing ticket:', uploadError);
