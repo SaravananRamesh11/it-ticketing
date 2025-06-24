@@ -57,6 +57,7 @@ body {
   transition: all 0.25s ease-in-out;
   margin-top: -29px;
   margin-left: 1060px;
+  margin-right: 100px;
 }
 
 .info-button:hover {

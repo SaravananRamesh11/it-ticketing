@@ -52,6 +52,7 @@ const UserTickets = () => {
                 <small>{ticket.itSupport} | {ticket.status}</small>
               </div>
             </div>
+            Click on the ticket to view details!
             <div className="ticket-id">Ticket ID: {ticket._id}</div>
           </div>
         ))}
