@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './ticket.css'
+import './ticket.css';
 
 const UserTickets = () => {
   const [tickets, setTickets] = useState([]);
@@ -11,17 +11,35 @@ const UserTickets = () => {
     const fetchTickets = async () => {
       setIsLoading(true);
       try {
-        const id = localStorage.getItem('id');
+        const userId = localStorage.getItem('id'); // ✅ Renamed to match backend
+        const token = localStorage.getItem('token');
         const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-        const res = await axios.post(`${apiUrl}/api/user/getusertickets`,{
-          id
-        });
+
+        console.log("➡️ ID:", userId);
+        console.log("🛡️ Token:", token);
+        console.log("🌐 API URL:", apiUrl);
+
+        const res = await axios.post(
+          `${apiUrl}/api/user/getusertickets`,
+          { userId }, // ✅ Send userId, not id
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
         if (res.data.success) {
           setTickets(res.data.tickets);
+        } else {
+          console.warn('⚠️ Ticket fetch unsuccessful:', res.data.message);
         }
-        console.log(res.data.tickets)
+
+        console.log('✅ Tickets:', res.data.tickets);
       } catch (err) {
-        console.error('Failed to fetch tickets:', err);
+        console.error('❌ Failed to fetch tickets:', err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -39,31 +57,38 @@ const UserTickets = () => {
   return (
     <div className="user-tickets-container">
       <h2>My Completed Tickets</h2>
-      <div className="tickets-list">
-        {tickets.map((ticket) => (
-          <div key={ticket._id} className="ticket-card" onClick={() => openDetails(ticket)}>
-            <div className="ticket-header">
-              <span className="ticket-date">
-                {new Date(ticket.date).getDate()} <br />
-                {new Date(ticket.date).toLocaleString('default', { month: 'short' })}
-              </span>
-              <div className="ticket-route">
-                <h4>{ticket.issue.main}</h4>
-                <small>{ticket.itSupport} | {ticket.status}</small>
+
+      {isLoading ? (
+        <p>Loading tickets...</p>
+      ) : tickets.length === 0 ? (
+        <p>No tickets found.</p>
+      ) : (
+        <div className="tickets-list">
+          {tickets.map((ticket) => (
+            <div key={ticket._id} className="ticket-card" onClick={() => openDetails(ticket)}>
+              <div className="ticket-header">
+                <span className="ticket-date">
+                  {new Date(ticket.date).getDate()} <br />
+                  {new Date(ticket.date).toLocaleString('default', { month: 'short' })}
+                </span>
+                <div className="ticket-route">
+                  <h4>{ticket.issue.main}</h4>
+                  <small>{ticket.itSupport} | {ticket.status}</small>
+                </div>
               </div>
+              Click on the ticket to view details!
+              <div className="ticket-id">Ticket ID: {ticket._id}</div>
             </div>
-            Click on the ticket to view details!
-            <div className="ticket-id">Ticket ID: {ticket._id}</div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {selectedTicket && (
         <div className="ticket-details-overlay" onClick={closeDetails}>
           <div className="ticket-details-card" onClick={(e) => e.stopPropagation()}>
             <button className="close-button" onClick={closeDetails}>&times;</button>
             <h3>Ticket Details</h3>
-            <p><strong>Issue:</strong> {selectedTicket.issue.main} {selectedTicket.issue.sub}  {selectedTicket.issue.inner_sub}</p>
+            <p><strong>Issue:</strong> {selectedTicket.issue.main} {selectedTicket.issue.sub} {selectedTicket.issue.inner_sub}</p>
             <p><strong>Date:</strong> {new Date(selectedTicket.date).toLocaleDateString()}</p>
             <p><strong>Time:</strong> {selectedTicket.time}</p>
             <p><strong>Resolution:</strong> {selectedTicket.resolution}</p>
@@ -76,3 +101,6 @@ const UserTickets = () => {
 };
 
 export default UserTickets;
+// This code defines a React component for displaying user tickets.
+// It fetches tickets from the backend, displays them in a list, and allows users to view details of each ticket in a modal-like overlay.
+// The component uses hooks for state management and side effects, and Axios for API requests.      

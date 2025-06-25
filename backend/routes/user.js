@@ -12,6 +12,6 @@ router.post('/ticket', ticket);
 
 router.put('/password',password);
 
-router.post("/getusertickets",getUserTickets)
+router.post("/getusertickets",getUserTickets);
 
 module.exports = router;
