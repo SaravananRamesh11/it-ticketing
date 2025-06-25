@@ -105,6 +105,19 @@ const issueHierarchy = {
   }
 };
 
+const handleExceedTime = async (ticket) => {
+  try {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    await axios.post(`${apiUrl}/api/it_support/exceed`, { ticket }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  } catch (err) {
+    console.error('Error exceeding time:', err);
+    alert(err.response?.data?.message || 'Failed to exceed time.');
+  }
+};
 
 // Timer Component - Updated to stop when status is InProgress
 const TicketTimer = ({ ticket }) => {
@@ -342,20 +355,6 @@ const handleUpdateStatus = async (ticketId, currentStatus, sub_issue) => {
   } catch (err) {
     console.error('Error updating ticket status:', err);
     alert(err.response?.data?.message || 'Failed to update ticket status.');
-  }
-};
-
-const handleExceedTime = async (ticket) => {
-  try {
-    const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-    await axios.post(`${apiUrl}/api/it_support/exceed`, { ticket }, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-  } catch (err) {
-    console.error('Error exceeding time:', err);
-    alert(err.response?.data?.message || 'Failed to exceed time.');
   }
 };
 
