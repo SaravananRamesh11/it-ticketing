@@ -20,6 +20,11 @@ userSchema.statics.getDetails = async function (_id) {
   return user || null; // Return user or null if not found
 };
 
+userSchema.statics.getEmployeeIdById = async function (_id) {
+  const user = await this.findById(_id).select('employeeId').lean();
+  return user?.employeeId || null;
+};
+
 
 
 

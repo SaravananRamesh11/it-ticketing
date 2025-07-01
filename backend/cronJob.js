@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const exportAndDeleteClosedTickets = require('./utils/exportTickets');
 const Ticket = require('./models/Ticket'); // adjust path as needed
 const sendEmail = require('./services/mailservice'); // adjust path as needed
+const ITSupportStats = require('./models/out_count.js'); // adjust path as needed
 
 
 // 🔁 Runs at 23:59 on 28–31 of every month, checks if it's last day
@@ -18,6 +19,8 @@ cron.schedule('59 23 28-31 * *', async () => {// runs every last day of the mont
     try {
       await exportAndDeleteClosedTickets();
       console.log('✅ Monthly ticket export & deletion complete.');
+       await ITSupportStats.resetAllCounts();
+      console.log('🧹 All IT support outOfTimeCount values reset to 0.');
     } catch (error) {
       console.error('❌ Cron job error:', error);
     }

@@ -33,42 +33,62 @@ const ticket = async (req, res) => {
   try {
     
     const { employeeName, employeeId, issue, date, time, email, id ,description} = req.body.ticketData;
-    console.log(`${employeeName} ${employeeId} ${issue} ${date} ${time} ${email} ${id}`);
+    //console.log(`${employeeName} ${employeeId} ${issue} ${date} ${time} ${email} ${id}`);
 
     // 1. Validate the requesting employee
     const employee = await User.findOne({  _id:id });
+    
+
     if (!employee) {
       return res.status(400).json({ message: 'Employee not found' });
     }
 
     // 2. Fetch all IT support members
     const allSupport = await User.find({ role: 'IT Support' }).lean();
+    
     if (allSupport.length === 0) {
       return res.status(500).json({ message: 'No IT support members found' });
     }
+
+    //console.log("all it support members from ticket endpoint",allSupport)
 
     // 3. Get open ticket counts by itSupport
     const openTicketCounts = await Ticket.aggregate([
       { $match: { status: 'Open' } },
       { $group: { _id: '$itSupport', count: { $sum: 1 } } }
     ]);
+    //console.log("open ticket counts from ticket endpoint",openTicketCounts)
 
     const ticketMap = {};
     openTicketCounts.forEach(t => {
       ticketMap[t._id] = t.count;
     });
 
-    // 4. Choose IT support with least number of open tickets
-    let selectedSupport = allSupport[0];
-    let minCount = ticketMap[selectedSupport.employeeName] || 0;
+    // // 4. Choose IT support with least number of open tickets
+    // let selectedSupport = allSupport[0];
+    // let minCount = ticketMap[selectedSupport.employeeName] || 0;
 
-    allSupport.forEach(support => {
-      const count = ticketMap[support.employeeName] || 0;
-      if (count < minCount) {
-        minCount = count;
-        selectedSupport = support;
-      }
-    });
+    // allSupport.forEach(support => {
+    //   const count = ticketMap[support.employeeName] || 0;
+    //   if (count < minCount) {
+    //     minCount = count;
+    //     selectedSupport = support;
+    //   }
+    // });
+    // console.log('selected it person from ticket endpoint',selectedSupport.employeeId)
+
+    // 4. Choose IT support with least number of open tickets
+let selectedSupport = allSupport[0];
+let minCount = ticketMap[selectedSupport.employeeId] || 0;
+
+allSupport.forEach(support => {
+  const count = ticketMap[support.employeeId] || 0;
+  if (count < minCount) {
+    minCount = count;
+    selectedSupport = support;
+  }
+});
+
 
     // 5. Create and save the ticket
     const newTicket = new Ticket({
@@ -78,7 +98,7 @@ const ticket = async (req, res) => {
       date: new Date(date),
       time,
       email,
-      itSupport: selectedSupport.employeeName,
+      itSupport: selectedSupport.employeeId,
       description
     });
 

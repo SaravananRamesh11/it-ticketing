@@ -51,8 +51,8 @@ const issueHierarchy = {
       "Network Performance": { timeLimit: 180 }
     },
     "Email Issues": {
-      "Account Setup": { timeLimit: 30 },
-      "Performance": { timeLimit: 60 },
+      "Account Setup": { timeLimit: 1},
+      "Performance": { timeLimit: 0.5 },
       "Connectivity": { timeLimit: 90 }
     },
     "LAN/Internet": { //put

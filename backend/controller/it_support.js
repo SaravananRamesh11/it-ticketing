@@ -8,6 +8,7 @@ const sendEmail=require('../services/mailservice')
 require('dotenv').config()
 const multer = require('multer');
 const upload = multer();
+const ITSupportStats=require("../models/out_count")
 
 const close_ticket = async (req, res) => {
   try {
@@ -32,14 +33,6 @@ const close_ticket = async (req, res) => {
         const fileExtension = req.file.originalname.split('.').pop();
         proofImageKey = `IT-TICKETING/proofs/${hexName}.${fileExtension}`;
         console.log(`from try block proofImageKey: ${proofImageKey}`)
-
-        // Upload to private S3 bucket
-        // await s3.upload({
-        //   Bucket: process.env.AWS_BUCKET_NAME,
-        //   Key: proofImageKey,
-        //   Body: req.file.buffer,
-        //   ContentType: req.file.mimetype,
-        // }).promise();
         const uploadCommand = new PutObjectCommand({
       Bucket: process.env.BUCKET_NAME,
       Key: proofImageKey,
@@ -123,11 +116,14 @@ const close_ticket = async (req, res) => {
 const getAssignedTicketsBySupport = async (req, res) => {
   try {
     const { id } = req.body;
-    const name = await User.getNameById(id);
+
+    console.log("id in getassignedticket",id)
+    const empid = await User.getEmployeeIdById(id);
     const tickets = await Ticket.find({
-      itSupport: name,
+      itSupport: empid,
       status: { $in: ['Open', 'InProgress'] }
     });
+    console.log("from get assigned tickets for itsupport", tickets);
     res.status(200).json(tickets);
   } catch (error) {
     console.error('Error fetching tickets:', error);
@@ -163,44 +159,156 @@ const updateTicketStatus = async (req, res) => {
 };
 
 
-const time_exceeded =  async (req,res)=>{
-  try{
-    const {ticket}=req.body
-    const text = `
-    URGENT: Ticket Approaching Time Limit
-    ====================================
+// const time_exceeded =  async (req,res)=>{
+//   try{
+//     const {ticket}=req.body
+//     console.log('from time exceeded',req.body)
+//     const text = `
+//     URGENT: Ticket Approaching Time Limit
+//     ====================================
     
+//     Ticket Details:
+//     - ID: ${ticket._id}
+//     - Employee: ${ticket.employeeName} (${ticket.employeeId})
+
+//     Issue Breakdown:
+//     - Category: ${ticket.issue.main}
+//     - Subcategory: ${ticket.issue.sub}
+//     - Specific Issue: ${ticket.issue.inner_sub}
+    
+//     Time Status:
+//     - Created: ${new Date(ticket.createdAt).toLocaleString()}
+
+//     IT SUPPORT:
+//     -Assigned to: ${ticket.itSupport}
+
+    
+    
+//     Action Required:
+//     Please review this ticket immediately and either:
+//     Contact the assigned technician
+//   `;
+//   const updatedTicket = await Ticket.setHrWarningTrue(ticket._id);
+//   console.log("from time exceeded",updatedTicket)
+//   // Step 1: Find the user (IT support person)
+// const itSupportUser = await User.findOne({ employeeId: ticket.itSupport });
+
+// if (itSupportUser) {
+//   // Step 2: Update or insert ITSupportStats using user._id
+//   await ITSupportStats.findOneAndUpdate(
+//     { user: itSupportUser._id },
+//     {
+//       $inc: { outOfTimeCount: 1 },
+//       $setOnInsert: { itSupportName: itSupportUser.employeeName }
+//     },
+//     { upsert: true, new: true }
+//   );
+// }
+//   sendEmail(process.env.HR,"ticket time limit exceeded",text);
+//   }
+
+//   catch(err)
+//   {
+//     console.log(err)
+//   }
+  
+// }
+
+const time_exceeded = async (req, res) => {
+  try {
+    const { ticket } = req.body;
+
+    // Step 1: Set HR warning flag on the ticket
+    const updatedTicket = await Ticket.findByIdAndUpdate(
+      ticket._id,
+      { hr_warning: true },
+      { new: true }
+    );
+
+    // Step 2: Get the IT support user object by employeeId
+    const itSupportUser = await User.findOne({ employeeId: ticket.itSupport });
+
+    if (itSupportUser) {
+      // Step 3: Check if stats entry exists
+      const existingStats = await ITSupportStats.findOne({ user: itSupportUser._id });
+
+      if (existingStats) {
+        existingStats.outOfTimeCount += 1;
+        await existingStats.save();
+      } else {
+        await ITSupportStats.create({
+          user: itSupportUser._id,
+          itSupportName: itSupportUser.employeeName,
+          outOfTimeCount: 1
+        });
+      }
+    }
+
+    // Step 4: Send HR email
+    const text = `
+    ⚠️ URGENT: Ticket Time Limit Exceeded
+    ====================================
+
     Ticket Details:
     - ID: ${ticket._id}
     - Employee: ${ticket.employeeName} (${ticket.employeeId})
 
-    Issue Breakdown:
+    Issue:
     - Category: ${ticket.issue.main}
     - Subcategory: ${ticket.issue.sub}
     - Specific Issue: ${ticket.issue.inner_sub}
-    
+
     Time Status:
     - Created: ${new Date(ticket.createdAt).toLocaleString()}
-    
-    
-    Action Required:
-    Please review this ticket immediately and either:
-    Contact the assigned technician
-  `;
-  const updatedTicket = await Ticket.setHrWarningTrue(ticket._id);
 
-  sendEmail(process.env.HR,"ticket time limit exceeded",text);
+    Action Required:
+    This ticket has exceeded its SLA time. Please review and take appropriate action.
+    `;
+
+    await sendEmail(process.env.HR, "🚨 Ticket Time Limit Exceeded", text);
+
+    res.status(200).json({ message: "Ticket marked as out-of-time and HR notified." });
+
+  } catch (err) {
+    console.error("❌ Error in time_exceeded controller:", err);
+    res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+};
+
+
+const makezero = async (req, res) => {
+  try {
+    await ITSupportStats.resetAllCounts();
+    res.status(200).json({
+      success: true,
+      message: "All outOfTimeCount values have been reset to 0."
+    });
+  } catch (error) {
+    console.error("Failed to reset counts:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while resetting counts.",
+      error: error.message
+    });
+  }
+};
+
+const returnName=async(req,res)=>{
+  try{
+    const {name}=req.body
+    const itSupportUser=await User.findOne({employeeId:name})
+    if(itSupportUser){
+      res.status(200).json({success:true,itSupportName:itSupportUser.employeeName})
 
   }
-
+}
   catch(err)
   {
-    console.log(err)
+    res.status(404).json({"message":"sorry couldnt get itsupport's name"})
   }
-    
-
-
-
-
 }
-module.exports = { getAssignedTicketsBySupport,close_ticket,updateTicketStatus,time_exceeded };
+
+
+
+
+module.exports = { getAssignedTicketsBySupport,close_ticket,updateTicketStatus,time_exceeded,makezero,returnName};

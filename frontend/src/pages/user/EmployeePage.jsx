@@ -75,7 +75,7 @@ const EmployeePage = () => {
     try {
       const id = localStorage.getItem('id');
       if (!id) {
-        alert('User ID not found. Please login again.');
+        alert('HIIIIIIIIIII User ID not found. Please login again.');
         navigate('/login');
         return;
       }
@@ -107,6 +107,8 @@ const EmployeePage = () => {
         id: userData._id,
         description:data.description
       };
+
+      console.log("this is ticket daatattaa",ticketData)
 
       await axios.post('http://localhost:5000/api/user/ticket', { ticketData },
         {
