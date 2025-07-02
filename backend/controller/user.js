@@ -123,76 +123,186 @@ const password =async (req, res) => {
 //   }
 // };
 
+// const ticket = async (req, res) => {
+//   try {
+
+    
+//     const { employeeName, employeeId, issue, date, time, email, id ,description} = req.body;
+//     //console.log(`${employeeName} ${employeeId} ${issue} ${date} ${time} ${email} ${id}`);
+
+//     // 1. Validate the requesting employee
+//     const employee = await User.findOne({  _id:id });
+    
+
+
+//     if (!employee) {
+//       return res.status(400).json({ message: 'Employee not found' });
+//     }
+
+//     // Get IT support staff
+//     const allSupport = await User.find({ role: 'IT Support' }).lean();
+    
+//     if (allSupport.length === 0) {
+//       return res.status(500).json({ message: 'No IT support members found' });
+//     }
+
+//     const openTicketCounts = await Ticket.aggregate([
+//       { $match: { status: 'Open' } },
+//       { $group: { _id: '$itSupport', count: { $sum: 1 } } }
+//     ]);
+    
+
+//     const ticketMap = {};
+//     openTicketCounts.forEach(t => {
+//       ticketMap[t._id] = t.count;
+//     });
+
+
+   
+// let selectedSupport = allSupport[0];
+// let minCount = ticketMap[selectedSupport.employeeId] || 0;
+
+// allSupport.forEach(support => {
+//   const count = ticketMap[support.employeeId] || 0;
+//   if (count < minCount) {
+//     minCount = count;
+//     selectedSupport = support;
+//   }
+// });
+
+
+
+//     // ✅ create ticket directly with issue object
+//     const newTicket = new Ticket({
+//       employeeName,
+//       employeeId,
+//       email,
+//       date: new Date(date),
+//       time,
+
+//       email,
+//       itSupport: selectedSupport.employeeId,
+
+//       issue,
+      
+
+//       description
+//     });
+
+//     await newTicket.save();
+
+//     return res.status(201).json({
+//       message: 'Ticket created successfully!',
+//       ticketId: newTicket._id
+//     });
+
+//   } catch (error) {
+//     console.error('Error creating ticket:', error);
+//     return res.status(500).json({
+//       message: 'Server error while creating ticket',
+//       error: error.message
+//     });
+//   }
+// };
+
+
 const ticket = async (req, res) => {
   try {
-
-    
-    const { employeeName, employeeId, issue, date, time, email, id ,description} = req.body;
-    //console.log(`${employeeName} ${employeeId} ${issue} ${date} ${time} ${email} ${id}`);
+    const { employeeName, employeeId, issue, date, time, email, id, description } = req.body;
 
     // 1. Validate the requesting employee
-    const employee = await User.findOne({  _id:id });
-    
-
-
+    const employee = await User.findOne({ _id: id });
     if (!employee) {
       return res.status(400).json({ message: 'Employee not found' });
     }
 
-    // Get IT support staff
+    // 2. Get all IT support staff
     const allSupport = await User.find({ role: 'IT Support' }).lean();
-    
     if (allSupport.length === 0) {
       return res.status(500).json({ message: 'No IT support members found' });
     }
 
+    // 3. Get open ticket counts
     const openTicketCounts = await Ticket.aggregate([
       { $match: { status: 'Open' } },
       { $group: { _id: '$itSupport', count: { $sum: 1 } } }
     ]);
-    
 
     const ticketMap = {};
     openTicketCounts.forEach(t => {
       ticketMap[t._id] = t.count;
     });
 
+    // 4. Choose IT support with fewest open tickets
+    let selectedSupport = allSupport[0];
+    let minCount = ticketMap[selectedSupport.employeeId] || 0;
 
-   
-let selectedSupport = allSupport[0];
-let minCount = ticketMap[selectedSupport.employeeId] || 0;
+    allSupport.forEach(support => {
+      const count = ticketMap[support.employeeId] || 0;
+      if (count < minCount) {
+        minCount = count;
+        selectedSupport = support;
+      }
+    });
 
-allSupport.forEach(support => {
-  const count = ticketMap[support.employeeId] || 0;
-  if (count < minCount) {
-    minCount = count;
-    selectedSupport = support;
-  }
-});
-
-
-
-    // ✅ create ticket directly with issue object
+    // 5. Create the ticket
     const newTicket = new Ticket({
       employeeName,
       employeeId,
       email,
       date: new Date(date),
       time,
-
-      email,
       itSupport: selectedSupport.employeeId,
-
       issue,
-      
-
       description
     });
 
     await newTicket.save();
 
+    // 6. Send email notifications
+    const itSupportEmail = await User.getEmailByEmployeeId(selectedSupport.employeeId);
+
+    const subject = `New IT Support Ticket Assigned - ${issue.main}`;
+    const employeeMessage = `
+Hello ${employeeName},
+
+Your IT support ticket has been created successfully.
+
+Ticket Details:
+• Issue: ${issue.main} > ${issue.sub} > ${issue.inner_sub}
+• Description: ${description}
+• Assigned IT Support: ${selectedSupport.employeeName}
+
+Ticket ID: ${newTicket._id}
+
+Thank you.
+`;
+
+    const supportMessage = `
+Hello ${selectedSupport.employeeName},
+
+A new IT support ticket has been assigned to you.
+
+Ticket Details:
+• From: ${employeeName} (${employeeId})
+• Issue: ${issue.main} > ${issue.sub} > ${issue.inner_sub}
+• Description: ${description}
+
+Please log in to the system to view more details.
+
+Ticket ID: ${newTicket._id}
+`;
+
+    if (email) {
+      await sendEmail(email, subject, employeeMessage);
+    }
+
+    if (itSupportEmail) {
+      await sendEmail(itSupportEmail, subject, supportMessage);
+    }
+
     return res.status(201).json({
-      message: 'Ticket created successfully!',
+      message: 'Ticket created and email notifications sent successfully!',
       ticketId: newTicket._id
     });
 

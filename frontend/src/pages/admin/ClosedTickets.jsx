@@ -127,11 +127,16 @@ function ClosedTickets() {
           <table>
             <thead>
               <tr>
-                {Object.keys(csvData[0])
+                {/* {Object.keys(csvData[0])
                   .filter((key) => key !== 'proofImageKey') // Skip the column
                   .map((key) => (
                     <th key={key}>{key}</th>
-                ))}
+                ))} */}
+                {Object.keys(csvData[0])
+                .filter((key) => !['proofImageKey', '__v', 'hr_warning'].includes(key))
+                .map((key) => (
+                  <th key={key}>{key}</th>
+              ))}
               </tr>
 
             </thead>
@@ -139,9 +144,12 @@ function ClosedTickets() {
            
               {csvData.map((row, idx) => (
   <tr key={idx}>
-    {Object.entries(row)
+    {/* {Object.entries(row)
       .filter(([key]) => key !== 'proofImageKey') // Skip this column
-      .map(([key, val], i) => (
+      .map(([key, val], i) => ( */}
+      {Object.entries(row)
+        .filter(([key]) => !['proofImageKey', '__v', 'hr_warning'].includes(key))
+        .map(([key, val], i) => (
         <td key={i}>
           {key === 'date' ? new Date(val).toLocaleDateString() :
             key === 'proofImageUrl' && val ? (

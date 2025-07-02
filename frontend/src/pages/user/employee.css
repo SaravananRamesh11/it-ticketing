@@ -22,9 +22,10 @@ body {
 }
 
 /* === My Details Button === */
-.details-button {
+/* .details-button {
   align-self: flex-end;
   margin-bottom: 30px;
+  margin-left: 30px;
   padding: 10px 24px;
   background: #ffffffc2;
   backdrop-filter: blur(10px);
@@ -36,7 +37,7 @@ body {
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   transition: all 0.25s ease-in-out;
-}
+} */
 
 .details-button:hover {
   background-color: #e3f2fd;
@@ -204,6 +205,7 @@ body {
     margin-bottom: 20px;
     width: 100%;
     text-align: center;
+    margin-left: 30px;
   }
 }
 
