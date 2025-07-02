@@ -165,21 +165,21 @@ const EmployeePage = () => {
         }
       };
 
-<<<<<<< HEAD
-      console.log("this is ticket daatattaa",ticketData)
+// <<<<<<< HEAD
+//       console.log("this is ticket daatattaa",ticketData)
 
-      await axios.post('http://localhost:5000/api/user/ticket', { ticketData },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          }
-=======
+//       await axios.post('http://localhost:5000/api/user/ticket', { ticketData },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${localStorage.getItem("token")}`,
+//           }
+// =======
       console.log("Submitting ticket with this data:", ticketData);
 
       await axios.post(`${apiUrl}/api/user/ticket`,  ticketData , {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
->>>>>>> 27033e7f1854e626274e0556837de8cc8649d312
+
         }
       });
 

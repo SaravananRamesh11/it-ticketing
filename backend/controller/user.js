@@ -125,32 +125,16 @@ const password =async (req, res) => {
 
 const ticket = async (req, res) => {
   try {
-<<<<<<< HEAD
+
     
-    const { employeeName, employeeId, issue, date, time, email, id ,description} = req.body.ticketData;
+    const { employeeName, employeeId, issue, date, time, email, id ,description} = req.body;
     //console.log(`${employeeName} ${employeeId} ${issue} ${date} ${time} ${email} ${id}`);
 
     // 1. Validate the requesting employee
     const employee = await User.findOne({  _id:id });
     
 
-=======
-    console.log("Request body:", req.body);
 
-    const {
-      employeeName,
-      employeeId,
-      email,
-      id,
-      date,
-      time,
-      description,
-      issue   // ✅ directly use nested issue object
-    } = req.body;
-
-    // Validate employee
-    const employee = await User.findOne({ _id: id });
->>>>>>> 27033e7f1854e626274e0556837de8cc8649d312
     if (!employee) {
       return res.status(400).json({ message: 'Employee not found' });
     }
@@ -162,38 +146,19 @@ const ticket = async (req, res) => {
       return res.status(500).json({ message: 'No IT support members found' });
     }
 
-<<<<<<< HEAD
-    //console.log("all it support members from ticket endpoint",allSupport)
-
-    // 3. Get open ticket counts by itSupport
-=======
->>>>>>> 27033e7f1854e626274e0556837de8cc8649d312
     const openTicketCounts = await Ticket.aggregate([
       { $match: { status: 'Open' } },
       { $group: { _id: '$itSupport', count: { $sum: 1 } } }
     ]);
-    //console.log("open ticket counts from ticket endpoint",openTicketCounts)
+    
 
     const ticketMap = {};
     openTicketCounts.forEach(t => {
       ticketMap[t._id] = t.count;
     });
 
-<<<<<<< HEAD
-    // // 4. Choose IT support with least number of open tickets
-    // let selectedSupport = allSupport[0];
-    // let minCount = ticketMap[selectedSupport.employeeName] || 0;
 
-    // allSupport.forEach(support => {
-    //   const count = ticketMap[support.employeeName] || 0;
-    //   if (count < minCount) {
-    //     minCount = count;
-    //     selectedSupport = support;
-    //   }
-    // });
-    // console.log('selected it person from ticket endpoint',selectedSupport.employeeId)
-
-    // 4. Choose IT support with least number of open tickets
+   
 let selectedSupport = allSupport[0];
 let minCount = ticketMap[selectedSupport.employeeId] || 0;
 
@@ -204,10 +169,7 @@ allSupport.forEach(support => {
     selectedSupport = support;
   }
 });
-=======
-    let selectedSupport = allSupport[0];
-    let minCount = ticketMap[selectedSupport.employeeName] || 0;
->>>>>>> 27033e7f1854e626274e0556837de8cc8649d312
+
 
 
     // ✅ create ticket directly with issue object
@@ -217,13 +179,13 @@ allSupport.forEach(support => {
       email,
       date: new Date(date),
       time,
-<<<<<<< HEAD
+
       email,
       itSupport: selectedSupport.employeeId,
-=======
+
       issue,
-      itSupport: selectedSupport.employeeName,
->>>>>>> 27033e7f1854e626274e0556837de8cc8649d312
+      
+
       description
     });
 
