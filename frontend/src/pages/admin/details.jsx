@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 //import './detail.css'; // Import the CSS file
@@ -22,8 +21,9 @@ const Detail = () => {
             window.location.href = '/'; // Or use navigate from react-router-dom
             return;
         }
+       const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
        const res = await axios.post(
-  'http://localhost:5000/api/general/details',
+  `${apiUrl}/api/general/details`,
   { id },
   {
     headers: {
@@ -57,13 +57,14 @@ const Detail = () => {
     }
 
     try {
-      const id = localStorage.getItem('id'); // Ensure ID is still available
+      const id = localStorage.getItem('id');
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
       if (!id) {
           alert('User ID not found for password change. Please login again.');
           window.location.href = '/';
           return;
       }
-      await axios.post('http://localhost:5000/api/general/password', {
+      await axios.post(`${apiUrl}/api/general/password`, {
         id: id, // Use the ID from localStorage
         newPassword,
       });
