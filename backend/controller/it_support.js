@@ -159,60 +159,7 @@ const updateTicketStatus = async (req, res) => {
 };
 
 
-// const time_exceeded =  async (req,res)=>{
-//   try{
-//     const {ticket}=req.body
-//     console.log('from time exceeded',req.body)
-//     const text = `
-//     URGENT: Ticket Approaching Time Limit
-//     ====================================
-    
-//     Ticket Details:
-//     - ID: ${ticket._id}
-//     - Employee: ${ticket.employeeName} (${ticket.employeeId})
 
-//     Issue Breakdown:
-//     - Category: ${ticket.issue.main}
-//     - Subcategory: ${ticket.issue.sub}
-//     - Specific Issue: ${ticket.issue.inner_sub}
-    
-//     Time Status:
-//     - Created: ${new Date(ticket.createdAt).toLocaleString()}
-
-//     IT SUPPORT:
-//     -Assigned to: ${ticket.itSupport}
-
-    
-    
-//     Action Required:
-//     Please review this ticket immediately and either:
-//     Contact the assigned technician
-//   `;
-//   const updatedTicket = await Ticket.setHrWarningTrue(ticket._id);
-//   console.log("from time exceeded",updatedTicket)
-//   // Step 1: Find the user (IT support person)
-// const itSupportUser = await User.findOne({ employeeId: ticket.itSupport });
-
-// if (itSupportUser) {
-//   // Step 2: Update or insert ITSupportStats using user._id
-//   await ITSupportStats.findOneAndUpdate(
-//     { user: itSupportUser._id },
-//     {
-//       $inc: { outOfTimeCount: 1 },
-//       $setOnInsert: { itSupportName: itSupportUser.employeeName }
-//     },
-//     { upsert: true, new: true }
-//   );
-// }
-//   sendEmail(process.env.HR,"ticket time limit exceeded",text);
-//   }
-
-//   catch(err)
-//   {
-//     console.log(err)
-//   }
-  
-// }
 
 const time_exceeded = async (req, res) => {
   try {
