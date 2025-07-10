@@ -159,24 +159,101 @@ const updateTicketStatus = async (req, res) => {
 };
 
 
+// const time_exceeded = async (req, res) => {
+//   try {
+//     const { ticket } = req.body;
 
+//     // Step 1: Set HR warning flag on the ticket
+//     const updatedTicket = await Ticket.findByIdAndUpdate(
+//       ticket._id,
+//       { hr_warning: true },
+//       { new: true }
+//     );
+
+//     // Step 2: Get the IT support user object by employeeId
+//     const itSupportUser = await User.findOne({ employeeId: ticket.itSupport });
+
+//     if (itSupportUser) {
+//       // Step 3: Check if stats entry exists
+//       const existingStats = await ITSupportStats.findOne({ user: itSupportUser._id });
+
+//       if (existingStats) {
+//         existingStats.outOfTimeCount += 1;
+//         await existingStats.save();
+//       } else {
+//         await ITSupportStats.create({
+//           user: itSupportUser._id,
+//           itSupportName: itSupportUser.employeeName,
+//           outOfTimeCount: 1
+//         });
+//       }
+//     }
+
+//     // Step 4: Send HR email
+//     const text = `
+//     ⚠️ URGENT: Ticket Time Limit Exceeded
+//     ====================================
+
+//     Ticket Details:
+//     - ID: ${ticket._id}
+//     - Employee: ${ticket.employeeName} (${ticket.employeeId})
+
+//     Issue:
+//     - Category: ${ticket.issue.main}
+//     - Subcategory: ${ticket.issue.sub}
+//     - Specific Issue: ${ticket.issue.inner_sub}
+
+//     Time Status:
+//     - Created: ${new Date(ticket.createdAt).toLocaleString()}
+
+//     Action Required:
+//     This ticket has exceeded its SLA time. Please review and take appropriate action.
+//     `;
+
+//     // await sendEmail(process.env.HR, "🚨 Ticket Time Limit Exceeded", text);
+//     await sendEmail('mahadevmanohar07@gmail.com', 'Test Email', 'This is a test');
+
+//     res.status(200).json({ message: "Ticket marked as out-of-time and HR notified." });
+
+//   } catch (err) {
+//     console.error("❌ Error in time_exceeded controller:", err);
+//     res.status(500).json({ message: "Internal server error", error: err.message });
+//   }
+// };
 
 const time_exceeded = async (req, res) => {
   try {
     const { ticket } = req.body;
 
-    // Step 1: Set HR warning flag on the ticket
+    if (!ticket || !ticket._id) {
+      console.error("❌ Missing ticket data in request body:", req.body);
+      return res.status(400).json({ message: "Invalid ticket data" });
+    }
+
+    console.log("➡️ Ticket received for expiry processing:", ticket._id);
+
+    // Step 1: Update ticket
     const updatedTicket = await Ticket.findByIdAndUpdate(
       ticket._id,
       { hr_warning: true },
       { new: true }
     );
 
-    // Step 2: Get the IT support user object by employeeId
-    const itSupportUser = await User.findOne({ employeeId: ticket.itSupport });
+    if (!updatedTicket) {
+      console.error("❌ Ticket not found in DB:", ticket._id);
+      return res.status(404).json({ message: "Ticket not found" });
+    }
 
+    console.log("✅ Ticket marked with HR warning");
+
+    // Step 2: Find IT support user
+    const itSupportUser = await User.findOne({ employeeId: ticket.itSupport });
+    if (!itSupportUser) {
+      console.warn("⚠️ IT Support user not found:", ticket.itSupport);
+    }
+
+    // Step 3: Stats update
     if (itSupportUser) {
-      // Step 3: Check if stats entry exists
       const existingStats = await ITSupportStats.findOne({ user: itSupportUser._id });
 
       if (existingStats) {
@@ -189,33 +266,38 @@ const time_exceeded = async (req, res) => {
           outOfTimeCount: 1
         });
       }
+
+      console.log("✅ Stats updated");
     }
 
     // Step 4: Send HR email
+    console.log("📧 Preparing to send HR email to:", process.env.HR);
+
     const text = `
-    ⚠️ URGENT: Ticket Time Limit Exceeded
-    ====================================
+⚠️ URGENT: Ticket Time Limit Exceeded
+====================================
 
-    Ticket Details:
-    - ID: ${ticket._id}
-    - Employee: ${ticket.employeeName} (${ticket.employeeId})
+Ticket Details:
+- ID: ${ticket._id}
+- Employee: ${ticket.employeeName} (${ticket.employeeId})
 
-    Issue:
-    - Category: ${ticket.issue.main}
-    - Subcategory: ${ticket.issue.sub}
-    - Specific Issue: ${ticket.issue.inner_sub}
+Issue:
+- Category: ${ticket.issue.main}
+- Subcategory: ${ticket.issue.sub}
+- Specific Issue: ${ticket.issue.inner_sub}
 
-    Time Status:
-    - Created: ${new Date(ticket.createdAt).toLocaleString()}
+Time Status:
+- Created: ${new Date(ticket.createdAt).toLocaleString()}
 
-    Action Required:
-    This ticket has exceeded its SLA time. Please review and take appropriate action.
-    `;
+Action Required:
+This ticket has exceeded its SLA time. Please review and take appropriate action.
+`;
 
     await sendEmail(process.env.HR, "🚨 Ticket Time Limit Exceeded", text);
 
-    res.status(200).json({ message: "Ticket marked as out-of-time and HR notified." });
+    console.log("✅ HR email sent successfully");
 
+    res.status(200).json({ message: "Ticket marked as out-of-time and HR notified." });
   } catch (err) {
     console.error("❌ Error in time_exceeded controller:", err);
     res.status(500).json({ message: "Internal server error", error: err.message });
