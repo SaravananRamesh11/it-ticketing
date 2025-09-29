@@ -27,10 +27,6 @@ cron.schedule('59 23 28-31 * *', async () => {// runs every last day of the mont
   }
 });
 
-
-
-
-
 // Schedule: Every 2 days at 10:30 AM
 cron.schedule('30 10 */2 * *', async () => {
   console.log('📬 Running in-progress ticket reminder cron job...');

@@ -9,7 +9,8 @@ const nodemailer=require("nodemailer")
 
 const getdetails=async (req, res) => {
   try {
-    const { id } = req.body; // Get _id from URL parameters
+    const { id } = req.body;
+     // Get _id from URL parameters
     console.log(id)
 
     //Validate ID exists
@@ -23,6 +24,7 @@ const getdetails=async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
+    
 
     res.status(200).json(user);
     

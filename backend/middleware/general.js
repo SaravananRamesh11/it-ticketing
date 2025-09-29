@@ -12,7 +12,8 @@ const verifyToken = (req, res, next) => {
 
   try {
     //const decoded = jwt.verify(token,"mamaandsarva"); 
-    const decoded = jwt.verify(token,process.env.JWT_SECRET); // Make sure JWT_SECRET is set in your .env
+    const decoded = jwt.verify(token,process.env.JWT_SECRET);
+    console.log("decoded is",decoded) // Make sure JWT_SECRET is set in your .env
     req.user = decoded; // Attach user data to the request
     next(); // Proceed to the next middleware/route
   } catch (err) {
@@ -21,3 +22,6 @@ const verifyToken = (req, res, next) => {
 };
 
 module.exports={verifyToken}
+
+
+

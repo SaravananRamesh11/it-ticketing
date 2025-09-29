@@ -30,3 +30,6 @@ dist-ssr
 
 
 /backend/.env
+
+/frontend/package.json
+/frontend/package-lock.json

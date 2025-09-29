@@ -116,15 +116,9 @@ const register_user = async (req, res) => {
 //     res.status(500).json({ message: "Server Error", error: error.message });
 //   }
 // };
-
-
-
-
-
-
-
 const getTicketStats = async (req, res) => {
   try {
+    console.log('this is sarva basically testing',req.body)
     const tickets = await Ticket.find({});
     const statsMap = {};
 
