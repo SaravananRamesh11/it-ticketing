@@ -9,6 +9,23 @@ const csv = require('csv-parser');
 const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const ItSupportStats = require('../models/out_count.js');
+
+
+
+
+
+
+const {calculateTicketStats,mapOutOfTimeStats,buildFinalStats,fetchCsvFile,setCsvHeaders}=require('./function/admin.js')
+
+
+
+
+
+
+
+
+
+
 // Create S3 client
 const s3 = new S3Client({ region: process.env.AWS_REGION });
 // Add new employee endpoint with password hashing
@@ -64,18 +81,20 @@ const register_user = async (req, res) => {
   }
 };
 
+
 // const getTicketStats = async (req, res) => {
 //   try {
+//     console.log('this is sarva basically testing',req.body)
 //     const tickets = await Ticket.find({});
 //     const statsMap = {};
 
-//     // Step 1: Group tickets by IT support member
+//     // 1. Group tickets by itSupport (assume it's employeeId)
 //     tickets.forEach(ticket => {
-//       const member = ticket.itSupport || 'Unassigned';
+//       const memberId = ticket.itSupport || 'Unassigned';
 
-//       if (!statsMap[member]) {
-//         statsMap[member] = {
-//           name: member,
+//       if (!statsMap[memberId]) {
+//         statsMap[memberId] = {
+//           name: memberId, // This is employeeId
 //           Open: 0,
 //           Closed: 0,
 //           InProgress: 0,
@@ -83,30 +102,40 @@ const register_user = async (req, res) => {
 //         };
 //       }
 
-//       statsMap[member][ticket.status]++;
+//       statsMap[memberId][ticket.status]++;
 
-//       // Step 2: Calculate TAT only for closed tickets
 //       if (ticket.status === 'Closed' && ticket.createdAt && ticket.updatedAt) {
-//         const tat = new Date(ticket.updatedAt) - new Date(ticket.createdAt); // milliseconds
-//         statsMap[member].turnAroundTimes.push(tat);
+//         const tat = new Date(ticket.updatedAt) - new Date(ticket.createdAt);
+//         statsMap[memberId].turnAroundTimes.push(tat);
 //       }
 //     });
 
-//     // Step 3: Prepare the final response with TAT
+//     // 2. Fetch outOfTime stats (assumes 'user' is the ObjectId ref to User)
+//     const outOfTimeStats = await ItSupportStats.find({}).lean();
+
+//     // 3. Map user _id → outOfTimeCount
+//     const outOfTimeMap = {};
+//     for (const entry of outOfTimeStats) {
+//       const user = await User.findById(entry.user).lean();
+//       if (user) {
+//         outOfTimeMap[user.employeeId] = entry.outOfTimeCount;
+//       }
+//     }
+
+//     // 4. Build final response
 //     const stats = Object.values(statsMap).map(member => {
 //       const totalClosed = member.Closed;
 //       const avgTAT = member.turnAroundTimes.length
 //         ? member.turnAroundTimes.reduce((acc, val) => acc + val, 0) / member.turnAroundTimes.length
 //         : 0;
 
-//         console.log("from get ticketstats",member.name)
-
 //       return {
 //         name: member.name,
 //         Open: member.Open,
 //         InProgress: member.InProgress,
 //         Closed: totalClosed,
-//         avgTurnAroundTime: (avgTAT / (1000 * 60 * 60)).toFixed(2) // Convert ms → hours
+//         avgTurnAroundTime: (avgTAT / (1000 * 60 * 60)).toFixed(2), // ms → hours
+//         outOfTimeCount: outOfTimeMap[member.name] || 0
 //       };
 //     });
 
@@ -116,69 +145,6 @@ const register_user = async (req, res) => {
 //     res.status(500).json({ message: "Server Error", error: error.message });
 //   }
 // };
-const getTicketStats = async (req, res) => {
-  try {
-    console.log('this is sarva basically testing',req.body)
-    const tickets = await Ticket.find({});
-    const statsMap = {};
-
-    // 1. Group tickets by itSupport (assume it's employeeId)
-    tickets.forEach(ticket => {
-      const memberId = ticket.itSupport || 'Unassigned';
-
-      if (!statsMap[memberId]) {
-        statsMap[memberId] = {
-          name: memberId, // This is employeeId
-          Open: 0,
-          Closed: 0,
-          InProgress: 0,
-          turnAroundTimes: []
-        };
-      }
-
-      statsMap[memberId][ticket.status]++;
-
-      if (ticket.status === 'Closed' && ticket.createdAt && ticket.updatedAt) {
-        const tat = new Date(ticket.updatedAt) - new Date(ticket.createdAt);
-        statsMap[memberId].turnAroundTimes.push(tat);
-      }
-    });
-
-    // 2. Fetch outOfTime stats (assumes 'user' is the ObjectId ref to User)
-    const outOfTimeStats = await ItSupportStats.find({}).lean();
-
-    // 3. Map user _id → outOfTimeCount
-    const outOfTimeMap = {};
-    for (const entry of outOfTimeStats) {
-      const user = await User.findById(entry.user).lean();
-      if (user) {
-        outOfTimeMap[user.employeeId] = entry.outOfTimeCount;
-      }
-    }
-
-    // 4. Build final response
-    const stats = Object.values(statsMap).map(member => {
-      const totalClosed = member.Closed;
-      const avgTAT = member.turnAroundTimes.length
-        ? member.turnAroundTimes.reduce((acc, val) => acc + val, 0) / member.turnAroundTimes.length
-        : 0;
-
-      return {
-        name: member.name,
-        Open: member.Open,
-        InProgress: member.InProgress,
-        Closed: totalClosed,
-        avgTurnAroundTime: (avgTAT / (1000 * 60 * 60)).toFixed(2), // ms → hours
-        outOfTimeCount: outOfTimeMap[member.name] || 0
-      };
-    });
-
-    res.status(200).json(stats);
-  } catch (error) {
-    console.error("❌ Error in getTicketStats:", error);
-    res.status(500).json({ message: "Server Error", error: error.message });
-  }
-};
 
 
 
@@ -204,27 +170,67 @@ const removeemployee = async (req, res) => {
   }
 };
 
-const downloadCsvFromS3 = async (req, res) => {
+
+
+
+async function getTicketStats(req, res) {
+  try {
+    const tickets = await Ticket.find({});
+    const statsMap = await calculateTicketStats(tickets);
+
+    const outOfTimeStats = await ItSupportStats.find({}).lean();
+    const outOfTimeMap = await mapOutOfTimeStats(outOfTimeStats);
+
+    const stats = buildFinalStats(statsMap, outOfTimeMap);
+
+    res.status(200).json(stats);
+  } catch (error) {
+    console.error("❌ Error in getTicketStats:", error);
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+}
+
+
+
+// const downloadCsvFromS3 = async (req, res) => {
+//   try {
+//     const { month, year } = req.query;
+
+//     if (!month || !year) {
+//       return res.status(400).json({ error: 'Month and year are required' });
+//     }
+
+//     // const fileKey = `IT-TICKETING/tickets-${month.toLowerCase()}-${year}.csv`;
+//     // const fileStream = await getS3FileStream(fileKey);
+//     const fileStream = await getClosedTicketsFile(month, year);
+
+//     res.setHeader('Content-Disposition', `attachment; filename=tickets-${month}-${year}.csv`);
+//     res.setHeader('Content-Type', 'text/csv');
+
+//     fileStream.pipe(res);
+//   } catch (error) {
+//     console.error('❌ Error:', error);
+//     res.status(404).json({ error: 'File not found or failed to download' });
+//   }
+// };
+
+
+
+
+
+async function downloadCsvFromS3(req, res) {
   try {
     const { month, year } = req.query;
-
-    if (!month || !year) {
-      return res.status(400).json({ error: 'Month and year are required' });
-    }
-
-    // const fileKey = `IT-TICKETING/tickets-${month.toLowerCase()}-${year}.csv`;
-    // const fileStream = await getS3FileStream(fileKey);
-    const fileStream = await getClosedTicketsFile(month, year);
-
-    res.setHeader('Content-Disposition', `attachment; filename=tickets-${month}-${year}.csv`);
-    res.setHeader('Content-Type', 'text/csv');
-
+    const fileStream = await fetchCsvFile(month, year);
+    setCsvHeaders(res, month, year);
     fileStream.pipe(res);
   } catch (error) {
     console.error('❌ Error:', error);
-    res.status(404).json({ error: 'File not found or failed to download' });
+    res.status(404).json({ error: error.message || 'File not found or failed to download' });
   }
-};
+}
+
+
 
 const streamToString = (stream) =>
   new Promise((resolve, reject) => {
@@ -233,6 +239,8 @@ const streamToString = (stream) =>
     stream.on('error', reject);
     stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
   });
+
+
 const previewCsvFromS3 = async (req, res) => {
   try {
     const { month, year } = req.query;
@@ -280,6 +288,8 @@ const previewCsvFromS3 = async (req, res) => {
     res.status(404).json({ error: 'CSV file not found or unreadable' });
   }
 };
+
+
 
 const getOutOfTimeCount = async (req, res) => {
   const { userId } = req.body;
