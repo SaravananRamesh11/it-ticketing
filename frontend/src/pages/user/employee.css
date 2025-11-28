@@ -12,6 +12,27 @@
   position: relative;
 }
 
+/* faded background image layer - place image at: frontend/src/assets/it-bg.jpg */
+.employee-page-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('img_2.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0.6; /* adjust fade level (0.0 - 1.0) */
+  filter: grayscale(40%) blur(1px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ensure page content sits above the faded bg */
+.employee-page-container > * {
+  position: relative;
+  z-index: 1;
+}
+
 /* === Action Buttons Container === */
 .header-buttons {
   display: flex;
