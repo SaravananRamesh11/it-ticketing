@@ -180,8 +180,9 @@ const TicketStatsPieCharts = () => {
   }
 
   return (
-    <div className="stats-container">
-      {stats.map((member) => {
+    <div className="stats-wrapper">
+      <div className="stats-container">
+        {stats.map((member) => {
         const chartData = [
           { name: 'Closed Tickets', value: member.Closed || 0 },
           { name: 'Open Tickets', value: member.Open || 0 },
@@ -233,6 +234,7 @@ const TicketStatsPieCharts = () => {
           </div>
         );
       })}
+      </div>
     </div>
   );
 };

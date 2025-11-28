@@ -30,28 +30,30 @@ const RemoveUserForm = () => {
   };
 
   return (
-    <div className="form-container"> {/* Added a class for the overall form container */}
-      <h2 className="form-title">Remove User</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="remove-user-form">
-        <div className="form-group">
-          <label htmlFor="employeeId" className="form-label">
-            Employee ID
-          </label>
-          <input
-            id="employeeId"
-            type="text"
-            {...register('employeeId', { required: true })}
-            className="form-input" // Added a class for the input field
-            placeholder="Enter Employee ID"
-          />
-        </div>
-        <button
-          type="submit"
-          className="remove-user-button" // Renamed the class for the button
-        >
-          Remove User
-        </button>
-      </form>
+    <div className="remove-user-wrapper">
+      <div className="form-container">
+        <h2 className="form-title">Remove User</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="remove-user-form">
+          <div className="form-group">
+            <label htmlFor="employeeId" className="form-label">
+              Employee ID
+            </label>
+            <input
+              id="employeeId"
+              type="text"
+              {...register('employeeId', { required: true })}
+              className="form-input"
+              placeholder="Enter Employee ID"
+            />
+          </div>
+          <button
+            type="submit"
+            className="remove-user-button"
+          >
+            Remove User
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

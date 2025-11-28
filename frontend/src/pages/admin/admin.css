@@ -69,9 +69,11 @@
 /* === MAIN CONTENT === */
 .admin-main {
     flex-grow: 1;
-    padding: var(--spacing-2xl);
-    background: var(--bg-gradient-light);
+    padding: 0;
+    background: transparent;
     overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 /* === PAPER CONTAINERS === */
