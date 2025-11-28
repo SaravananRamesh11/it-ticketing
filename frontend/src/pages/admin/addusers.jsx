@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import React from "react";
 import axios from "axios";
+import './addusers.css';
 
 function EmployeeRegistrationForm() {
   const {
@@ -29,73 +30,29 @@ function EmployeeRegistrationForm() {
   };
 
   return (
-    <div style={{ 
-      display: "flex", 
-      justifyContent: "center", 
-      alignItems: "center", 
-      minHeight: "100vh",
-      backgroundColor: "#f5f5f5"
-    }}>
-      <div style={{
-        width: "400px",
-        padding: "30px",
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
-        backgroundColor: "white"
-      }}>
-        <h2 style={{
-          textAlign: "center",
-          marginBottom: "25px",
-          color: "#333"
-        }}>Employee Registration</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div style={{ marginBottom: "20px" }}>
-            <label style={{
-              display: "block",
-              marginBottom: "8px",
-              fontWeight: "600",
-              color: "#555"
-            }} htmlFor="name">Full Name</label>
+    <div className="create-user-container">
+      <div className="create-user-card">
+        <h2 className="create-user-title">Employee Registration</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="create-user-form">
+          <div className="create-user-form-group">
+            <label className="create-user-label" htmlFor="name">Full Name</label>
             <input
               id="name"
               type="text"
-              style={{
-                width: "100%",
-                padding: "10px",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-                boxSizing: "border-box",
-                fontSize: "14px"
-              }}
+              className="create-user-input"
+              placeholder="Enter full name"
               {...register("employeeName", { required: "Name is required" })}
             />
-            {errors.employeeName && <span style={{
-              color: "#e74c3c",
-              fontSize: "13px",
-              display: "block",
-              marginTop: "5px"
-            }}>{errors.employeeName.message}</span>}
+            {errors.employeeName && <span className="create-user-error">{errors.employeeName.message}</span>}
           </div>
 
-          <div style={{ marginBottom: "20px" }}>
-            <label style={{
-              display: "block",
-              marginBottom: "8px",
-              fontWeight: "600",
-              color: "#555"
-            }} htmlFor="employeeId">Employee ID</label>
+          <div className="create-user-form-group">
+            <label className="create-user-label" htmlFor="employeeId">Employee ID</label>
             <input
               id="employeeId"
               type="text"
-              style={{
-                width: "100%",
-                padding: "10px",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-                boxSizing: "border-box",
-                fontSize: "14px"
-              }}
+              className="create-user-input"
+              placeholder="Enter employee ID"
               {...register("employeeId", {
                 required: "Employee ID is required",
                 pattern: {
@@ -105,33 +62,17 @@ function EmployeeRegistrationForm() {
               })}
             />
             {errors.employeeId && (
-              <span style={{
-                color: "#e74c3c",
-                fontSize: "13px",
-                display: "block",
-                marginTop: "5px"
-              }}>{errors.employeeId.message}</span>
+              <span className="create-user-error">{errors.employeeId.message}</span>
             )}
           </div>
 
-          <div style={{ marginBottom: "20px" }}>
-            <label style={{
-              display: "block",
-              marginBottom: "8px",
-              fontWeight: "600",
-              color: "#555"
-            }} htmlFor="email">Email</label>
+          <div className="create-user-form-group">
+            <label className="create-user-label" htmlFor="email">Email</label>
             <input
               id="email"
               type="email"
-              style={{
-                width: "100%",
-                padding: "10px",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-                boxSizing: "border-box",
-                fontSize: "14px"
-              }}
+              className="create-user-input"
+              placeholder="Enter email address"
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -141,32 +82,15 @@ function EmployeeRegistrationForm() {
               })}
             />
             {errors.email && (
-              <span style={{
-                color: "#e74c3c",
-                fontSize: "13px",
-                display: "block",
-                marginTop: "5px"
-              }}>{errors.email.message}</span>
+              <span className="create-user-error">{errors.email.message}</span>
             )}
           </div>
 
-          <div style={{ marginBottom: "20px" }}>
-            <label style={{
-              display: "block",
-              marginBottom: "8px",
-              fontWeight: "600",
-              color: "#555"
-            }} htmlFor="role">Role</label>
+          <div className="create-user-form-group">
+            <label className="create-user-label" htmlFor="role">Role</label>
             <select
               id="role"
-              style={{
-                width: "100%",
-                padding: "10px",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-                boxSizing: "border-box",
-                fontSize: "14px"
-              }}
+              className="create-user-select"
               {...register("role", { required: "Role is required" })}
             >
               <option value="">Select a role</option>
@@ -174,32 +98,16 @@ function EmployeeRegistrationForm() {
               <option value="Employee">Employee</option>
               <option value="IT Support">IT Support</option>
             </select>
-            {errors.role && <span style={{
-              color: "#e74c3c",
-              fontSize: "13px",
-              display: "block",
-              marginTop: "5px"
-            }}>{errors.role.message}</span>}
+            {errors.role && <span className="create-user-error">{errors.role.message}</span>}
           </div>
 
-          <div style={{ marginBottom: "20px" }}>
-            <label style={{
-              display: "block",
-              marginBottom: "8px",
-              fontWeight: "600",
-              color: "#555"
-            }} htmlFor="password">Password</label>
+          <div className="create-user-form-group">
+            <label className="create-user-label" htmlFor="password">Password</label>
             <input
               id="password"
               type="password"
-              style={{
-                width: "100%",
-                padding: "10px",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-                boxSizing: "border-box",
-                fontSize: "14px"
-              }}
+              className="create-user-input"
+              placeholder="Enter password"
               {...register("password", {
                 required: "Password is required",
                 minLength: {
@@ -209,33 +117,12 @@ function EmployeeRegistrationForm() {
               })}
             />
             {errors.password && (
-              <span style={{
-                color: "#e74c3c",
-                fontSize: "13px",
-                display: "block",
-                marginTop: "5px"
-              }}>{errors.password.message}</span>
+              <span className="create-user-error">{errors.password.message}</span>
             )}
           </div>
 
-          <button 
-            type="submit" 
-            style={{
-              width: "100%",
-              padding: "12px",
-              backgroundColor: "#3498db",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "16px",
-              fontWeight: "600",
-              transition: "background-color 0.3s"
-            }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#2980b9"}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#3498db"}
-          >
-            Register
+          <button type="submit" className="create-user-button">
+            Register Employee
           </button>
         </form>
       </div>

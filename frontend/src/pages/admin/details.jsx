@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-//import './detail.css'; // Import the CSS file
+import './details.css';
 
 const Detail = () => {
   const [employee, setEmployee] = useState(null);

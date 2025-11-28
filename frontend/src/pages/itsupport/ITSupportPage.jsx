@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './it.css';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../../hooks/login_context_hook';
 
 
 // Issue hierarchy for time limits
@@ -214,6 +215,7 @@ const TicketTimer = ({ ticket }) => {
 
 function ITSupportPage() {
   const navigate = useNavigate();
+  const { dispatch } = useAuth();
   const [tickets, setTickets] = useState([]);
   const [showInput, setShowInput] = useState({});
   const [resolutions, setResolutions] = useState({});
@@ -224,6 +226,11 @@ function ITSupportPage() {
   const [imageFiles, setImageFiles] = useState({});
 
   const id = localStorage.getItem('id');
+
+  const handleLogout = () => {
+    dispatch({ type: 'LOGOUT' });
+    navigate('/');
+  };
 
   useEffect(() => {
     const fetchAssignedTickets = async () => {
@@ -382,9 +389,14 @@ const handleUpdateStatus = async (ticketId, currentStatus, sub_issue) => {
     <div className="it-support-page-container">
       <div className="it-dashboard-header">
         <h1 className="it-dashboard-title">IT Support Dashboard</h1>
-        <button className="details-button" onClick={userpage}>
-          My Details
-        </button>
+        <div className="header-buttons">
+          <button className="details-button" onClick={userpage}>
+            My Details
+          </button>
+          <button className="logout-button" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </div>
 
       {loading && <div className="loading-message">Loading open tickets...</div>}
@@ -428,24 +440,28 @@ const handleUpdateStatus = async (ticketId, currentStatus, sub_issue) => {
 
                   <div className="ticket-info-grid">
                     <div className="info-item">
-                      <span className="info-label">Employee:</span>
-                      <span className="info-value">{ticket.employeeName}</span>
+                      <span className="info-label">Employee:    {ticket.employeeName}</span>
+                      {/* <span className="info-value"></span> */}
                     </div>
+                    <br />
                     <div className="info-item">
-                      <span className="info-label">ID:</span>
-                      <span className="info-value">{ticket.employeeId}</span>
+                      <span className="info-label">ID:    {ticket.employeeId}</span>
+                      {/* <span className="info-value"></span> */}
                     </div>
+                    <br />
                     <div className="info-item">
-                      <span className="info-label">Email:</span>
-                      <span className="info-value">{ticket.email}</span>
+                      <span className="info-label">Email:    {ticket.email}</span>
+                      {/* <span className="info-value"></span> */}
                     </div>
+                    <br />
                     <div className="info-item">
-                      <span className="info-label">Date:</span>
-                      <span className="info-value">{new Date(ticket.date).toLocaleDateString()}</span>
+                      <span className="info-label">Date:  {new Date(ticket.date).toLocaleDateString()}</span>
+                      {/* <span className="info-value"></span> */}
                     </div>
+                    <br />
                     <div className="info-item">
-                      <span className="info-label">Time:</span>
-                      <span className="info-value">{ticket.time}</span>
+                      <span className="info-label">Time: {ticket.time}</span>
+                      {/* <span className="info-value"></span> */}
                     </div>
                   </div>
 

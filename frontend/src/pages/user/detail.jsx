@@ -22,7 +22,7 @@ const Detail = () => {
         if (!id) {
             // Redirect to login if no ID is found
             alert('User ID not found. Please login again.');
-            window.location.href = '/login'; // Or use navigate from react-router-dom
+            window.location.href = '/'; // Or use navigate from react-router-dom
             return;
         }
         const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
@@ -108,6 +108,9 @@ const Detail = () => {
 
   return (
     <div className="detail-page-container">
+      <button className="back-button" onClick={() => navigate(-1)}>&larr; Back</button>
+      {/* <div className="detail-header"> */}
+      {/* </div> */}
      
       <div className="profile-card">
         <h2 className="profile-header">Employee Profile</h2>

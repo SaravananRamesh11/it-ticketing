@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import EmployeeRegistrationForm from './addusers'; 
 import SupportMemberPieChart from './pie';
 import  RemoveUserForm  from './remove';
 import Detail from "./details"
 import ClosedTickets from "./ClosedTickets" // Import the new component for closed tickets management
+import useAuth from '../../hooks/login_context_hook';
 import { 
   Box, 
   Drawer, 
@@ -18,7 +20,8 @@ import {
   ListItemText,
   Container,
   Paper,
-  Grid
+  Grid,
+  Button
 } from '@mui/material';
 
 import {
@@ -30,7 +33,8 @@ import {
   Delete as DeleteIcon,
   Details as BadgeIcon,
   Visibility as VisibilityIcon,
-  InsertDriveFile as FileIcon
+  InsertDriveFile as FileIcon,
+  Logout as LogoutIcon
 } from '@mui/icons-material';
 
 import { styled } from '@mui/material/styles';
@@ -59,9 +63,16 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 const AdminPage = () => {
   const [open, setOpen] = useState(true);
   const [selectedMenu, setSelectedMenu] = useState('createUser');
+  const { dispatch } = useAuth();
+  const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
     setOpen(!open);
+  };
+
+  const handleLogout = () => {
+    dispatch({ type: 'LOGOUT' });
+    navigate('/');
   };
 
   const menuItems = [
@@ -76,41 +87,15 @@ const AdminPage = () => {
   const renderContent = () => {
     switch (selectedMenu) {
       case 'createUser':
-        return (
-           <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h5" gutterBottom>Create New User</Typography>
-            <EmployeeRegistrationForm />
-           </Paper>
-        );
+        return <EmployeeRegistrationForm />;
       case 'deleteEmployee':
-        return (
-          <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h5" gutterBottom>Delete Employee</Typography>
-            <RemoveUserForm/>            
-          </Paper>
-        );
+        return <RemoveUserForm/>;
       case 'pieChart':
-        return (
-          <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h5" gutterBottom>Ticket Statistics</Typography>
-            < SupportMemberPieChart  />
-          </Paper>
-        );
+        return <SupportMemberPieChart />;
       case 'UserDetails':
-        return (
-          <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h5" gutterBottom>User Details</Typography>
-            <Detail/>
-          </Paper>
-        );
+        return <Detail/>;
       case 'closedTickets':
-        return (
-          <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h5" gutterBottom>Closed Tickets</Typography>
-            {/* Add closed tickets management interface here */}
-            <ClosedTickets />
-          </Paper>
-        );
+        return <ClosedTickets />;
       default:
         return null;
     }
@@ -128,9 +113,21 @@ const AdminPage = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Admin Dashboard
           </Typography>
+          <Button
+            color="inherit"
+            startIcon={<LogoutIcon />}
+            onClick={handleLogout}
+            sx={{
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              },
+            }}
+          >
+            Logout
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer

@@ -3,7 +3,7 @@
 // import axios from 'axios';
 // import { Typography, Paper, CircularProgress } from '@mui/material';
 
-// const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+// const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
 
 // const SupportMemberPieChart = ({ data }) => {
 //   return (
@@ -106,8 +106,9 @@ import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import axios from 'axios';
 import { Typography, Paper, CircularProgress } from '@mui/material';
+import './pie.css';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
 
 const SupportMemberPieChart = ({ data }) => {
   return (
@@ -161,11 +162,25 @@ const TicketStatsPieCharts = () => {
   }, []);
 
   if (loading) {
-    return <CircularProgress />;
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '400px',
+        flexDirection: 'column',
+        gap: '16px'
+      }}>
+        <CircularProgress size={50} />
+        <p style={{ color: 'var(--gray-600)', fontSize: 'var(--font-size-base)' }}>
+          Loading statistics...
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div className="stats-container">
       {stats.map((member) => {
         const chartData = [
           { name: 'Closed Tickets', value: member.Closed || 0 },
@@ -174,30 +189,48 @@ const TicketStatsPieCharts = () => {
         ];
 
         return (
-          <Paper key={member.name} elevation={3} sx={{ p: 3, mb: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              {member.name}'s Ticket Statistics
-            </Typography>
+          <div key={member.name} className="stats-card">
+            <h3 className="stats-title">{member.name}'s Statistics</h3>
 
-            <div style={{ width: '100%', height: 300 }}>
+            <div className="stats-chart-container">
               <SupportMemberPieChart data={chartData} />
             </div>
 
-            <Typography variant="body1">
-              Total Tickets: {(member.Closed || 0) + (member.Open || 0) + (member.InProgress || 0)} |{' '}
-              Closed: {member.Closed || 0} |{' '}
-              Open: {member.Open || 0} |{' '}
-              In Progress: {member.InProgress || 0}
-            </Typography>
+            <div className="stats-info">
+              <div className="stats-info-item">
+                <div className="stats-info-label">Total</div>
+                <div className="stats-info-value">
+                  {(member.Closed || 0) + (member.Open || 0) + (member.InProgress || 0)}
+                </div>
+              </div>
+              <div className="stats-info-item">
+                <div className="stats-info-label">Closed</div>
+                <div className="stats-info-value" style={{ color: '#10b981' }}>
+                  {member.Closed || 0}
+                </div>
+              </div>
+              <div className="stats-info-item">
+                <div className="stats-info-label">Open</div>
+                <div className="stats-info-value" style={{ color: '#f59e0b' }}>
+                  {member.Open || 0}
+                </div>
+              </div>
+              <div className="stats-info-item">
+                <div className="stats-info-label">In Progress</div>
+                <div className="stats-info-value" style={{ color: '#3b82f6' }}>
+                  {member.InProgress || 0}
+                </div>
+              </div>
+            </div>
 
-            <Typography variant="body1" sx={{ mt: 1 }}>
-              Avg Turn-Around Time (Closed): {member.avgTurnAroundTime} hrs
-            </Typography>
+            <div className="stats-metric">
+              ⏱️ Avg Turn-Around Time: <strong>{member.avgTurnAroundTime || 0} hrs</strong>
+            </div>
 
-            <Typography variant="body1" sx={{ mt: 1 }}>
-              ❌ Out of Time Resolutions: {member.outOfTimeCount || 0}
-            </Typography>
-          </Paper>
+            <div className="stats-metric out-of-time">
+              ⚠️ Out of Time Resolutions: <strong>{member.outOfTimeCount || 0}</strong>
+            </div>
+          </div>
         );
       })}
     </div>

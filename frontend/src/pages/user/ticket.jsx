@@ -56,6 +56,7 @@ const UserTickets = () => {
 
   return (
     <div className="user-tickets-container">
+      <button className="back-button" onClick={() => window.history.back()}>&larr; Back</button>
       <h2>My Completed Tickets</h2>
 
       {isLoading ? (

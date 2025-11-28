@@ -1,71 +1,207 @@
-/* Gradient background */
+/* ============================================
+   MODERN FORGOT PASSWORD PAGE STYLES
+   ============================================ */
+
 .forgot-wrapper {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Card style similar to login screen */
+.forgot-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
 .forgot-card {
-  background: white;
-  padding: 40px 30px;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
-  text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    padding: var(--spacing-3xl);
+    border-radius: var(--radius-2xl);
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04),
+        0 0 0 1px rgba(255, 255, 255, 0.5);
+    text-align: center;
+    animation: fadeIn 0.6s ease-out, scaleIn 0.6s ease-out;
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.forgot-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
 }
 
 .forgot-card h2 {
-  margin-bottom: 10px;
-  font-weight: 700;
-  font-size: 24px;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 800;
+    font-size: var(--font-size-3xl);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
 }
 
 .forgot-card p {
-  color: #555;
-  margin-bottom: 20px;
-  font-size: 14px;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-xl);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
 }
 
 /* Inputs */
 .input-box {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 14px;
+    width: 100%;
+    padding: 14px 18px;
+    margin: var(--spacing-sm) 0;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-base);
+    background: var(--bg-primary);
+    color: var(--gray-900);
+    transition: all var(--transition-base);
+    box-sizing: border-box;
+}
+
+.input-box::placeholder {
+    color: var(--gray-400);
+}
+
+.input-box:hover {
+    border-color: var(--gray-300);
+}
+
+.input-box:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
 }
 
 /* Button */
 .submit-btn {
-  width: 100%;
-  padding: 12px;
-  background-color: #4e6cfb;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: background-color 0.3s ease;
+    width: 100%;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+    margin-top: var(--spacing-md);
+    transition: all var(--transition-base);
+    box-shadow: 
+        0 4px 6px -1px rgba(99, 102, 241, 0.3),
+        0 2px 4px -1px rgba(99, 102, 241, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.submit-btn:hover::before {
+    left: 100%;
 }
 
 .submit-btn:hover {
-  background-color: #2b4fc6;
+    transform: translateY(-2px);
+    box-shadow: 
+        0 10px 15px -3px rgba(99, 102, 241, 0.4),
+        0 4px 6px -2px rgba(99, 102, 241, 0.3);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.submit-btn:disabled {
+    background: var(--gray-400);
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
 }
 
 .message {
-  color: #0033cc;
-  font-size: 14px;
-  margin-bottom: 10px;
+    color: var(--info);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--info-light);
+    border: 1px solid var(--info);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    animation: fadeIn 0.4s ease-out;
 }
 
 .success-msg {
-  color: green;
-  font-weight: 500;
+    color: var(--success);
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    padding: var(--spacing-lg);
+    background: var(--success-light);
+    border: 2px solid var(--success);
+    border-radius: var(--radius-lg);
+    margin-top: var(--spacing-md);
+    animation: scaleIn 0.4s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .forgot-card {
+        padding: var(--spacing-2xl) var(--spacing-xl);
+        margin: var(--spacing-md);
+    }
+
+    .forgot-card h2 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .submit-btn {
+        font-size: var(--font-size-base);
+        padding: 14px 20px;
+    }
 }

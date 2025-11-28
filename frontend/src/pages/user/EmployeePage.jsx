@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../../hooks/login_context_hook';
 import './employee.css';
 //import UserTickets from './ticket.jsx';
 
@@ -58,6 +59,7 @@ const schema = yup.object().shape({
 
 const EmployeePage = () => {
   const navigate = useNavigate();
+  const { dispatch } = useAuth();
   const {
     register,
     handleSubmit,
@@ -68,6 +70,11 @@ const EmployeePage = () => {
 
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogout = () => {
+    dispatch({ type: 'LOGOUT' });
+    navigate('/');
+  };
 
   const selectedMain = watch('mainIssue');
   const selectedSub = watch('subIssue');
@@ -278,12 +285,17 @@ const onSubmit = async (data) => {
 
   return (
     <div className="employee-page-container">
-      <button className="details-button" onClick={userpage}>
-        My Details
-      </button>
-      <button className="info-button" onClick={navigateToTicketInfo}>
-        Ticket Info
-      </button>
+      <div className="header-buttons">
+        <button className="details-button" onClick={userpage}>
+          My Details
+        </button>
+        <button className="info-button" onClick={navigateToTicketInfo}>
+          Ticket Info
+        </button>
+        <button className="logout-button" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
 
     <div className="form-card">
       <h2 className="form-title">Submit a New Ticket</h2>
