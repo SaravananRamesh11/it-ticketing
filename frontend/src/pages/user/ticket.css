@@ -42,6 +42,7 @@
     position: relative;
     overflow: hidden;
     animation: fadeIn 0.5s ease-out;
+    z-index: 0;
 }
 
 .ticket-card::before {
