@@ -12,6 +12,7 @@ import ForgotPassword from './pages/forgot.jsx';
 import { ProtectedRoute } from "./protected/pro";
 import UserTickets from "./pages/user/ticket.jsx";
 import { IssueProvider } from './context/issueContext';
+import Footer from './components/Footer';
 
 function App() {
   const { dispatch } = useAuth();
@@ -55,6 +56,7 @@ function App() {
             </ProtectedRoute>
           } />
         </Routes>
+        <Footer />
       </IssueProvider>
     </BrowserRouter>
   );
