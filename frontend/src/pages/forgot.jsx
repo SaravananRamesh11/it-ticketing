@@ -45,6 +45,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="forgot-wrapper">
+      <button className="back-button" onClick={() => window.history.back()}>&lt;- back</button>
       <div className="forgot-card">
         <h2>Forgot Password</h2>
         <p>Please follow the steps to reset your password.</p>

@@ -18,10 +18,12 @@ import {
   ListItem, 
   ListItemIcon, 
   ListItemText,
+  ListItemButton,
   Container,
   Paper,
   Grid,
-  Button
+  Button,
+  Avatar
 } from '@mui/material';
 
 import {
@@ -113,7 +115,7 @@ const AdminPage = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, textAlign: 'center', fontWeight: 'bold',  }}>
             Admin Dashboard
           </Typography>
           <Button
@@ -122,7 +124,7 @@ const AdminPage = () => {
             onClick={handleLogout}
             sx={{
               '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                backgroundColor: '#e83b3bff',
               },
             }}
           >
@@ -137,6 +139,9 @@ const AdminPage = () => {
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
+            background: '#f7f9fc',
+            borderRight: '1px solid rgba(0,0,0,0.06)',
+            zIndex: 0
           },
         }}
         variant="persistent"
@@ -144,21 +149,62 @@ const AdminPage = () => {
         open={open}
       >
         <Toolbar />
+        {/* Branded header inside drawer */}
+        <Box sx={{ px: 2, py: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Avatar sx={{ bgcolor: '#1976d2', width: 36, height: 36, fontWeight: 700 }}>V</Avatar>
+          <Box>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>VISTA</Typography>
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>Admin</Typography>
+          </Box>
+        </Box>
+        <Divider />
         <Box sx={{ overflow: 'auto' }}>
           <List>
             {menuItems.map((item) => (
-                      <ListItem
-          button="true"  // Changed from boolean to string
-          key={item.id}
-          onClick={() => setSelectedMenu(item.id)}
-          selected={selectedMenu === item.id}
-        >
-          <ListItemIcon>{item.icon}</ListItemIcon>
-          <ListItemText primary={item.text} />
-        </ListItem>
+              <ListItem key={item.id} disablePadding>
+                <ListItemButton
+                  selected={selectedMenu === item.id}
+                  onClick={() => setSelectedMenu(item.id)}
+                  sx={{
+                    py: 1.25,
+                    px: 2,
+                    '&.Mui-selected': {
+                      backgroundColor: 'rgba(37,117,252,0.08)'
+                    },
+                    '&:hover': { backgroundColor: 'rgba(0,0,0,0.03)' }
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: 44 }}>
+                    <Box sx={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 2,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bgcolor: selectedMenu === item.id ? 'primary.main' : 'transparent',
+                      color: selectedMenu === item.id ? '#fff' : 'inherit'
+                    }}>
+                      {item.icon}
+                    </Box>
+                  </ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
+              </ListItem>
             ))}
           </List>
         </Box>
+        <Divider />
+        {/* <Box sx={{ px: 2, py: 2, mt: 'auto' }}>
+          <Button
+            variant="outlined"
+            startIcon={<LogoutIcon />}
+            fullWidth
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        </Box> */}
       </Drawer>
       <Main open={open}>
         <Toolbar />

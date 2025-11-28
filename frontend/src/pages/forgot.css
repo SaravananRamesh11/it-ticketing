@@ -205,3 +205,21 @@
         padding: 14px 20px;
     }
 }
+
+.back-button {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-md);
+    transition: background 0.3s;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
