@@ -125,6 +125,7 @@
     max-width: 1400px;
     margin: 0 auto;
     align-items: start;
+    z-index: 0;
 }
 
 /* Individual Ticket Card */
@@ -143,6 +144,7 @@
     border: 1px solid var(--gray-200);
     animation: fadeIn 0.5s ease-out;
     padding-top: 20px;
+    z-index: -1;
 }
 
 .ticket-card::before {
