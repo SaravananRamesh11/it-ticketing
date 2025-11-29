@@ -42,7 +42,7 @@
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
     backdrop-filter: blur(30px) saturate(180%);
     border-radius: var(--radius-2xl);
-    padding: var(--spacing-3xl);
+    padding: 25px;
     box-shadow: 
         0 20px 25px -5px rgba(0, 0, 0, 0.15),
         0 10px 10px -5px rgba(0, 0, 0, 0.1),
@@ -99,11 +99,11 @@
 
 .stats-chart-container {
     position: relative;
-    z-index: 1;
+    z-index: 999;
     margin-bottom: var(--spacing-xl);
     background: var(--gray-50);
     border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
+    /* padding: var(--spacing-lg); */
 }
 
 .stats-info {
