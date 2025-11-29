@@ -7,8 +7,8 @@ const{checkSupport}=require('../middleware/support')
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 
-
 //router.use(verifyToken, checkSupport);
+
 router.post("/get_open",getAssignedTicketsBySupport)
 router.put('/update_ticket_status', updateTicketStatus); 
 router.post('/close_ticket', upload.single('proofImage'), close_ticket);

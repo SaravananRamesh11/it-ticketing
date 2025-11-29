@@ -102,6 +102,4 @@ const UserTickets = () => {
 };
 
 export default UserTickets;
-// This code defines a React component for displaying user tickets.
-// It fetches tickets from the backend, displays them in a list, and allows users to view details of each ticket in a modal-like overlay.
-// The component uses hooks for state management and side effects, and Axios for API requests.      
+

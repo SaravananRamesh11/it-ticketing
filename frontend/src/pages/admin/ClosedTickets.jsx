@@ -206,30 +206,30 @@ function ClosedTickets() {
             <tbody>
            
               {csvData.map((row, idx) => (
-  <tr key={idx}>
-    {/* {Object.entries(row)
-      .filter(([key]) => key !== 'proofImageKey') // Skip this column
-      .map(([key, val], i) => ( */}
-      {Object.entries(row)
-        .filter(([key]) => !['proofImageKey', '__v', 'hr_warning'].includes(key))
-        .map(([key, val], i) => (
-        <td key={i}>
-          {key === 'date' ? new Date(val).toLocaleDateString() :
-            key === 'proofImageUrl' && val ? (
-              <a href={val} target="_blank" rel="noopener noreferrer">
-                <img
-                  src={val}
-                  alt="Proof"
-                  style={{ width: '100px', borderRadius: '6px', cursor: 'pointer' }}
-                />
-              </a>
-            ) : (
-              val
-            )}
-        </td>
-      ))}
-  </tr>
-))}
+              <tr key={idx}>
+                {/* {Object.entries(row)
+                  .filter(([key]) => key !== 'proofImageKey') // Skip this column
+                  .map(([key, val], i) => ( */}
+                  {Object.entries(row)
+                    .filter(([key]) => !['proofImageKey', '__v', 'hr_warning'].includes(key))
+                    .map(([key, val], i) => (
+                    <td key={i}>
+                      {key === 'date' ? new Date(val).toLocaleDateString() :
+                        key === 'proofImageUrl' && val ? (
+                          <a href={val} target="_blank" rel="noopener noreferrer">
+                            <img
+                              src={val}
+                              alt="Proof"
+                              style={{ width: '100px', borderRadius: '6px', cursor: 'pointer' }}
+                            />
+                          </a>
+                        ) : (
+                          val
+                        )}
+                    </td>
+                  ))}
+              </tr>
+              ))}
 
             </tbody>
           </table>

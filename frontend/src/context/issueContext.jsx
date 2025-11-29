@@ -103,7 +103,6 @@ const issueHierarchy = {
   }
 };
 
-
 const priorityMap = {
   "Hardware Issues": "high",
   "Software": "medium",
@@ -112,9 +111,6 @@ const priorityMap = {
   "Other Services": "low",
   "Mail Issues": "medium"
 };
-
-
-
 
 export const IssueProvider = ({ children }) => {
   // Memoize the context value to prevent unnecessary re-renders

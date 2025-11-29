@@ -6,8 +6,8 @@ const bcrypt = require('bcrypt');
 const passwordValidator = require('password-validator');
 const nodemailer=require("nodemailer")
 
-
-const getdetails=async (req, res) => {
+// Get user details by ID
+const getdetails = async (req, res) => {
   try {
     const { id } = req.body;
      // Get _id from URL parameters
@@ -40,6 +40,7 @@ const getdetails=async (req, res) => {
   }
 };
 
+// Change user password
 const password = async (req, res) => {
   const { id, newPassword } = req.body;
 

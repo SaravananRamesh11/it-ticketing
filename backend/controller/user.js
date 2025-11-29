@@ -87,34 +87,35 @@ const ticket = async (req, res) => {
 
     const subject = `New IT Support Ticket Assigned - ${issue.main}`;
     const employeeMessage = `
-Hello ${employeeName},
+      Hello ${employeeName},
 
-Your IT support ticket has been created successfully.
+      Your IT support ticket has been created successfully.
 
-Ticket Details:
-• Issue: ${issue.main} > ${issue.sub} > ${issue.inner_sub}
-• Description: ${description}
-• Assigned IT Support: ${selectedSupport.employeeName}
+      Ticket Details:
+      • Issue: ${issue.main} > ${issue.sub} > ${issue.inner_sub}
+      • Description: ${description}
+      • Assigned IT Support: ${selectedSupport.employeeName}
 
-Ticket ID: ${newTicket._id}
+      Ticket ID: ${newTicket._id}
 
-Thank you.
-`;
+      Thank you.
+    `;
 
     const supportMessage = `
-Hello ${selectedSupport.employeeName},
+      Hello ${selectedSupport.employeeName},
 
-A new IT support ticket has been assigned to you.
+      A new IT support ticket has been assigned to you.
 
-Ticket Details:
-• From: ${employeeName} (${employeeId})
-• Issue: ${issue.main} > ${issue.sub} > ${issue.inner_sub}
-• Description: ${description}
+      Ticket Details:
+      • From: ${employeeName} (${employeeId})
+      • Issue: ${issue.main} > ${issue.sub} > ${issue.inner_sub}
+      • Description: ${description}
 
-Please log in to the system to view more details.
+      Please log in to the system to view more details.
 
-Ticket ID: ${newTicket._id}
-`;
+      Ticket ID: ${newTicket._id}
+      Thank you.
+    `;
 
     if (email) {
       await sendEmail(email, subject, employeeMessage);
@@ -138,18 +139,9 @@ Ticket ID: ${newTicket._id}
   }
 };
 
-
 const getUserTickets = async (req, res) => {
   try {
     const { userId } = req.body;
-
-    // // 1. Validate the userId
-    // if (!mongoose.Types.ObjectId.isValid(userId)) {
-    //   return res.status(400).json({ 
-    //     success: false,
-    //     message: 'Invalid user ID format' 
-    //   });
-    // }
 
     // 2. Find the user to get their employeeId
     const user = await User.findById(userId).select('employeeId employeeName');
@@ -184,3 +176,10 @@ module.exports={ticket,password,getUserTickets }
 
 
 
+// // 1. Validate the userId
+    // if (!mongoose.Types.ObjectId.isValid(userId)) {
+    //   return res.status(400).json({ 
+    //     success: false,
+    //     message: 'Invalid user ID format' 
+    //   });
+    // }

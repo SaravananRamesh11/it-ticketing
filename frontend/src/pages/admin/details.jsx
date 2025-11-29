@@ -23,15 +23,15 @@ const Detail = () => {
         }
        const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
        const res = await axios.post(
-  `${apiUrl}/api/general/details`,
-  { id },
-  {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  }
-);
+        `${apiUrl}/api/general/details`,
+          { id },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
 
         setEmployee(res.data);
       } catch (error) {

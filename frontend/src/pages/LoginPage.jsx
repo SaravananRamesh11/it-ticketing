@@ -14,26 +14,25 @@ const LoginPage = () => {
   const { dispatch } = useAuth(); // Destructure dispatch from useAuth
 
   //make sure we cannot press return once login page is returned
-   useEffect(() => {
-  // Dispatch logout when login page mounts
-  dispatch({ type: "LOGOUT" });
+  useEffect(() => {
+    
+    // Dispatch logout when login page mounts
+    dispatch({ type: "LOGOUT" });
 
-  // Prevent going back to authenticated pages using browser back button
-  navigate('/', { replace: true });
-  window.history.pushState(null, '', window.location.href);
-  
-  const handlePopState = () => {
+    // Prevent going back to authenticated pages using browser back button
+    navigate('/', { replace: true });
     window.history.pushState(null, '', window.location.href);
-  };
+    
+    const handlePopState = () => {
+      window.history.pushState(null, '', window.location.href);
+    };
 
-  window.addEventListener('popstate', handlePopState);
+    window.addEventListener('popstate', handlePopState);
 
-  return () => {
-    window.removeEventListener('popstate', handlePopState);
-  };
-}, [dispatch, navigate]);
-
-
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [dispatch, navigate]);
 
   const {
     register,
@@ -41,7 +40,6 @@ const LoginPage = () => {
     formState: { errors, isSubmitting },
     reset
   } = useForm();
-
 
   const handleLogin = async (e) => {
     e.preventDefault();

@@ -12,43 +12,12 @@ const login = async (req, res) => {
   console.log(eid)
   
   try {
-    
-    // Find user by employeeId
-    // const user = await User.findOne({ employeeId:eid });
-    // if (!user) {
-    //   return res.status(401).json({ message: 'Invalid Employee ID or password' });
-    // }
-
     const user=await checkUser(eid)
     console.log(user)
 
-
-
-    // Compare provided password with hashed password in database
-    // const isPasswordValid = await bcrypt.compare(password, user.password);
-    // if (!isPasswordValid) {
-    //   return res.status(401).json({ message: 'Invalid Employee ID or password from meeeee' });
-    // }
-
-
     await validatePassword(password,user.password)
 
-    // Create JWT token
-    // const token = jwt.sign(
-    //   { 
-    //     role: user.role, 
-    //     id: user._id,
-    //     employeeId: user.employeeId // Include additional claims if needed
-    //   }, 
-    //   process.env.JWT_SECRET || "igiuug3erq", // Use environment variable for secret
-    //   { expiresIn: '1h' }
-    // );
-
-
     const token = generateToken(user);
-
-
-
 
     // Return response without sensitive data
     res.status(200).json({
@@ -65,12 +34,10 @@ const login = async (req, res) => {
   }
 };
 
-
 const sendOTP  =async (req, res) => {
   const { email } = req.body;
 
-  try {
-    
+  try {    
     const user = await User.findOne({ email });
     if (email ==="")
     {
@@ -78,7 +45,6 @@ const sendOTP  =async (req, res) => {
     }
     if (!user) return res.status(404).json({ message: 'Not a registered email' });
     
-
     const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
     const hashedOtp = await bcrypt.hash(otp, 10);
     const expiry = Date.now() + 5 * 60 * 1000; // 5 minutes
@@ -163,4 +129,38 @@ const resetPassword = async (req, res) => {
     return res.status(500).json({ message: 'Server error', error });
   }
 };
+
 module.exports={login,verifyOTP,sendOTP,resetPassword}
+
+
+
+
+
+
+// Find user by employeeId
+    // const user = await User.findOne({ employeeId:eid });
+    // if (!user) {
+    //   return res.status(401).json({ message: 'Invalid Employee ID or password' });
+    // }
+
+
+
+    // Compare provided password with hashed password in database
+    // const isPasswordValid = await bcrypt.compare(password, user.password);
+    // if (!isPasswordValid) {
+    //   return res.status(401).json({ message: 'Invalid Employee ID or password from meeeee' });
+    // }
+
+
+    
+    // Create JWT token
+    // const token = jwt.sign(
+    //   { 
+    //     role: user.role, 
+    //     id: user._id,
+    //     employeeId: user.employeeId // Include additional claims if needed
+    //   }, 
+    //   process.env.JWT_SECRET || "igiuug3erq", // Use environment variable for secret
+    //   { expiresIn: '1h' }
+    // );
+

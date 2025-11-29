@@ -11,6 +11,7 @@ function isLastDayOfMonth(date = new Date()) {
   return tomorrow.getMonth() !== date.getMonth();
 }
 
+// Main cron job function
 async function runMonthlyMaintenance() {
   console.log('📦 Running automatic cron job for ticket export...');
   await exportAndDeleteClosedTickets();
@@ -18,7 +19,6 @@ async function runMonthlyMaintenance() {
   await ITSupportStats.resetAllCounts();
   console.log('🧹 All IT support outOfTimeCount values reset to 0.');
 }
-
 
 //cronjob 2---------------------------------------------
 async function sendInProgressTicketReminder() {
@@ -36,23 +36,23 @@ async function sendInProgressTicketReminder() {
     // 2. Compose email content
     const ticketSummary = inProgressTickets.map(ticket => {
       return `- Ticket ID: ${ticket._id}
-  Issue: ${ticket.issue?.main || ''} > ${ticket.issue?.sub || ''} > ${ticket.issue?.inner_sub || ''}
-  Assigned To: ${ticket.itSupport || 'N/A'}
-  Created At: ${ticket.createdAt?.toLocaleString()}
-  Status: ${ticket.status}
-
-`;
-    }).join('\n');
+        Issue: ${ticket.issue?.main || ''} > ${ticket.issue?.sub || ''} > ${ticket.issue?.inner_sub || ''}
+        Assigned To: ${ticket.itSupport || 'N/A'}
+        Created At: ${ticket.createdAt?.toLocaleString()}
+        Status: ${ticket.status}
+        `;
+      }).join('\n');
 
     const emailContent = `Hello Authority,
 
-The following tickets are still marked as *In Progress* as of ${new Date().toLocaleString()}:
+      The following tickets are still marked as *In Progress* as of ${new Date().toLocaleString()}:
 
-${ticketSummary}
+      ${ticketSummary}
 
-Please review and take necessary action.
+      Please review and take necessary action.
 
-- IT Support System`;
+      - IT Support System
+    `;
 
     // 3. Send email
     const authorityEmail = process.env.HR || 'authority@example.com';
@@ -66,12 +66,5 @@ Please review and take necessary action.
   }
 }
 
-
-
-
-module.exports = {
-  isLastDayOfMonth,
-  runMonthlyMaintenance,
-  sendInProgressTicketReminder
-};
+module.exports = { isLastDayOfMonth, runMonthlyMaintenance, sendInProgressTicketReminder };
 

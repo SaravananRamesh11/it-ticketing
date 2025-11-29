@@ -44,7 +44,6 @@ const Detail = () => {
         setLoading(false);
       }
     };
-
     fetchDetails();
   }, []); // Empty dependency array means this runs once on mount
 

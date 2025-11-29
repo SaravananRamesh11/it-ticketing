@@ -35,23 +35,23 @@ cron.schedule('30 10 */2 * *', async () => {
     // 2. Compose email content
     const ticketSummary = inProgressTickets.map(ticket => {
       return `- Ticket ID: ${ticket._id}
-  Issue: ${ticket.issue?.main || ''} > ${ticket.issue?.sub || ''} > ${ticket.issue?.inner_sub || ''}
-  Assigned To: ${ticket.itSupport || 'N/A'}
-  Created At: ${ticket.createdAt?.toLocaleString()}
-  Status: ${ticket.status}
-
-`;
+      Issue: ${ticket.issue?.main || ''} > ${ticket.issue?.sub || ''} > ${ticket.issue?.inner_sub || ''}
+      Assigned To: ${ticket.itSupport || 'N/A'}
+      Created At: ${ticket.createdAt?.toLocaleString()}
+      Status: ${ticket.status}
+      `;
     }).join('\n');
 
     const emailContent = `Hello Authority,
 
-The following tickets are still marked as *In Progress* as of ${new Date().toLocaleString()}:
+      The following tickets are still marked as *In Progress* as of ${new Date().toLocaleString()}:
 
-${ticketSummary}
+      ${ticketSummary}
 
-Please review and take necessary action.
+      Please review and take necessary action.
 
-- IT Support System`;
+      - IT Support System
+    `;
 
     // 3. Send email to authority
     const authorityEmail = process.env.HR || 'authority@example.com';

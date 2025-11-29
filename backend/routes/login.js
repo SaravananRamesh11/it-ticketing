@@ -6,4 +6,5 @@ router.post('/login',login );
 router.post("/requestotp",sendOTP)
 router.post("/verifyotp",verifyOTP)
 router.post("/resetpassword",resetPassword)
+
 module.exports = router;

@@ -90,6 +90,7 @@ const removeemployee = async (req, res) => {
   }
 };
 
+// Get ticket statistics for IT support members
 async function getTicketStats(req, res) {
   try {
     const tickets = await Ticket.find({});
@@ -107,6 +108,7 @@ async function getTicketStats(req, res) {
   }
 }
 
+// Download CSV from S3
 async function downloadCsvFromS3(req, res) {
   try {
     const { month, year } = req.query;
@@ -119,6 +121,7 @@ async function downloadCsvFromS3(req, res) {
   }
 }
 
+// Helper function to convert stream to string
 const streamToString = (stream) =>
   new Promise((resolve, reject) => {
     const chunks = [];
@@ -257,6 +260,7 @@ const downloadRangeCsvFromS3 = async (req, res) => {
   }
 };
 
+// Preview CSV from S3 with signed URLs
 const previewCsvFromS3 = async (req, res) => {
   try {
     const { month, year } = req.query;
@@ -306,6 +310,7 @@ const previewCsvFromS3 = async (req, res) => {
   }
 };
 
+// Get out-of-time ticket count for a specific user
 const getOutOfTimeCount = async (req, res) => {
   const { userId } = req.body;
 
@@ -332,6 +337,9 @@ const getOutOfTimeCount = async (req, res) => {
 };
 
 module.exports = { register_user, getTicketStats, removeemployee, downloadCsvFromS3, previewCsvFromS3, getOutOfTimeCount, downloadRangeCsvFromS3 };
+
+
+
 
 
 

@@ -38,17 +38,6 @@ const issueHierarchy = {
   }
 };
 
-// const schema = yup.object().shape({
-//   mainIssue: yup.string().required('Main issue is required'),
-//   subIssue: yup.string().required('Sub issue is required'),
-//   innerSubIssue: yup.string().required('Inner sub-issue is required'),
-//   date: yup.date().required('Date is required').typeError('Invalid date'),
-//   time: yup
-//     .string()
-//     .required('Time is required')
-//     .matches(/^([0-1]\d|2[0-3]):([0-5]\d)$/, 'Invalid time (HH:MM format)'),
-// });
-
 const schema = yup.object().shape({
   mainIssue: yup.string().required('Main issue is required'),
   subIssue: yup.string().required('Sub issue is required'),
@@ -79,201 +68,72 @@ const EmployeePage = () => {
   const selectedMain = watch('mainIssue');
   const selectedSub = watch('subIssue');
 
-  // const onSubmit = async (data) => {
-  //   console.log(data)
-  //   if (data.date) {
-  //     data.date = new Date(data.date).toISOString();
-  //   }
-
-  //   setIsLoading(true);
-  //   setSubmitted(false);
-  //   try {
-  //     const id = localStorage.getItem('id');
-  //     if (!id) {
-  //       alert('User ID not found. Please login again.');
-  //       navigate('/login');
-  //       return;
-  //     }
-
-  //     // Get user details
-  //     const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-  //     const userResponse = await axios.post(
-  //       `${apiUrl}/api/general/details`,
-  //       { id },
-  //       {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         }
-  //       }
-  //     );
-
-  //     const userData = userResponse.data;
-  //     console.log("User details fetched:", userData);
-      
-  //     // const ticketData = { ...data, ...userData };
-  //     const ticketData = { ...data, ...userData, id: userData._id };
-      
-  //     console.log("Submitting ticket with this data:", ticketData);
-  //     await axios.post(`${apiUrl}/api/user/ticket`, { ticketData },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         }
-  //       }
-  //     );
-
-  //     setSubmitted(true);
-  //     reset();
-  //   } catch (error) {
-  //     console.error('Ticket submission failed:', error);
-  //     const message = error.response?.data?.message || 'Failed to submit ticket. Please try again.';
-  //     alert(message);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-//   const onSubmit = async (data) => {
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    setSubmitted(false);
     
+    try {
+      const id = localStorage.getItem('id');
+      if (!id) {
+        alert('User ID not found. Please login again.');
+        navigate('/login');
+        return;
+      }
 
-//     setIsLoading(true);
-//     setSubmitted(false);
-//     try {
-//       const id = localStorage.getItem('id');
-//       if (!id) {
-//         alert('HIIIIIIIIIII User ID not found. Please login again.');
-//         navigate('/login');
-//         return;
-//       }
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const userResponse = await axios.post(
+        `${apiUrl}/api/general/details`,
+        { id },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        }
+      );
 
-//       const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-//       const userResponse = await axios.post(
-//         `${apiUrl}/api/general/details`,
-//         { id },
-//         {
-//           headers: {
-//             'Content-Type': 'application/json',
-//             Authorization: `Bearer ${localStorage.getItem("token")}`,
-//           }
-//         }
-//       );
+      const userData = userResponse.data;
+      console.log("User details fetched:", userData);
 
-//       const userData = userResponse.data;
-//       console.log("User details fetched:", userData);
+      // 🔥 Add current date and time to `data`
+      const now = new Date();
+      data.date = now.toISOString().split('T')[0]; // format: YYYY-MM-DD
+      data.time = now.toTimeString().split(' ')[0]; // format: HH:MM:SS
 
-//       // ✅ Map issue structure to match schema
-//       const ticketData = {
-//         employeeName: userData.employeeName,
-//         employeeId: userData.employeeId,
-//         email: userData.email,
-//         id: userData._id,
-//         date: data.date,
-//         time: data.time,
-//         description: data.description,
-//         issue: {
-//           main: data.mainIssue,
-//           sub: data.subIssue,
-//           inner_sub: data.innerSubIssue
-//         }
-//       };
+      // ✅ Map issue structure to match schema
+      const ticketData = {
+        employeeName: userData.employeeName,
+        employeeId: userData.employeeId,
+        email: userData.email,
+        id: userData._id,
+        date: data.date,
+        time: data.time,
+        description: data.description,
+        issue: {
+          main: data.mainIssue,
+          sub: data.subIssue,
+          inner_sub: data.innerSubIssue
+        }
+      };
 
-// // <<<<<<< HEAD
-// //       console.log("this is ticket daatattaa",ticketData)
+      console.log("Submitting ticket with this data:", ticketData);
 
-// //       await axios.post('http://localhost:5000/api/user/ticket', { ticketData },
-// //         {
-// //           headers: {
-// //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-// //           }
-// // =======
-//       console.log("Submitting ticket with this data:", ticketData);
-
-//       await axios.post(`${apiUrl}/api/user/ticket`,  ticketData , {
-//         headers: {
-//           Authorization: `Bearer ${localStorage.getItem("token")}`,
-
-//         }
-//       });
-
-//       setSubmitted(true);
-//       reset();
-//     } catch (error) {
-//       console.error('Ticket submission failed:', error);
-//       const message = error.response?.data?.message || 'Failed to submit ticket. Please try again.';
-//       alert(message);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-
-const onSubmit = async (data) => {
-  setIsLoading(true);
-  setSubmitted(false);
-  
-  try {
-    const id = localStorage.getItem('id');
-    if (!id) {
-      alert('User ID not found. Please login again.');
-      navigate('/login');
-      return;
-    }
-
-    const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-    const userResponse = await axios.post(
-      `${apiUrl}/api/general/details`,
-      { id },
-      {
+      await axios.post(`${apiUrl}/api/user/ticket`, ticketData, {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         }
-      }
-    );
+      });
 
-    const userData = userResponse.data;
-    console.log("User details fetched:", userData);
-
-    // 🔥 Add current date and time to `data`
-    const now = new Date();
-    data.date = now.toISOString().split('T')[0]; // format: YYYY-MM-DD
-    data.time = now.toTimeString().split(' ')[0]; // format: HH:MM:SS
-
-    // ✅ Map issue structure to match schema
-    const ticketData = {
-      employeeName: userData.employeeName,
-      employeeId: userData.employeeId,
-      email: userData.email,
-      id: userData._id,
-      date: data.date,
-      time: data.time,
-      description: data.description,
-      issue: {
-        main: data.mainIssue,
-        sub: data.subIssue,
-        inner_sub: data.innerSubIssue
-      }
-    };
-
-    console.log("Submitting ticket with this data:", ticketData);
-
-    await axios.post(`${apiUrl}/api/user/ticket`, ticketData, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      }
-    });
-
-    setSubmitted(true);
-    reset();
-  } catch (error) {
-    console.error('Ticket submission failed:', error);
-    const message = error.response?.data?.message || 'Failed to submit ticket. Please try again.';
-    alert(message);
-  } finally {
-    setIsLoading(false);
-  }
-};
+      setSubmitted(true);
+      reset();
+    } catch (error) {
+      console.error('Ticket submission failed:', error);
+      const message = error.response?.data?.message || 'Failed to submit ticket. Please try again.';
+      alert(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   function userpage() {
     navigate("/userdetails");
@@ -376,17 +236,7 @@ const onSubmit = async (data) => {
             {errors.description && <p className="error-text">{errors.description.message}</p>}
           </div>
 
-          {/* <div className="form-group">
-            <label htmlFor="date" className="form-label">Current Date</label>
-            <input id="date" className="form-input" type="date" {...register('date')} />
-            {errors.date && <p className="error-text">{errors.date.message}</p>}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="time" className="form-label">Current Time</label>
-            <input id="time" className="form-input" type="time" {...register('time')} />
-            {errors.time && <p className="error-text">{errors.time.message}</p>}
-          </div> */}
+          {}
 
           <button
             className="submit-ticket-button"
@@ -403,3 +253,33 @@ const onSubmit = async (data) => {
 };
 
 export default EmployeePage;
+
+
+
+
+// const schema = yup.object().shape({
+//   mainIssue: yup.string().required('Main issue is required'),
+//   subIssue: yup.string().required('Sub issue is required'),
+//   innerSubIssue: yup.string().required('Inner sub-issue is required'),
+//   date: yup.date().required('Date is required').typeError('Invalid date'),
+//   time: yup
+//     .string()
+//     .required('Time is required')
+//     .matches(/^([0-1]\d|2[0-3]):([0-5]\d)$/, 'Invalid time (HH:MM format)'),
+// });
+
+
+/* <div className="form-group">
+            <label htmlFor="date" className="form-label">Current Date</label>
+            <input id="date" className="form-input" type="date" {...register('date')} />
+            {errors.date && <p className="error-text">{errors.date.message}</p>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="time" className="form-label">Current Time</label>
+            <input id="time" className="form-input" type="time" {...register('time')} />
+            {errors.time && <p className="error-text">{errors.time.message}</p>}
+          </div> */
+
+
+          

@@ -18,9 +18,8 @@ function EmployeeRegistrationForm() {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}` // ⬅️ Attach token to request
         }
-      }
-
-      );
+      });       
+      
       alert(res.data.message);
     } catch (error) {
       console.log(error);

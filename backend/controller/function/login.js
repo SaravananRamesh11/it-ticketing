@@ -12,7 +12,6 @@ async function checkUser(eid) {
   return user; // returns user if found
 }
 
-
 async function validatePassword(plainPassword, hashedPassword) {
   if (!hashedPassword) {
     throw new Error('Password not set for user');
@@ -23,9 +22,6 @@ async function validatePassword(plainPassword, hashedPassword) {
   }
   return true; // password is valid
 }
-
-
-
 
 function generateToken(user) {
   if (!user) throw new Error('User data is required');
@@ -43,12 +39,4 @@ function generateToken(user) {
   return token;
 }
 
-
-
-
-
-
-
-
 module.exports = { checkUser,validatePassword,generateToken};
-

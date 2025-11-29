@@ -1,4 +1,3 @@
-
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { Parser } = require('json2csv');
 const Ticket = require('../models/Ticket');
