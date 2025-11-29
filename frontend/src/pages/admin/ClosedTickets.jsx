@@ -8,6 +8,15 @@ function ClosedTickets() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [csvData, setCsvData] = useState([]);
+  
+  // Range download state
+  const [showRangeModal, setShowRangeModal] = useState(false);
+  const [fromMonth, setFromMonth] = useState('');
+  const [fromYear, setFromYear] = useState('');
+  const [toMonth, setToMonth] = useState('');
+  const [toYear, setToYear] = useState('');
+  const [rangeLoading, setRangeLoading] = useState(false);
+  const [rangeError, setRangeError] = useState('');
 
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -86,6 +95,52 @@ function ClosedTickets() {
     }
   };
 
+  const handleRangeDownload = async () => {
+    if (!fromMonth || !fromYear || !toMonth || !toYear) {
+      setRangeError('Please select all fields (FROM month, FROM year, TO month, TO year)');
+      return;
+    }
+
+    setRangeLoading(true);
+    setRangeError('');
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const response = await axios.get(`${apiUrl}/api/admin/download-range-csv`, {
+        params: { 
+          fromMonth, 
+          fromYear, 
+          toMonth, 
+          toYear 
+        },
+        responseType: 'blob',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `tickets-${fromMonth.toLowerCase()}-${fromYear}-to-${toMonth.toLowerCase()}-${toYear}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      
+      // Close modal after successful download
+      setShowRangeModal(false);
+      setFromMonth('');
+      setFromYear('');
+      setToMonth('');
+      setToYear('');
+    } catch (err) {
+      console.error('❌ Range download error:', err);
+      setRangeError(err.response?.data?.error || 'Failed to download range CSV');
+    } finally {
+      setRangeLoading(false);
+    }
+  };
+
   return (
     <div className="closed-tickets-container">
       <div className="card">
@@ -112,9 +167,17 @@ function ClosedTickets() {
             {loading ? 'Loading Preview...' : 'Preview CSV'}
           </button>
 
-          <button onClick={handleDownload} disabled={loading}>
+          <button onClick={handleDownload} disabled={loading} className='dwnld-button'>
             {loading ? <span className="spinner" /> : null}
             {loading ? 'Downloading...' : 'Download CSV'}
+          </button>
+
+          <button 
+            onClick={() => setShowRangeModal(true)} 
+            disabled={loading}
+            className="range-download-button"
+          >
+            Download Range CSV
           </button>
         </div>
 
@@ -170,6 +233,121 @@ function ClosedTickets() {
 
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Range Download Modal */}
+      {showRangeModal && (
+        <div className="modal-overlay" onClick={() => !rangeLoading && setShowRangeModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Download Range CSV</h3>
+              <button 
+                className="modal-close" 
+                onClick={() => setShowRangeModal(false)}
+                disabled={rangeLoading}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="range-selectors">
+                <div className="range-group">
+                  <h4>FROM</h4>
+                  <div className="range-inputs">
+                    <div className="range-input-group">
+                      <label>Month</label>
+                      <select 
+                        value={fromMonth} 
+                        onChange={(e) => setFromMonth(e.target.value)}
+                        disabled={rangeLoading}
+                      >
+                        <option value="">-- Select Month --</option>
+                        {months.map((m) => (
+                          <option key={m} value={m}>{m}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="range-input-group">
+                      <label>Year</label>
+                      <select 
+                        value={fromYear} 
+                        onChange={(e) => setFromYear(e.target.value)}
+                        disabled={rangeLoading}
+                      >
+                        <option value="">-- Select Year --</option>
+                        {years.map((y) => (
+                          <option key={y} value={y}>{y}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="range-group">
+                  <h4>TO</h4>
+                  <div className="range-inputs">
+                    <div className="range-input-group">
+                      <label>Month</label>
+                      <select 
+                        value={toMonth} 
+                        onChange={(e) => setToMonth(e.target.value)}
+                        disabled={rangeLoading}
+                      >
+                        <option value="">-- Select Month --</option>
+                        {months.map((m) => (
+                          <option key={m} value={m}>{m}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="range-input-group">
+                      <label>Year</label>
+                      <select 
+                        value={toYear} 
+                        onChange={(e) => setToYear(e.target.value)}
+                        disabled={rangeLoading}
+                      >
+                        <option value="">-- Select Year --</option>
+                        {years.map((y) => (
+                          <option key={y} value={y}>{y}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {rangeError && <p className="error-message">{rangeError}</p>}
+
+              <div className="modal-actions">
+                <button 
+                  onClick={handleRangeDownload} 
+                  disabled={rangeLoading}
+                  className="range-download-submit"
+                >
+                  {rangeLoading ? (
+                    <>
+                      <span className="spinner" />
+                      Downloading...
+                    </>
+                  ) : (
+                    'Download CSV'
+                  )}
+                </button>
+                <button 
+                  onClick={() => {
+                    setShowRangeModal(false);
+                    setRangeError('');
+                  }}
+                  disabled={rangeLoading}
+                  className="range-download-cancel"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

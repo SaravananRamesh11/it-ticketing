@@ -19,9 +19,12 @@ const getClosedTicketsFile = async (month, year) => {
     Key: fileName,
   });
 
+  console.log(`Sending GetObjectCommand for: ${fileName}`);
+
   try {
     // Option 1: Send the actual file (used if frontend expects CSV directly)
     const response = await s3.send(getCommand);
+    console.log(`File fetched successfully: ${fileName}`);
     return response.Body;
 
     // Option 2: If you want to return a signed URL instead:
