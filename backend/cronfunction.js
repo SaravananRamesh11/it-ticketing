@@ -1,10 +1,10 @@
 // backend/controller/cronJob.js
-
 const exportAndDeleteClosedTickets = require('./utils/exportTickets');
 const ITSupportStats = require('./models/out_count.js');
 const Ticket = require('./models/Ticket');
 const sendEmail = require('./services/mailservice');
 
+//cronjob 1---------------------------------------------
 function isLastDayOfMonth(date = new Date()) {
   const tomorrow = new Date(date);
   tomorrow.setDate(date.getDate() + 1);
@@ -20,10 +20,7 @@ async function runMonthlyMaintenance() {
 }
 
 
-
-
 //cronjob 2---------------------------------------------
-
 async function sendInProgressTicketReminder() {
   console.log('📬 Running in-progress ticket reminder job...');
 

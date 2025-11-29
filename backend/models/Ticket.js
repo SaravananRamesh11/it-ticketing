@@ -82,6 +82,10 @@ const ticketSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  proofImageUrl: {
+    type: String,
+    default: null
+  },
   status: {
     type: String,
     enum: ['Open', 'Closed', 'InProgress'],

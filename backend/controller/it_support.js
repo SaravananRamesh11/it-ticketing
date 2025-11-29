@@ -24,6 +24,7 @@ const close_ticket = async (req, res) => {
     }
 
     let proofImageKey = null;
+    let proofImageUrl = null;
 
     // Handle image upload if present
     if (req.file) {
@@ -33,21 +34,29 @@ const close_ticket = async (req, res) => {
         const fileExtension = req.file.originalname.split('.').pop();
         proofImageKey = `IT-TICKETING/proofs/${hexName}.${fileExtension}`;
         console.log(`from try block proofImageKey: ${proofImageKey}`)
+
         const uploadCommand = new PutObjectCommand({
-      Bucket: process.env.BUCKET_NAME,
-      Key: proofImageKey,
-      Body: req.file.buffer,
-      ContentType: req.file.mimetype
-    });
+          Bucket: process.env.BUCKET_NAME,
+          Key: proofImageKey,
+          Body: req.file.buffer,
+          ContentType: req.file.mimetype
+        });
 
-    await s3.send(uploadCommand); 
-
+        await s3.send(uploadCommand);
+        
+        // Generate direct S3 object URL for CSV export
+        // Format: https://bucket-name.s3.region.amazonaws.com/key
+        const region = process.env.AWS_REGION || '';
+        const bucketName = process.env.BUCKET_NAME;
+        proofImageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${proofImageKey}`;
+        console.log(`Generated proofImageUrl: ${proofImageUrl}`);
       } catch (uploadError) {
         console.error('Image upload failed, still closing ticket:', uploadError);
         // Continue without failing the entire operation
       }
     }
-  const ticket = await Ticket.findById(id);
+    
+    const ticket = await Ticket.findById(id);
     if (!ticket) {
       return res.status(404).json({ message: 'Ticket not found' });
     }
@@ -55,6 +64,7 @@ const close_ticket = async (req, res) => {
     ticket.status = 'Closed';
     ticket.resolution = resolution;
     ticket.proofImageKey = proofImageKey; // Store the S3 object key
+    ticket.proofImageUrl = proofImageUrl; // Store the signed URL
     console.log(` before saving ${ticket}`)
     await ticket.save();
     console.log(` after saving ${ticket}`)
@@ -65,53 +75,6 @@ const close_ticket = async (req, res) => {
     res.status(500).json({ message: 'Error closing the ticket' });
   }
 };
-
-// photo mandatory code
-
-
-// const close_ticket = async (req, res) => {
-//   try {
-//     const { id, resolution } = req.body;
-//     const file = req.file;
- 
-//     if (!file) {
-//       return res.status(400).json({ message: 'Proof image is required' });
-//     }
-
-//     //Generate a unique hex name for the file
-//     const hexName = crypto.randomBytes(16).toString('hex');
-//     const extension = file.originalname.split('.').pop();
-//     const s3Key = `IT-TICKETING/proofs/${hexName}.${extension}`;
-
-//     //Upload the file to S3
-//     const uploadCommand = new PutObjectCommand({
-//       Bucket: process.env.BUCKET_NAME,
-//       Key: s3Key,
-//       Body: file.buffer,
-//       ContentType: file.mimetype
-//     });
-
-//     await s3.send(uploadCommand); // v3 uses .send()
-
-//     //Update the ticket in MongoDB
-//     const ticket = await Ticket.findById(id);
-//     if (!ticket) {
-//       return res.status(404).json({ message: 'Ticket not found' });
-//     }
-
-//     ticket.status = 'Closed';
-//     ticket.resolution = resolution;
-//     //ticket.proofImageKey = s3Key; // Store the S3 object key
-//     await ticket.save();
-
-//     res.status(200).json({ message: 'Ticket closed and image uploaded.' });
-//   } catch (error) {
-//     console.error('Error closing ticket:', error);
-//     res.status(500).json({ message: 'Error closing the ticket' });
-//   }
-// };
-
-
 
 const getAssignedTicketsBySupport = async (req, res) => {
   try {
@@ -130,8 +93,6 @@ const getAssignedTicketsBySupport = async (req, res) => {
     res.status(500).json({ message: 'Error fetching tickets' });
   }
 };
-
-
 
 const updateTicketStatus = async (req, res) => {
   try {
@@ -157,69 +118,6 @@ const updateTicketStatus = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
-
-
-// const time_exceeded = async (req, res) => {
-//   try {
-//     const { ticket } = req.body;
-
-//     // Step 1: Set HR warning flag on the ticket
-//     const updatedTicket = await Ticket.findByIdAndUpdate(
-//       ticket._id,
-//       { hr_warning: true },
-//       { new: true }
-//     );
-
-//     // Step 2: Get the IT support user object by employeeId
-//     const itSupportUser = await User.findOne({ employeeId: ticket.itSupport });
-
-//     if (itSupportUser) {
-//       // Step 3: Check if stats entry exists
-//       const existingStats = await ITSupportStats.findOne({ user: itSupportUser._id });
-
-//       if (existingStats) {
-//         existingStats.outOfTimeCount += 1;
-//         await existingStats.save();
-//       } else {
-//         await ITSupportStats.create({
-//           user: itSupportUser._id,
-//           itSupportName: itSupportUser.employeeName,
-//           outOfTimeCount: 1
-//         });
-//       }
-//     }
-
-//     // Step 4: Send HR email
-//     const text = `
-//     ⚠️ URGENT: Ticket Time Limit Exceeded
-//     ====================================
-
-//     Ticket Details:
-//     - ID: ${ticket._id}
-//     - Employee: ${ticket.employeeName} (${ticket.employeeId})
-
-//     Issue:
-//     - Category: ${ticket.issue.main}
-//     - Subcategory: ${ticket.issue.sub}
-//     - Specific Issue: ${ticket.issue.inner_sub}
-
-//     Time Status:
-//     - Created: ${new Date(ticket.createdAt).toLocaleString()}
-
-//     Action Required:
-//     This ticket has exceeded its SLA time. Please review and take appropriate action.
-//     `;
-
-//     // await sendEmail(process.env.HR, "🚨 Ticket Time Limit Exceeded", text);
-//     await sendEmail('mahadevmanohar07@gmail.com', 'Test Email', 'This is a test');
-
-//     res.status(200).json({ message: "Ticket marked as out-of-time and HR notified." });
-
-//   } catch (err) {
-//     console.error("❌ Error in time_exceeded controller:", err);
-//     res.status(500).json({ message: "Internal server error", error: err.message });
-//   }
-// };
 
 const time_exceeded = async (req, res) => {
   try {
@@ -304,7 +202,6 @@ This ticket has exceeded its SLA time. Please review and take appropriate action
   }
 };
 
-
 const makezero = async (req, res) => {
   try {
     await ITSupportStats.resetAllCounts();
@@ -337,7 +234,116 @@ const returnName=async(req,res)=>{
   }
 }
 
-
-
-
 module.exports = { getAssignedTicketsBySupport,close_ticket,updateTicketStatus,time_exceeded,makezero,returnName};
+
+
+
+
+
+
+// photo mandatory code
+
+// const close_ticket = async (req, res) => {
+//   try {
+//     const { id, resolution } = req.body;
+//     const file = req.file;
+ 
+//     if (!file) {
+//       return res.status(400).json({ message: 'Proof image is required' });
+//     }
+
+//     //Generate a unique hex name for the file
+//     const hexName = crypto.randomBytes(16).toString('hex');
+//     const extension = file.originalname.split('.').pop();
+//     const s3Key = `IT-TICKETING/proofs/${hexName}.${extension}`;
+
+//     //Upload the file to S3
+//     const uploadCommand = new PutObjectCommand({
+//       Bucket: process.env.BUCKET_NAME,
+//       Key: s3Key,
+//       Body: file.buffer,
+//       ContentType: file.mimetype
+//     });
+
+//     await s3.send(uploadCommand); // v3 uses .send()
+
+//     //Update the ticket in MongoDB
+//     const ticket = await Ticket.findById(id);
+//     if (!ticket) {
+//       return res.status(404).json({ message: 'Ticket not found' });
+//     }
+
+//     ticket.status = 'Closed';
+//     ticket.resolution = resolution;
+//     //ticket.proofImageKey = s3Key; // Store the S3 object key
+//     await ticket.save();
+
+//     res.status(200).json({ message: 'Ticket closed and image uploaded.' });
+//   } catch (error) {
+//     console.error('Error closing ticket:', error);
+//     res.status(500).json({ message: 'Error closing the ticket' });
+//   }
+// };
+
+
+// const time_exceeded = async (req, res) => {
+//   try {
+//     const { ticket } = req.body;
+
+//     // Step 1: Set HR warning flag on the ticket
+//     const updatedTicket = await Ticket.findByIdAndUpdate(
+//       ticket._id,
+//       { hr_warning: true },
+//       { new: true }
+//     );
+
+//     // Step 2: Get the IT support user object by employeeId
+//     const itSupportUser = await User.findOne({ employeeId: ticket.itSupport });
+
+//     if (itSupportUser) {
+//       // Step 3: Check if stats entry exists
+//       const existingStats = await ITSupportStats.findOne({ user: itSupportUser._id });
+
+//       if (existingStats) {
+//         existingStats.outOfTimeCount += 1;
+//         await existingStats.save();
+//       } else {
+//         await ITSupportStats.create({
+//           user: itSupportUser._id,
+//           itSupportName: itSupportUser.employeeName,
+//           outOfTimeCount: 1
+//         });
+//       }
+//     }
+
+//     // Step 4: Send HR email
+//     const text = `
+//     ⚠️ URGENT: Ticket Time Limit Exceeded
+//     ====================================
+
+//     Ticket Details:
+//     - ID: ${ticket._id}
+//     - Employee: ${ticket.employeeName} (${ticket.employeeId})
+
+//     Issue:
+//     - Category: ${ticket.issue.main}
+//     - Subcategory: ${ticket.issue.sub}
+//     - Specific Issue: ${ticket.issue.inner_sub}
+
+//     Time Status:
+//     - Created: ${new Date(ticket.createdAt).toLocaleString()}
+
+//     Action Required:
+//     This ticket has exceeded its SLA time. Please review and take appropriate action.
+//     `;
+
+//     // await sendEmail(process.env.HR, "🚨 Ticket Time Limit Exceeded", text);
+//     await sendEmail('mahadevmanohar07@gmail.com', 'Test Email', 'This is a test');
+
+//     res.status(200).json({ message: "Ticket marked as out-of-time and HR notified." });
+
+//   } catch (err) {
+//     console.error("❌ Error in time_exceeded controller:", err);
+//     res.status(500).json({ message: "Internal server error", error: err.message });
+//   }
+// };

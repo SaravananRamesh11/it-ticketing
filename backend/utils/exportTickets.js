@@ -43,17 +43,20 @@ module.exports = async function exportAndDeleteClosedTickets() {
     itSupport: ticket.itSupport,
     resolution: ticket.resolution,
     status: ticket.status,
+    proofImageKey: ticket.proofImageKey || '',
+    proofImageUrl: ticket.proofImageUrl || '',
   }));
 
   const fields = [
     'employeeName', 'employeeId', 'issue', 'date',
-    'time', 'email', 'itSupport', 'resolution', 'status'
+    'time', 'email', 'itSupport', 'resolution', 'status',
+    'proofImageKey', 'proofImageUrl'
   ];
 
   const parser = new Parser({ fields });
   const csv = parser.parse(formattedTickets); // use formatted data
 
-  const fileName = `IT-TICKETING/tickets-${monthName.toLowerCase()}-${year}.csv`;
+  const fileName = `IT-TICKETING/tickets/tickets-${monthName.toLowerCase()}-${year}.csv`;
 
   const uploadParams = {
     Bucket: process.env.BUCKET_NAME,

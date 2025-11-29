@@ -1,15 +1,8 @@
-// backend/controller/getTicketStats.js
 const Ticket = require('../../models/Ticket');
-//const ItSupportStats = require('../models/ItSupportStats');
 const User = require('../../models/User');
-
 const { getClosedTicketsFile } = require('../../utils/s3Downloader.js'); 
-
-
-
 const stream = require('stream');
-
-//get ticket stats------------------------------------------------
+//const ItSupportStats = require('../models/ItSupportStats');
 
 async function calculateTicketStats(tickets) {
   const statsMap = {};
@@ -38,7 +31,6 @@ async function calculateTicketStats(tickets) {
   return statsMap;
 }
 
-
 async function mapOutOfTimeStats(outOfTimeStats) {
   const outOfTimeMap = {};
   for (const entry of outOfTimeStats) {
@@ -49,7 +41,6 @@ async function mapOutOfTimeStats(outOfTimeStats) {
   }
   return outOfTimeMap;
 }
-
 
 function buildFinalStats(statsMap, outOfTimeMap) {
   return Object.values(statsMap).map(member => {
@@ -69,14 +60,9 @@ function buildFinalStats(statsMap, outOfTimeMap) {
   });
 }
 
-
 // downloadcsv formm --------------------------------------------------------------------
 
-
-
-/**
- * Core function: fetch CSV stream from S3
- */
+// Core function: fetch CSV stream from S3
 async function fetchCsvFile(month, year) {
   if (!month || !year) {
     throw new Error('Month and year are required');
@@ -85,24 +71,10 @@ async function fetchCsvFile(month, year) {
   return fileStream;
 }
 
-/**
- * Build headers for CSV download
- */
+// Build headers for CSV download
 function setCsvHeaders(res, month, year) {
   res.setHeader('Content-Disposition', `attachment; filename=tickets-${month}-${year}.csv`);
   res.setHeader('Content-Type', 'text/csv');
 }
 
-
-
-
-
-
-module.exports = {
-  
-  calculateTicketStats,
-  mapOutOfTimeStats,
-  buildFinalStats,
-  fetchCsvFile,
-  setCsvHeaders
-};
+module.exports = { calculateTicketStats, mapOutOfTimeStats, buildFinalStats, fetchCsvFile, setCsvHeaders };
