@@ -5,6 +5,7 @@ import SupportMemberPieChart from './pie';
 import  RemoveUserForm  from './remove';
 import Detail from "./details"
 import ClosedTickets from "./ClosedTickets" // Import the new component for closed tickets management
+import AllTickets from "./AllTickets" // Import the component for all current tickets
 import useAuth from '../../hooks/login_context_hook';
 import { 
   Box, 
@@ -36,7 +37,8 @@ import {
   Details as BadgeIcon,
   Visibility as VisibilityIcon,
   InsertDriveFile as FileIcon,
-  Logout as LogoutIcon
+  Logout as LogoutIcon,
+  ListAlt as ListAltIcon
 } from '@mui/icons-material';
 
 import { styled } from '@mui/material/styles';
@@ -84,6 +86,7 @@ const AdminPage = () => {
     { id: 'createUser', text: 'Create User', icon: <PersonAddIcon /> },
     { id: 'deleteEmployee', text: 'Delete Employee', icon: <PersonRemoveIcon /> },
     { id: 'pieChart', text: 'IT Support Statistics', icon: <PieChartIcon /> },
+    { id: 'allTickets', text: 'All Current Tickets', icon: <ListAltIcon /> },
     { id: 'closedTickets', text: 'Closed Tickets', icon: <FileIcon /> },
     // { id: 'AdminDetails', text: 'User Details', icon: <PersonIcon /> }
     { id: 'UserDetails', text: 'User Details', icon: <BadgeIcon /> }
@@ -97,6 +100,8 @@ const AdminPage = () => {
         return <RemoveUserForm/>;
       case 'pieChart':
         return <SupportMemberPieChart />;
+      case 'allTickets':
+        return <AllTickets />;
       case 'UserDetails':
         return <Detail/>;
       case 'closedTickets':

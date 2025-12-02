@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { register_user, getTicketStats, removeemployee, downloadCsvFromS3, previewCsvFromS3, getOutOfTimeCount, downloadRangeCsvFromS3 } = require("../controller/admin");
+const { register_user, getTicketStats, removeemployee, downloadCsvFromS3, previewCsvFromS3, getOutOfTimeCount, downloadRangeCsvFromS3, getCurrentTickets } = require("../controller/admin");
 const {checkAdmin}=require('../middleware/admin')
 const {verifyToken}=require('../middleware/general')
 
@@ -12,7 +12,8 @@ router.post('/remove', removeemployee);
 router.get('/download-csv', downloadCsvFromS3);
 router.get('/preview-csv', previewCsvFromS3);
 router.get('/download-range-csv', downloadRangeCsvFromS3);
-router.post('/outoftime',getOutOfTimeCount)
+router.post('/outoftime',getOutOfTimeCount);
+router.get('/current-tickets', getCurrentTickets);
 
 module.exports = router;    
 

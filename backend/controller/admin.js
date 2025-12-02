@@ -336,7 +336,31 @@ const getOutOfTimeCount = async (req, res) => {
   }
 };
 
-module.exports = { register_user, getTicketStats, removeemployee, downloadCsvFromS3, previewCsvFromS3, getOutOfTimeCount, downloadRangeCsvFromS3 };
+const getCurrentTickets = async (req, res) => {
+
+  try {
+    // Fetch all tickets with status 'Open' or 'InProgress'
+    const tickets = await Ticket.find({
+      status: { $in: ['Open', 'InProgress'] }
+    })
+    .sort({ createdAt: -1 }) // Sort by newest first
+    .lean();
+
+    res.status(200).json({
+      success: true,
+      tickets: tickets
+    });
+  } catch (error) {
+    console.error('❌ Error fetching current tickets:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching tickets',
+      error: error.message
+    });
+  }
+};
+
+module.exports = { register_user, getTicketStats, removeemployee, downloadCsvFromS3, previewCsvFromS3, getOutOfTimeCount, downloadRangeCsvFromS3, getCurrentTickets };
 
 
 
