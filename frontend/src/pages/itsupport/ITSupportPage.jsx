@@ -109,7 +109,7 @@ const issueHierarchy = {
 // Handle exceeding time limit
 const handleExceedTime = async (ticket) => {
   try {
-    const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    const apiUrl = (import.meta.env.VITE_SAME_ORIGIN ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'));
     await axios.post(`${apiUrl}/api/it_support/exceed`, { ticket }, {
       headers: {
         'Content-Type': 'application/json'
@@ -243,7 +243,7 @@ function ITSupportPage() {
           setLoading(false);
           return;
         }
-        const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+        const apiUrl = (import.meta.env.VITE_SAME_ORIGIN ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'));
         const response = await axios.post(
           `${apiUrl}/api/it_support/get_open`, 
           { id }, 
@@ -298,7 +298,7 @@ const handleCloseTicket = async (ticketId) => {
     return;
   }
 
-  const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+  const apiUrl = (import.meta.env.VITE_SAME_ORIGIN ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'));
   const formData = new FormData();
   formData.append('id', ticketId);
   formData.append('resolution', resolution);
@@ -345,7 +345,7 @@ const handleUpdateStatus = async (ticketId, currentStatus, sub_issue) => {
   }
 
   try {
-    const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    const apiUrl = (import.meta.env.VITE_SAME_ORIGIN ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'));
     const newStatus = currentStatus === 'Open' ? 'InProgress' : 'Open';
 
     await axios.put(

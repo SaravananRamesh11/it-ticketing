@@ -37,7 +37,7 @@ function ClosedTickets() {
     setCsvData([]);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const apiUrl = (import.meta.env.VITE_SAME_ORIGIN ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'));
       const response = await axios.get(`${apiUrl}/api/admin/preview-csv`, {
         params: { month, year },
         headers: {
@@ -71,7 +71,7 @@ function ClosedTickets() {
     setError('');
 
     try {
-      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const apiUrl = (import.meta.env.VITE_SAME_ORIGIN ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'));
       const response = await axios.get(`${apiUrl}/api/admin/download-csv`, {
         params: { month, year },
         responseType: 'blob',
@@ -105,7 +105,7 @@ function ClosedTickets() {
     setRangeError('');
 
     try {
-      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const apiUrl = (import.meta.env.VITE_SAME_ORIGIN ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'));
       const response = await axios.get(`${apiUrl}/api/admin/download-range-csv`, {
         params: { 
           fromMonth, 

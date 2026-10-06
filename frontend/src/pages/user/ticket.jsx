@@ -13,7 +13,7 @@ const UserTickets = () => {
       try {
         const userId = localStorage.getItem('id'); // ✅ Renamed to match backend
         const token = localStorage.getItem('token');
-        const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+        const apiUrl = (import.meta.env.VITE_SAME_ORIGIN ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'));
 
         console.log("➡️ ID:", userId);
         console.log("🛡️ Token:", token);

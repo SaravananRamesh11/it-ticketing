@@ -13,7 +13,7 @@ function EmployeeRegistrationForm() {
   const onSubmit = async (data) => {
     try {
       console.log(data);
-      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const apiUrl = (import.meta.env.VITE_SAME_ORIGIN ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'));
       const res = await axios.post(`${apiUrl}/api/admin/add_users`, data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}` // ⬅️ Attach token to request

@@ -16,7 +16,7 @@ const ForgotPassword = () => {
   const handleRequestOtp = async () => {
     setLoading(true);
     try {
-      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const apiUrl = (import.meta.env.VITE_SAME_ORIGIN ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'));
       const res = await axios.post(`${apiUrl}/api/vista/requestotp`, { email });
       setOtpSent(true);
       setMessage(res.data.message);
@@ -30,7 +30,7 @@ const ForgotPassword = () => {
     if (otpExpired) return setMessage('OTP has expired. Please request a new one.');
 
     try {
-      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const apiUrl = (import.meta.env.VITE_SAME_ORIGIN ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'));
       const res = await axios.post(`${apiUrl}/api/vista/resetpassword`, {
         email,
         otp,

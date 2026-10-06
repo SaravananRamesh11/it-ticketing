@@ -25,7 +25,7 @@ const Detail = () => {
             window.location.href = '/'; // Or use navigate from react-router-dom
             return;
         }
-        const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+        const apiUrl = (import.meta.env.VITE_SAME_ORIGIN ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'));
         const res = await axios.post(
           `${apiUrl}/api/general/details`,
           { id },
@@ -60,7 +60,7 @@ const Detail = () => {
 
     try {
       const id = localStorage.getItem('id');
-      const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const apiUrl = (import.meta.env.VITE_SAME_ORIGIN ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'));
       if (!id) {
           alert('User ID not found for password change. Please login again.');
           window.location.href = '/login';
