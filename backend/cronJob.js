@@ -19,6 +19,18 @@ cron.schedule('59 23 28-31 * *', async () => {
   }
 });
 
+
+// cron.schedule('* * * * *', async () => {
+//   console.log('⏰ Test cron running:', new Date());
+
+//   try {
+//     await runMonthlyMaintenance();
+//   } catch (error) {
+//     console.error('❌ Cron job error:', error);
+//   }
+// });
+
+
 // Schedule: Every 2 days at 10:30 AM
 cron.schedule('30 10 */2 * *', async () => {
   console.log('📬 Running in-progress ticket reminder cron job...');

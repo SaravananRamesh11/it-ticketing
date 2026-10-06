@@ -1,15 +1,7 @@
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { PutObjectCommand } = require('@aws-sdk/client-s3');
 const { Parser } = require('json2csv');
 const Ticket = require('../models/Ticket');
-
-// AWS S3 Setup
-const s3 = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-  }
-});
+const r2 = require('../config/r2');
 
 module.exports = async function exportAndDeleteClosedTickets() {
   const now = new Date();
@@ -64,8 +56,8 @@ module.exports = async function exportAndDeleteClosedTickets() {
     ContentType: 'text/csv'
   };
 
-  await s3.send(new PutObjectCommand(uploadParams));
-  console.log(`✅ Uploaded to S3: ${fileName}`);
+  await r2.send(new PutObjectCommand(uploadParams));
+  console.log(`✅ Uploaded to R2: ${fileName}`);
 
   await Ticket.deleteMany({ status: 'Closed' });
   console.log('🗑️ Deleted all closed tickets from MongoDB.');

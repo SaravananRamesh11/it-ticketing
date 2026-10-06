@@ -2,7 +2,8 @@ const User=require("../models/User")
 const Ticket = require('../models/Ticket');
 const axios = require('axios');
 const { PutObjectCommand } = require('@aws-sdk/client-s3');
-const s3 = require('../config/aws'); // s3 is an S3Client instance
+const r2 = require('../config/r2'); // S3Client pointed at Cloudflare R2
+const { getPublicUrl } = r2;
 const crypto = require('crypto');
 const sendEmail=require('../services/mailservice')
 require('dotenv').config()
@@ -42,13 +43,10 @@ const close_ticket = async (req, res) => {
           ContentType: req.file.mimetype
         });
 
-        await s3.send(uploadCommand);
-        
-        // Generate direct S3 object URL for CSV export
-        // Format: https://bucket-name.s3.region.amazonaws.com/key
-        const region = process.env.AWS_REGION || '';
-        const bucketName = process.env.BUCKET_NAME;
-        proofImageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${proofImageKey}`;
+        await r2.send(uploadCommand);
+
+        // Public R2 object URL for CSV export (R2_PUBLIC_URL/key)
+        proofImageUrl = getPublicUrl(proofImageKey);
         console.log(`Generated proofImageUrl: ${proofImageUrl}`);
       } catch (uploadError) {
         console.error('Image upload failed, still closing ticket:', uploadError);

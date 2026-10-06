@@ -1,6 +1,6 @@
 const Ticket = require('../../models/Ticket');
 const User = require('../../models/User');
-const { getClosedTicketsFile } = require('../../utils/s3Downloader.js'); 
+const { getClosedTicketsFile } = require('../../utils/r2Downloader.js'); 
 const stream = require('stream');
 //const ItSupportStats = require('../models/ItSupportStats');
 

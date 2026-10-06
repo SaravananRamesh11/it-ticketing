@@ -4,16 +4,16 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const saltRounds = 10; // Number of salt rounds for bcrypt
 const Ticket=require("../models/Ticket")
-const { getClosedTicketsFile } = require('../utils/s3Downloader');
-const csv = require('csv-parser'); 
-const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { getClosedTicketsFile } = require('../utils/r2Downloader');
+const csv = require('csv-parser');
+const { GetObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const ItSupportStats = require('../models/out_count.js');
 
 const {calculateTicketStats,mapOutOfTimeStats,buildFinalStats,fetchCsvFile,setCsvHeaders}=require('./function/admin.js')
 
-// Create S3 client
-const s3 = new S3Client({ region: process.env.AWS_REGION });
+// R2 client (S3-compatible)
+const r2 = require('../config/r2');
 
 // Add new employee endpoint with password hashing
 const register_user = async (req, res) => {
@@ -286,7 +286,7 @@ const previewCsvFromS3 = async (req, res) => {
                 Key: row.proofImageKey
               });
 
-              row.proofImageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+              row.proofImageUrl = await getSignedUrl(r2, command, { expiresIn: 3600 });
             } catch (err) {
               console.warn(`⚠️ Could not sign URL for ${row.proofImageKey}:`, err.message);
               row.proofImageUrl = null;
